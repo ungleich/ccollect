@@ -1,0 +1,8 @@
+$CCOLLECT_CONF/
+   -> Directories, which are so called 'backup-definitions'
+
+   $dir/
+      source -> file with the source
+      destination -> link to the destination
+      exclude -> \n seperated
+      
