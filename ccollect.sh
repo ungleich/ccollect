@@ -5,8 +5,17 @@
 # Last Modified: 
 
 
+#
+# temporary as long as inofficial
+#
 CCOLLECT_CONF=$HOME/crsnapshot/conf
+
+#
+# where to find our configuration
+#
 CCOLLECT_CONF=${CCOLLECT_CONF:-/etc/ccollect}
+CSOURCES=$CCOLLECT_CONF/sources/
+CDEFAULTS=$CCOLLECT_CONF/defaults/
 
 #
 # Tell how to use us
@@ -35,22 +44,38 @@ no_shares=0
 
 while [ $i -le $# ]; do
    eval arg=\$$i
-
-   case $arg in
-      -h|--help)
-         usage
-         ;;
-      --)
-         break
-         ;;
-      *)
+   
+   if [ "$NO_MORE_ARGS" = 1 ]; then
         eval share_${no_shares}="$arg"
         no_shares=$((no_shares+1))
-         ;;
-   esac
+   else
+      case $arg in
+         -a|--all)
+            ALL=1
+            ;;
+         -p|--parallel)
+            PARALLEL=1
+            ;;
+         -v|--verbose)
+            VERBOSE=1
+            ;;
+         -h|--help)
+            usage
+            ;;
+         --)
+            NO_MORE_ARGS=1
+            ;;
+         *)
+            eval share_${no_shares}="$arg"
+            no_shares=$((no_shares+1))
+            ;;
+      esac
+   fi
 
    i=$((i+1))
 done
+
+
 
 exit 1
 

@@ -1,3 +1,6 @@
+--------------------------------------------------------------------------------
+ccollect.sh, Nico Schottelius, 2005-12-06
+--------------------------------------------------------------------------------
 $CCOLLECT_CONF/
    -> Directories, which are so called 'backup-definitions'
 
@@ -5,4 +8,12 @@ $CCOLLECT_CONF/
       source -> file with the source
       destination -> link to the destination
       exclude -> \n seperated
+
+
+--------------------------------------------------------------------------------
+   intervalls/       - subdirectory of source or defaults
+      
+      Each file below this directory describe an intervalls.
+      
+--------------------------------------------------------------------------------
       
