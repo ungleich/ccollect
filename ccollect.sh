@@ -22,7 +22,7 @@ CDEFAULTS=$CCOLLECT_CONF/defaults/
 #
 usage()
 {
-   echo "$(basename $0): [args] <shares to backup>"
+   echo "$(basename $0): [args] <sources to backup>"
    echo ""
    echo "   Nico Schottelius (nico-linux-ccollect schottelius.org) - 2005-12-06"
    echo ""
@@ -30,6 +30,7 @@ usage()
    echo ""
    echo "   -h, --help:          Show this help screen"
    echo "   -p, --parallel:      Parellize backup process"
+   echo "   -a, --all:           Backup all sources specified in $CSOURCES"
    echo ""
    echo "   http://linux.schottelius.org/ccollect/"
    echo ""
@@ -75,6 +76,30 @@ while [ $i -le $# ]; do
    i=$((i+1))
 done
 
+#
+# Look, if we should take ALL sources
+#
+
+if [ "$ALL" = 1 ]; then
+   # reset everything specified before
+   no_shares=0
+
+   OLD_IFS=$IFS
+   export IFS=\\n
+
+   for tmp in $(cd $CSOURCES/; ls); do
+      eval share_${no_shares}="$tmp"
+      no_shares=$((no_shares+1))
+      echo \"-${tmp}-\"
+   done
+fi
+
+#
+# Need at least ONE source to backup
+#
+if [ "$no_shares" -lt 1 ]; then
+   usage   
+fi
 
 
 exit 1
