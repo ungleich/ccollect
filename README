@@ -14,6 +14,18 @@ $CCOLLECT_CONF/
    intervalls/       - subdirectory of source or defaults
       
       Each file below this directory describe an intervalls.
+--------------------------------------------------------------------------------
+   log               - link to file we should log to
       
+      If a backup source exists (the cconfig dir exists) all logs for this
+      source will be written to this file. General errors and errors of
+      non existent or broken configuration will be logged to stderr.
+
+      I do not think it is senseful to have one logfile for all sources, as
+      the sources can be backuped in parallel and you would not be able to
+      distinguish the different log processes very good then.
+
+      If you REALLY REALLY REALLY want to have all in one logfile, simply
+      link all "log" entries to the same file, output will be appended.
 --------------------------------------------------------------------------------
       

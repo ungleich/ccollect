@@ -14,14 +14,22 @@ CCOLLECT_CONF=$HOME/crsnapshot/conf
 # where to find our configuration and temporary file
 #
 CCOLLECT_CONF=${CCOLLECT_CONF:-/etc/ccollect}
-CSOURCES=$CCOLLECT_CONF/sources/
-CDEFAULTS=$CCOLLECT_CONF/defaults/
+CSOURCES=$CCOLLECT_CONF/sources
+CDEFAULTS=$CCOLLECT_CONF/defaults
 TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
 
 #
 # catch signals
 #
 trap "rm -f \"$TMP\"" 1 2 15
+
+#
+# errors!
+#
+errecho()
+{
+   echo "Error: $@" >&2
+}
 
 #
 # Tell how to use us
@@ -98,7 +106,6 @@ if [ "$ALL" = 1 ]; then
    ls > "$TMP"
    
    while read tmp; do
-      echo ${tmp}
       eval share_${no_shares}=\"$tmp\"
       no_shares=$((no_shares+1))
    done < "$TMP"
@@ -111,36 +118,44 @@ if [ "$no_shares" -lt 1 ]; then
    usage   
 fi
 
-exit 1
+#
+# Let's do the backup
+#
+i=0
+while [ "$i" -lt "$no_shares" ]; do
 
-for backup in $CCOLLECT_CONF/*; do
    #
    # Standard locations
    #
-
+   eval name=\$share_${i}
+   backup="$CSOURCES/$name"
    c_source="$backup/source"
    c_dest="$backup/destination"
    c_exclude="$backup/exclude"
+
+   i=$((i+1))
+
+   echo "Beginning to backup \"$name\" ..."
    
+   if [ ! -d "$backup" ]; then
+      errecho "\"$name\" is not a cconfig-directory. Skipping."
+      continue
+   fi
+
    #
    # Standard configuration checks
    #
-   if [ ! -d "$backup" ]; then
-      echo "Ignoring $backup, is not a directory"
-      continue
-   fi
-   
    if [ ! -f "$c_source" ]; then
-      echo "Skipping: Source $c_source is not a file"
+      echo "Source description $c_source is not a file. Skipping."
       continue
    else
-      source=$(cat $c_source)
+      source=$(cat "$c_source")
       if [ $? -ne 0 ]; then
          echo "Skipping: Source $c_source is not readable"
          continue
       fi
    fi
-   
+
    if [ ! -d "$c_dest" ]; then
       echo "Skipping: Destination $c_dest does not link to a directory"
       continue
@@ -150,7 +165,6 @@ for backup in $CCOLLECT_CONF/*; do
       echo "Skipping: Destination $c_dest does not link to a directory"
       continue
    fi
-   
 done
 
 rm -f "$TMP"
