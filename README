@@ -11,6 +11,22 @@ $CCOLLECT_CONF/
 
 
 --------------------------------------------------------------------------------
+   source            - a rsync compatible source (one liner)
+      
+      For instance:
+         
+         backup_user@foreign_host:/home/server/video
+
+         or
+
+         rsync://[USER@]HOST[:PORT]/SRC
+
+         Have a look at rsync(1).
+         
+--------------------------------------------------------------------------------
+   destination       - a link to the destination directory
+
+--------------------------------------------------------------------------------
    intervalls/       - subdirectory of source or defaults
       
       Each file below this directory describe an intervalls.
