@@ -11,11 +11,17 @@
 CCOLLECT_CONF=$HOME/crsnapshot/conf
 
 #
-# where to find our configuration
+# where to find our configuration and temporary file
 #
 CCOLLECT_CONF=${CCOLLECT_CONF:-/etc/ccollect}
 CSOURCES=$CCOLLECT_CONF/sources/
 CDEFAULTS=$CCOLLECT_CONF/defaults/
+TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
+
+#
+# catch signals
+#
+trap "rm -f \"$TMP\"" 1 2 15
 
 #
 # Tell how to use us
@@ -83,15 +89,19 @@ done
 if [ "$ALL" = 1 ]; then
    # reset everything specified before
    no_shares=0
-
-   OLD_IFS=$IFS
-   export IFS=\\n
-
-   for tmp in $(cd $CSOURCES/; ls); do
-      eval share_${no_shares}="$tmp"
+   
+   #
+   # get entries from sources
+   #
+   cwd=$(pwd)
+   cd $CSOURCES;
+   ls > "$TMP"
+   
+   while read tmp; do
+      echo ${tmp}
+      eval share_${no_shares}=\"$tmp\"
       no_shares=$((no_shares+1))
-      echo \"-${tmp}-\"
-   done
+   done < "$TMP"
 fi
 
 #
@@ -101,13 +111,7 @@ if [ "$no_shares" -lt 1 ]; then
    usage   
 fi
 
-
 exit 1
-
-if [ -z "$(ls $CCOLLECT_CONF 2>/dev/null)" ]; then
-   echo "Aborting, nothing specified to backup in $CCOLLECT_CONF"
-   exit 23
-fi
 
 for backup in $CCOLLECT_CONF/*; do
    #
@@ -148,3 +152,5 @@ for backup in $CCOLLECT_CONF/*; do
    fi
    
 done
+
+rm -f "$TMP"
