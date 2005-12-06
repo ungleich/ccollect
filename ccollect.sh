@@ -9,11 +9,50 @@ CCOLLECT_CONF=$HOME/crsnapshot/conf
 CCOLLECT_CONF=${CCOLLECT_CONF:-/etc/ccollect}
 
 #
-# ARGV:
-# -s|--silent
-# -p|--parallel
-# -v|--verbose
+# Tell how to use us
 #
+usage()
+{
+   echo "$(basename $0): [args] <shares to backup>"
+   echo ""
+   echo "   Nico Schottelius (nico-linux-ccollect schottelius.org) - 2005-12-06"
+   echo ""
+   echo "   Backup data pseudo incremental"
+   echo ""
+   echo "   -h, --help:          Show this help screen"
+   echo "   -p, --parallel:      Parellize backup process"
+   echo ""
+   echo "   http://linux.schottelius.org/ccollect/"
+   echo ""
+   exit 0
+}
+
+#
+# Filter arguments
+#
+i=1
+no_shares=0
+
+while [ $i -le $# ]; do
+   eval arg=\$$i
+
+   case $arg in
+      -h|--help)
+         usage
+         ;;
+      --)
+         break
+         ;;
+      *)
+        eval share_${no_shares}="$arg"
+        no_shares=$((no_shares+1))
+         ;;
+   esac
+
+   i=$((i+1))
+done
+
+exit 1
 
 if [ -z "$(ls $CCOLLECT_CONF 2>/dev/null)" ]; then
    echo "Aborting, nothing specified to backup in $CCOLLECT_CONF"
