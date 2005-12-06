@@ -10,6 +10,7 @@
 #
 CCOLLECT_CONF=$HOME/crsnapshot/conf
 
+
 #
 # where to find our configuration and temporary file
 #
@@ -18,10 +19,12 @@ CSOURCES=$CCOLLECT_CONF/sources
 CDEFAULTS=$CCOLLECT_CONF/defaults
 TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
 
+
 #
 # catch signals
 #
 trap "rm -f \"$TMP\"" 1 2 15
+
 
 #
 # errors!
@@ -30,6 +33,7 @@ errecho()
 {
    echo "Error: $@" >&2
 }
+
 
 #
 # Tell how to use us
@@ -46,10 +50,11 @@ usage()
    echo "   -p, --parallel:      Parellize backup process"
    echo "   -a, --all:           Backup all sources specified in $CSOURCES"
    echo ""
-   echo "   http://linux.schottelius.org/ccollect/"
+   echo "   Retrieve latest ccollect at http://linux.schottelius.org/ccollect/."
    echo ""
    exit 0
 }
+
 
 #
 # Filter arguments
@@ -71,9 +76,6 @@ while [ $i -le $# ]; do
          -p|--parallel)
             PARALLEL=1
             ;;
-         -v|--verbose)
-            VERBOSE=1
-            ;;
          -h|--help)
             usage
             ;;
@@ -90,10 +92,10 @@ while [ $i -le $# ]; do
    i=$((i+1))
 done
 
+
 #
 # Look, if we should take ALL sources
 #
-
 if [ "$ALL" = 1 ]; then
    # reset everything specified before
    no_shares=0
@@ -137,14 +139,14 @@ while [ "$i" -lt "$no_shares" ]; do
 
    echo "Beginning to backup \"$name\" ..."
    
+   #
+   # Standard configuration checks
+   #
    if [ ! -d "$backup" ]; then
       errecho "\"$name\" is not a cconfig-directory. Skipping."
       continue
    fi
 
-   #
-   # Standard configuration checks
-   #
    if [ ! -f "$c_source" ]; then
       echo "Source description $c_source is not a file. Skipping."
       continue
@@ -157,12 +159,12 @@ while [ "$i" -lt "$no_shares" ]; do
    fi
 
    if [ ! -d "$c_dest" ]; then
-      echo "Skipping: Destination $c_dest does not link to a directory"
+      errecho "Destination $c_dest does not link to a directory. Skipping"
       continue
    fi
 
    if [ -f "$c_exclude" ]; then
-      echo "Skipping: Destination $c_dest does not link to a directory"
+      errecho "Destination $c_dest does not link to a directory. Skipping."
       continue
    fi
 done

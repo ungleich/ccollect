@@ -1,6 +1,24 @@
 --------------------------------------------------------------------------------
 ccollect.sh, Nico Schottelius, 2005-12-06
 --------------------------------------------------------------------------------
+
+ccollect backups data from local or remote hosts to your local harddisk.
+
+
+You can retriev the latest version of ccollect at [0].
+
+ccollect was inspired by rsnapshot [1], which had some problems:
+   - configuration parameters had to be TAB seperated
+   - you could not specify exclude lists differently for every source
+   - no parallel execution
+   - I didn't like the configuration at all, so I used the cconfig style [2].
+
+
+[0]: ccollect:    http://linux.schottelius.org/ccollect/
+[1]: rsnapshot:   htt://www.rsnapshot.org/
+[2]: cconfig:     http://nico.schotteli.us/papers/linux/cconfig/
+
+--------------------------------------------------------------------------------
 $CCOLLECT_CONF/
    -> Directories, which are so called 'backup-definitions'
 
@@ -23,6 +41,11 @@ $CCOLLECT_CONF/
 
          Have a look at rsync(1).
          
+--------------------------------------------------------------------------------
+   verbose           - should we log verbose or silent
+
+   If this file exists in the source specification -v will be passed to rsync.
+
 --------------------------------------------------------------------------------
    destination       - a link to the destination directory
 
