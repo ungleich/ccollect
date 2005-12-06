@@ -36,14 +36,26 @@ for backup in $CCOLLECT_CONF/*; do
       echo "Ignoring $backup, is not a directory"
       continue
    fi
+   
    if [ ! -f "$c_source" ]; then
-      echo "Skipping: Source $c_source is not a file:"
+      echo "Skipping: Source $c_source is not a file"
       continue
    else
-      source=$(cat $c_source) || continue
+      source=$(cat $c_source)
+      if [ $? -ne 0 ]; then
+         echo "Skipping: Source $c_source is not readable"
+         continue
+      fi
    fi
+   
    if [ ! -d "$c_dest" ]; then
       echo "Skipping: Destination $c_dest does not link to a directory"
       continue
    fi
+
+   if [ -f "$c_exclude" ]; then
+      echo "Skipping: Destination $c_dest does not link to a directory"
+      continue
+   fi
+   
 done
