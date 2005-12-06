@@ -47,6 +47,9 @@ $CCOLLECT_CONF/
    If this file exists in the source specification -v will be passed to rsync.
 
 --------------------------------------------------------------------------------
+   exclude           - a new line seperated list of paths to exclude
+
+--------------------------------------------------------------------------------
    destination       - a link to the destination directory
 
 --------------------------------------------------------------------------------

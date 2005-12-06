@@ -1,0 +1,11 @@
+--------------------------------------------------------------------------------
+ccollect.sh, Nico Schottelius, 2005-12-06
+Requirements
+--------------------------------------------------------------------------------
+
+You need at least:
+
+   - rsync
+   - cp with support for hard links
+   - ssh if you want to use rsync over ssh
+   - a bourne shell (/bin/sh) compatible shell
