@@ -204,9 +204,6 @@ while [ "$i" -lt "$no_shares" ]; do
    fi
 
    if [ -f "$c_exclude" ]; then
-      errecho "Destination $c_dest does not link to a directory. Skipping."
-      continue
-   
       while read tmp; do
          EXCLUDE="$EXCLUDE --exclude \"$tmp\""
      done < "$c_exclude"
@@ -227,7 +224,7 @@ while [ "$i" -lt "$no_shares" ]; do
    #
    # the rsync part
    #
-   echo rsync --delete $VERBOSE $EXCLUDE $source $c_dest
+   echo rsync -a --delete $EXCLUDE $VERBOSE $EXCLUDE $source $c_dest
 done
 
 #
