@@ -31,7 +31,7 @@ trap "rm -f \"$TMP\"" 1 2 15
 #
 errecho()
 {
-   echo "Error: $@" >&2
+   echo "|E> Error: $@" >&2
 }
 
 
@@ -128,7 +128,7 @@ fi
 if [ "$no_shares" -lt 1 ]; then
    usage   
 else
-   echo "$WE: Beginning backup using intervall $INTERVALL"
+   echo "/o> $WE: Beginning backup using intervall $INTERVALL"
 fi
 
 #
@@ -153,7 +153,7 @@ while [ "$i" -lt "$no_shares" ]; do
    c_dest="$backup/destination"
    c_exclude="$backup/exclude"
 
-   echo "Beginning to backup \"$name\" ..."
+   echo "|=> Beginning to backup \"$name\" ..."
    i=$[$i+1]
    
    #
@@ -188,12 +188,12 @@ while [ "$i" -lt "$no_shares" ]; do
    # next configuration checks
    #
    if [ ! -f "$c_source" ]; then
-      echo "Source description $c_source is not a file. Skipping."
+      echo "|-> Source description $c_source is not a file. Skipping."
       continue
    else
       source=$(cat "$c_source")
       if [ $? -ne 0 ]; then
-         echo "Skipping: Source $c_source is not readable"
+         echo "|-> Skipping: Source $c_source is not readable"
          continue
       fi
    fi
@@ -214,8 +214,24 @@ while [ "$i" -lt "$no_shares" ]; do
    #
 
    #
-   # check if maximum number of backups is reached
+   # check if maximum number of backups is reached, if so remove
    #
+
+   count=$(ls "$c_dest" | wc -l)
+   echo "|-> $count backup(s) already exist, keeping $c_intervall backup(s)."
+   
+   if [ "$count" -ge "$c_intervall" ]; then
+      substract=$(echo $c_intervall - 1 | bc)
+      remove=$(echo $count - $substract | bc)
+      echo "|-> Removing $remove backups..."
+
+      ls "$c_dest" | sort -n | head -n $remove > "$TMP"
+      while read to_remove; do
+         dir="$c_dest/$to_remove"
+         echo "|-> Removing $dir ..."
+         rm -rf "$dir"
+      done < "$TMP"
+   fi
 
    #
    # clone the old directory with hardlinks
@@ -223,6 +239,7 @@ while [ "$i" -lt "$no_shares" ]; do
 
    #
    # the rsync part
+   # --delete --numeric-ids --relative --delete-excluded
    #
    echo rsync -a --delete $EXCLUDE $VERBOSE $EXCLUDE $source $c_dest
 done
@@ -235,3 +252,4 @@ if [ "$PARALLEL" = 1 ]; then
 fi
 
 rm -f "$TMP"
+echo "\o> finished."
