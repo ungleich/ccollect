@@ -216,8 +216,9 @@ while [ "$i" -lt "$no_shares" ]; do
    #
    # check if maximum number of backups is reached, if so remove
    #
-
-   count=$(ls "$c_dest" | wc -l)
+   
+   # STOPPED! 
+   count=$(ls "$c_dest/${INTERVALL}.*" | wc -l)
    echo "|-> $count backup(s) already exist, keeping $c_intervall backup(s)."
    
    if [ "$count" -ge "$c_intervall" ]; then
@@ -225,7 +226,7 @@ while [ "$i" -lt "$no_shares" ]; do
       remove=$(echo $count - $substract | bc)
       echo "|-> Removing $remove backups..."
 
-      ls "$c_dest" | sort -n | head -n $remove > "$TMP"
+      ls "$c_dest/${INTERVALL}.*" | sort -n | head -n $remove > "$TMP"
       while read to_remove; do
          dir="$c_dest/$to_remove"
          echo "|-> Removing $dir ..."
@@ -241,7 +242,10 @@ while [ "$i" -lt "$no_shares" ]; do
    # the rsync part
    # --delete --numeric-ids --relative --delete-excluded
    #
-   echo rsync -a --delete $EXCLUDE $VERBOSE $EXCLUDE $source $c_dest
+
+   # STOPPED! 
+   destination_dir=$(date +%Y-%m-%d)
+   echo rsync -a --delete $EXCLUDE $VERBOSE $EXCLUDE "$source" "$c_dest/${INTERVALL}.${destination_dir}"
 done
 
 #
