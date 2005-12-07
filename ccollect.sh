@@ -18,7 +18,7 @@ CCOLLECT_CONF=${CCOLLECT_CONF:-/etc/ccollect}
 CSOURCES=$CCOLLECT_CONF/sources
 CDEFAULTS=$CCOLLECT_CONF/defaults
 TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
-
+WE=$(basename $0)
 
 #
 # catch signals
@@ -40,7 +40,7 @@ errecho()
 #
 usage()
 {
-   echo "$(basename $0): [args] <intervall name> <sources to backup>"
+   echo "$WE: <intervall name> [args] <sources to backup>"
    echo ""
    echo "   Nico Schottelius (nico-linux-ccollect schottelius.org) - 2005-12-06"
    echo ""
@@ -55,10 +55,19 @@ usage()
    exit 0
 }
 
+#
+# need at least intervall and one source or --all
+#
+if [ $# -lt 2 ]; then
+   usage
+fi
 
 #
 # Filter arguments
 #
+
+INTERVALL=$1; shift
+
 i=1
 no_shares=0
 
@@ -67,7 +76,7 @@ while [ $i -le $# ]; do
    
    if [ "$NO_MORE_ARGS" = 1 ]; then
         eval share_${no_shares}="$arg"
-        no_shares=$((no_shares+1))
+        no_shares=$[$no_shares+1]
    else
       case $arg in
          -a|--all)
@@ -84,12 +93,12 @@ while [ $i -le $# ]; do
             ;;
          *)
             eval share_${no_shares}="$arg"
-            no_shares=$((no_shares+1))
+            no_shares=$[$no_shares+1]
             ;;
       esac
    fi
 
-   i=$((i+1))
+   i=$[$i+1]
 done
 
 
@@ -109,7 +118,7 @@ if [ "$ALL" = 1 ]; then
    
    while read tmp; do
       eval share_${no_shares}=\"$tmp\"
-      no_shares=$((no_shares+1))
+      no_shares=$[$no_shares+1]
    done < "$TMP"
 fi
 
@@ -118,7 +127,16 @@ fi
 #
 if [ "$no_shares" -lt 1 ]; then
    usage   
+else
+   echo "$WE: Beginning backup using intervall $INTERVALL"
 fi
+
+#
+# check default configuration
+#
+
+D_FILE_INTERVALL="$CDEFAULTS/intervalls/$INTERVALL"
+D_INTERVALL=$(cat $D_FILE_INTERVALL 2>/dev/null)
 
 #
 # Let's do the backup
@@ -135,15 +153,8 @@ while [ "$i" -lt "$no_shares" ]; do
    c_dest="$backup/destination"
    c_exclude="$backup/exclude"
 
-   #
-   # standard rsync options
-   #
-   VERBOSE=""
-   EXCLUDE=""
-
-   i=$((i+1))
-
    echo "Beginning to backup \"$name\" ..."
+   i=$[$i+1]
    
    #
    # Standard configuration checks
@@ -153,6 +164,29 @@ while [ "$i" -lt "$no_shares" ]; do
       continue
    fi
 
+   #
+   # intervall definiition
+   #
+   c_intervall="$(cat "$backup/intervalls/$INTERVALL" 2>/dev/null)"
+
+   if [ -z "$c_intervall" ]; then
+      c_intervall=$D_INTERVALL
+
+      if [ -z "$c_intervall" ]; then
+         errecho "Default and source specific intervall missing. Skipping."
+         continue
+      fi
+   fi
+
+   #
+   # standard rsync options
+   #
+   VERBOSE=""
+   EXCLUDE=""
+
+   #
+   # next configuration checks
+   #
    if [ ! -f "$c_source" ]; then
       echo "Source description $c_source is not a file. Skipping."
       continue
@@ -177,6 +211,14 @@ while [ "$i" -lt "$no_shares" ]; do
          EXCLUDE="$EXCLUDE --exclude \"$tmp\""
      done < "$c_exclude"
    fi
+   
+   #
+   # TODO
+   #
+
+   #
+   # check if maximum number of backups is reached
+   #
 
    #
    # clone the old directory with hardlinks
@@ -185,7 +227,7 @@ while [ "$i" -lt "$no_shares" ]; do
    #
    # the rsync part
    #
-   echo rsync --delete $VERBOSE $EXCLUDE
+   echo rsync --delete $VERBOSE $EXCLUDE $source $c_dest
 done
 
 #
