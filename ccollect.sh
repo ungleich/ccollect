@@ -4,13 +4,6 @@
 # Date: Mon Nov 14 11:45:11 CET 2005
 # Last Modified: 
 
-
-#
-# temporary as long as inofficial
-#
-CCOLLECT_CONF=$HOME/crsnapshot/conf
-
-
 #
 # where to find our configuration and temporary file
 #
@@ -60,6 +53,14 @@ usage()
 #
 if [ $# -lt 2 ]; then
    usage
+fi
+
+#
+# check for configuraton directory
+#
+if [ ! -d "$CCOLLECT_CONF" ]; then
+   errecho "Configuration \"$CCOLLECT_CONF\" not found."
+   exit 1
 fi
 
 #
