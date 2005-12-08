@@ -248,6 +248,9 @@ while [ "$i" -lt "$no_shares" ]; do
    destination_dir="$c_dest/${INTERVALL}.${destination_date}.$$"
    
    last_dir=$(ls -d "$c_dest/${INTERVALL}."?* 2>/dev/null | sort -n | tail -n 1)
+   
+   # give some info
+   echo "|-> Beginning to backup, this may take some time..."
 
    # only copy if a directory exists
    if [ "$last_dir" ]; then
