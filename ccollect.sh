@@ -210,15 +210,13 @@ while [ "$i" -lt "$no_shares" ]; do
    fi
    
    #
-   # TODO
-   #
-
-   #
    # check if maximum number of backups is reached, if so remove
    #
    
-   # STOPPED! 
-   count=$(ls "$c_dest/${INTERVALL}.*" | wc -l)
+   #
+   # the created directories are named $INTERVALL.$DATE
+   #
+   count=$(ls -d "$c_dest/${INTERVALL}."?*  2>/dev/null | wc -l)
    echo "|-> $count backup(s) already exist, keeping $c_intervall backup(s)."
    
    if [ "$count" -ge "$c_intervall" ]; then
@@ -226,26 +224,47 @@ while [ "$i" -lt "$no_shares" ]; do
       remove=$(echo $count - $substract | bc)
       echo "|-> Removing $remove backups..."
 
-      ls "$c_dest/${INTERVALL}.*" | sort -n | head -n $remove > "$TMP"
+      ls -d "$c_dest/${INTERVALL}."?* | sort -n | head -n $remove > "$TMP"
       while read to_remove; do
-         dir="$c_dest/$to_remove"
+         dir="$to_remove"
          echo "|-> Removing $dir ..."
-         rm -rf "$dir"
+         echo rm -rf "$dir"
       done < "$TMP"
    fi
-
+   
    #
    # clone the old directory with hardlinks
    #
 
+   destination_date=$(date +%Y-%m-%d-%H:%M)
+   destination_dir="$c_dest/${INTERVALL}.${destination_date}/"
+   
+   last_dir=$(ls -d "$c_dest/${INTERVALL}."?* 2>/dev/null | sort -n | tail -n 1)
+
+   # only copy if there exists a directory
+   if [  "$last_dir" ]; then
+      echo cp -al "$last_dir" "$destination_dir"
+   else
+      mkdir "$destination_dir"
+   fi
+
+   if [ $? -ne 0 ]; then
+      errecho "Creating backup directory failed. Skipping backup."
+      continue
+   fi
+
    #
    # the rsync part
-   # --delete --numeric-ids --relative --delete-excluded
+   # options stolen shameless from rsnapshot
    #
 
-   # STOPPED! 
-   destination_dir=$(date +%Y-%m-%d)
-   echo rsync -a --delete $EXCLUDE $VERBOSE $EXCLUDE "$source" "$c_dest/${INTERVALL}.${destination_dir}"
+   echo rsync -a --delete --numeric-ids --relative --delete-excluded \
+         $EXCLUDE $VERBOSE $EXCLUDE "$source" "$destination_dir"
+   
+   if [ $? -ne 0 ]; then
+      errecho "rsync failed, backup most likely broken"
+      continue
+   fi
 done
 
 #
