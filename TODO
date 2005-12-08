@@ -1,4 +1,5 @@
 - write a manpage
+- write a simple manual
 - implement verbosity
    o general, very verbose (set -x)
 - implement general log

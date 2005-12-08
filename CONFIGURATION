@@ -6,6 +6,7 @@ ccollect.sh, Nico Schottelius, 2005-12-07
 1. General configuration
 2. Source configuration
 
+--------------------------------------------------------------------------------
 0. Runtime options
 
 ccollect looks for its configuration in /etc/ccollect or, if set, in
@@ -16,6 +17,7 @@ There are also some self explaining parameters you can pass to ccollect, simply 
 
 The "intervall" is used to know how many backups to keep.
 
+--------------------------------------------------------------------------------
 1. General configuration
 
 The general configuration can be found below $CCOLLECT_CONF/defaults or /etc/ccollect/defaults.
@@ -24,8 +26,11 @@ The general configuration can be found below $CCOLLECT_CONF/defaults or /etc/cco
 
 Below this directory should be:
 
-   intervalls/<intervall
+   intervalls/<intervall name>
 
+   The number in this file tells ccollect how many versions to keep.
+
+--------------------------------------------------------------------------------
 2. Source configuration
 
 Each source configuration exists below $CCOLLECT_CONF/sources/$name.
