@@ -213,9 +213,7 @@ while [ "$i" -lt "$no_shares" ]; do
    # check if maximum number of backups is reached, if so remove
    #
    
-   #
    # the created directories are named $INTERVALL.$DATE
-   #
    count=$(ls -d "$c_dest/${INTERVALL}."?*  2>/dev/null | wc -l)
    echo "|-> $count backup(s) already exist, keeping $c_intervall backup(s)."
    
@@ -241,7 +239,7 @@ while [ "$i" -lt "$no_shares" ]; do
    
    last_dir=$(ls -d "$c_dest/${INTERVALL}."?* 2>/dev/null | sort -n | tail -n 1)
 
-   # only copy if there exists a directory
+   # only copy if a directory exists
    if [  "$last_dir" ]; then
       echo cp -al "$last_dir" "$destination_dir"
    else
@@ -249,7 +247,7 @@ while [ "$i" -lt "$no_shares" ]; do
    fi
 
    if [ $? -ne 0 ]; then
-      errecho "Creating backup directory failed. Skipping backup."
+      errecho "Creating/cloning backup directory failed. Skipping backup."
       continue
    fi
 
