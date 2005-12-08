@@ -75,7 +75,7 @@ while [ $i -le $# ]; do
    eval arg=\$$i
    
    if [ "$NO_MORE_ARGS" = 1 ]; then
-        eval share_${no_shares}="$arg"
+        eval share_${no_shares}=\"$arg\"
         no_shares=$[$no_shares+1]
    else
       case $arg in
@@ -92,7 +92,7 @@ while [ $i -le $# ]; do
             NO_MORE_ARGS=1
             ;;
          *)
-            eval share_${no_shares}="$arg"
+            eval share_${no_shares}=\"$arg\"
             no_shares=$[$no_shares+1]
             ;;
       esac
@@ -153,7 +153,7 @@ while [ "$i" -lt "$no_shares" ]; do
    c_dest="$backup/destination"
    c_exclude="$backup/exclude"
 
-   echo "|=> Beginning to backup \"$name\" ..."
+   echo "/=> Beginning to backup \"$name\" ..."
    i=$[$i+1]
    
    #
@@ -220,7 +220,7 @@ while [ "$i" -lt "$no_shares" ]; do
    if [ "$count" -ge "$c_intervall" ]; then
       substract=$(echo $c_intervall - 1 | bc)
       remove=$(echo $count - $substract | bc)
-      echo "|-> Removing $remove backups..."
+      echo "|-> Removing $remove backup(s)..."
 
       ls -d "$c_dest/${INTERVALL}."?* | sort -n | head -n $remove > "$TMP"
       while read to_remove; do
@@ -235,12 +235,13 @@ while [ "$i" -lt "$no_shares" ]; do
    #
 
    destination_date=$(date +%Y-%m-%d-%H:%M)
-   destination_dir="$c_dest/${INTERVALL}.${destination_date}/"
+   destination_dir="$c_dest/${INTERVALL}.${destination_date}.$$"
    
    last_dir=$(ls -d "$c_dest/${INTERVALL}."?* 2>/dev/null | sort -n | tail -n 1)
 
    # only copy if a directory exists
-   if [  "$last_dir" ]; then
+   if [ "$last_dir" ]; then
+      echo cp -al "$last_dir" "$destination_dir"
       cp -al "$last_dir" "$destination_dir"
    else
       mkdir "$destination_dir"
@@ -256,6 +257,8 @@ while [ "$i" -lt "$no_shares" ]; do
    # options stolen shameless from rsnapshot
    #
 
+   echo rsync -a --delete --numeric-ids --relative --delete-excluded \
+      $EXCLUDE $VERBOSE $EXCLUDE "$source" "$destination_dir"
    rsync -a --delete --numeric-ids --relative --delete-excluded \
       $EXCLUDE $VERBOSE $EXCLUDE "$source" "$destination_dir"
    
