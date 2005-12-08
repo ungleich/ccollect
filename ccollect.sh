@@ -42,6 +42,7 @@ usage()
    echo "   -h, --help:          Show this help screen"
    echo "   -p, --parallel:      Parellize backup process"
    echo "   -a, --all:           Backup all sources specified in $CSOURCES"
+   echo "   -v, --verbose:       Be very verbose."
    echo ""
    echo "   Retrieve latest ccollect at http://linux.schottelius.org/ccollect/."
    echo ""
@@ -83,6 +84,9 @@ while [ $i -le $# ]; do
          -a|--all)
             ALL=1
             ;;
+         -v|--verbose)
+            VERBOSE=1
+            ;;
          -p|--parallel)
             PARALLEL=1
             ;;
@@ -102,6 +106,12 @@ while [ $i -le $# ]; do
    i=$[$i+1]
 done
 
+#
+# be really really really verbose
+#
+if [ "$VERBOSE" = 1 ]; then
+   set -x
+fi
 
 #
 # Look, if we should take ALL sources
