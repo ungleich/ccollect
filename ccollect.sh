@@ -268,7 +268,7 @@ while [ "$i" -lt "$no_shares" ]; do
    #
    
    rsync -a $VERBOSE --delete --numeric-ids --relative --delete-excluded \
-      "$EXCLUDE" $EXCLUDE "$source" "$destination_dir"
+      "$EXCLUDE" "$source" "$destination_dir"
    
    if [ $? -ne 0 ]; then
       errecho "rsync failed, backup most likely broken"
