@@ -226,7 +226,7 @@ while [ "$i" -lt "$no_shares" ]; do
       while read to_remove; do
          dir="$to_remove"
          echo "|-> Removing $dir ..."
-         echo rm -rf "$dir"
+         rm -rf "$dir"
       done < "$TMP"
    fi
    
@@ -241,7 +241,7 @@ while [ "$i" -lt "$no_shares" ]; do
 
    # only copy if a directory exists
    if [  "$last_dir" ]; then
-      echo cp -al "$last_dir" "$destination_dir"
+      cp -al "$last_dir" "$destination_dir"
    else
       mkdir "$destination_dir"
    fi
@@ -256,8 +256,8 @@ while [ "$i" -lt "$no_shares" ]; do
    # options stolen shameless from rsnapshot
    #
 
-   echo rsync -a --delete --numeric-ids --relative --delete-excluded \
-         $EXCLUDE $VERBOSE $EXCLUDE "$source" "$destination_dir"
+   rsync -a --delete --numeric-ids --relative --delete-excluded \
+      $EXCLUDE $VERBOSE $EXCLUDE "$source" "$destination_dir"
    
    if [ $? -ne 0 ]; then
       errecho "rsync failed, backup most likely broken"
