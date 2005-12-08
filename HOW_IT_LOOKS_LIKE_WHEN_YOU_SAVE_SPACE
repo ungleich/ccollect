@@ -1,0 +1,11 @@
+Hard links are such a nice thing ;-)
+
+[10:53] srsyg01:sources% du -sh ~/backupdir 
+4.6M    /home/nico/backupdir
+[10:53] srsyg01:sources% du -sh ~/backupdir/*
+4.1M    /home/nico/backupdir/daily.2005-12-08-10:52.28456
+4.1M    /home/nico/backupdir/daily.2005-12-08-10:53.28484
+4.1M    /home/nico/backupdir/daily.2005-12-08-10:53.28507
+4.1M    /home/nico/backupdir/daily.2005-12-08-10:53.28531
+4.1M    /home/nico/backupdir/daily.2005-12-08-10:53.28554
+4.1M    /home/nico/backupdir/daily.2005-12-08-10:53.28577
