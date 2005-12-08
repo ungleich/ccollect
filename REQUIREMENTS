@@ -3,10 +3,10 @@ ccollect.sh, Nico Schottelius, 2005-12-06 (updated: 2005-12-07)
 Requirements
 --------------------------------------------------------------------------------
 
-You need at least:
+ccollect needs the following packages:
 
-   - rsync
-   - cp with support for hard links
-   - ssh if you want to use rsync over ssh
    - a bourne shell (/bin/sh) compatible shell
    - bc
+   - cp with support for hard links (cp -al is used)
+   - rsync
+   - ssh if you want to use rsync over ssh
