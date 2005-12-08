@@ -28,3 +28,15 @@ Below this directory should be:
 
 2. Source configuration
 
+Each source configuration exists below $CCOLLECT_CONF/sources/$name.
+The name describes the source.
+
+Each source has at least
+
+   - source (a text file containing the path to backup)
+   - destination (a link to the directory we should backup to)
+
+Additionally a source may have the following files:
+
+   - verbose   whether to be verbose
+   - exclude   excludes for rsync. One exclude specification on each line

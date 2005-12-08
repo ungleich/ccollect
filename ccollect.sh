@@ -152,6 +152,7 @@ while [ "$i" -lt "$no_shares" ]; do
    c_source="$backup/source"
    c_dest="$backup/destination"
    c_exclude="$backup/exclude"
+   c_verbose="$backup/verbose"
 
    echo "/=> Beginning to backup \"$name\" ..."
    i=$[$i+1]
@@ -207,10 +208,16 @@ while [ "$i" -lt "$no_shares" ]; do
       continue
    fi
 
+   # exclude
    if [ -f "$c_exclude" ]; then
       while read tmp; do
-         EXCLUDE="$EXCLUDE --exclude \"$tmp\""
+         EXCLUDE="$EXCLUDE --exclude=\"$tmp\""
      done < "$c_exclude"
+   fi
+   
+   # verbose
+   if [ -f "$c_verbose" ]; then
+      VERBOSE="-v"
    fi
    
    #
@@ -246,7 +253,7 @@ while [ "$i" -lt "$no_shares" ]; do
    # only copy if a directory exists
    if [ "$last_dir" ]; then
       echo cp -al "$last_dir" "$destination_dir"
-      cp -al "$last_dir" "$destination_dir"
+      cp $VERBOSE -al "$last_dir" "$destination_dir"
    else
       mkdir "$destination_dir"
    fi
@@ -282,4 +289,4 @@ if [ "$PARALLEL" = 1 ]; then
 fi
 
 rm -f "$TMP"
-echo "\o> Finished complety backup process."
+echo "\o> Finished $WE."
