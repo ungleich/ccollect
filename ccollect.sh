@@ -210,9 +210,7 @@ while [ "$i" -lt "$no_shares" ]; do
 
    # exclude
    if [ -f "$c_exclude" ]; then
-      while read tmp; do
-         EXCLUDE="$EXCLUDE --exclude=\"$tmp\""
-     done < "$c_exclude"
+      EXCLUDE="--exclude-from=$c_exclude"
    fi
    
    # verbose
@@ -252,7 +250,7 @@ while [ "$i" -lt "$no_shares" ]; do
 
    # only copy if a directory exists
    if [ "$last_dir" ]; then
-      echo cp -al "$last_dir" "$destination_dir"
+   #   echo cp -al "$last_dir" "$destination_dir"
       cp $VERBOSE -al "$last_dir" "$destination_dir"
    else
       mkdir "$destination_dir"
@@ -267,11 +265,9 @@ while [ "$i" -lt "$no_shares" ]; do
    # the rsync part
    # options stolen shameless from rsnapshot
    #
-
-   echo rsync -a --delete --numeric-ids --relative --delete-excluded \
-      $EXCLUDE $VERBOSE $EXCLUDE "$source" "$destination_dir"
-   rsync -a --delete --numeric-ids --relative --delete-excluded \
-      $EXCLUDE $VERBOSE $EXCLUDE "$source" "$destination_dir"
+   
+   rsync -a $VERBOSE --delete --numeric-ids --relative --delete-excluded \
+      "$EXCLUDE" $EXCLUDE "$source" "$destination_dir"
    
    if [ $? -ne 0 ]; then
       errecho "rsync failed, backup most likely broken"
