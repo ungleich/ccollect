@@ -9,3 +9,9 @@ Hard links are such a nice thing ;-)
 4.1M    /home/nico/backupdir/daily.2005-12-08-10:53.28531
 4.1M    /home/nico/backupdir/daily.2005-12-08-10:53.28554
 4.1M    /home/nico/backupdir/daily.2005-12-08-10:53.28577
+
+srwali01:/etc/ccollect/sources# du -sh /mnt/hdbackup/wl6/         
+186M    /mnt/hdbackup/wl6/
+srwali01:/etc/ccollect/sources# du -sh /mnt/hdbackup/wl6/*
+147M    /mnt/hdbackup/wl6/taeglich.2005-12-08-14:42.312
+147M    /mnt/hdbackup/wl6/taeglich.2005-12-08-14:45.588
