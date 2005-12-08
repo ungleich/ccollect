@@ -159,6 +159,10 @@ while [ "$i" -lt "$no_shares" ]; do
    #
    # Standard configuration checks
    #
+   if [ ! -e "$backup" ]; then
+      errecho "Source \"$name\" does not exist."
+      continue
+   fi
    if [ ! -d "$backup" ]; then
       errecho "\"$name\" is not a cconfig-directory. Skipping."
       continue
@@ -266,6 +270,8 @@ while [ "$i" -lt "$no_shares" ]; do
       errecho "rsync failed, backup most likely broken"
       continue
    fi
+   
+   echo "\=> Successfully finished backup of \"$name\"."
 done
 
 #
@@ -276,4 +282,4 @@ if [ "$PARALLEL" = 1 ]; then
 fi
 
 rm -f "$TMP"
-echo "\o> finished."
+echo "\o> Finished complety backup process."
