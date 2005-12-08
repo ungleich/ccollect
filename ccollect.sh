@@ -170,7 +170,7 @@ while [ "$i" -lt "$no_shares" ]; do
    fi
 
    #
-   # intervall definiition
+   # intervall definiition: First try source specific, fallback to default
    #
    c_intervall="$(cat "$backup/intervalls/$INTERVALL" 2>/dev/null)"
 
