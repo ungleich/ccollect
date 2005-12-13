@@ -283,7 +283,7 @@ while [ "$i" -lt "$no_shares" ]; do
       "$EXCLUDE" "$source" "$destination_dir"
    
    if [ $? -ne 0 ]; then
-      errecho "rsync failed, backup most likely broken"
+      errecho "rsync failed, backup may be broken (see rsync errors)"
       continue
    fi
    
