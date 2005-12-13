@@ -264,7 +264,6 @@ while [ "$i" -lt "$no_shares" ]; do
 
    # only copy if a directory exists
    if [ "$last_dir" ]; then
-   #   echo cp -al "$last_dir" "$destination_dir"
       cp $VERBOSE -al "$last_dir" "$destination_dir"
    else
       mkdir "$destination_dir"
@@ -280,7 +279,7 @@ while [ "$i" -lt "$no_shares" ]; do
    # options stolen shameless from rsnapshot
    #
    
-   rsync -a $VERBOSE --delete --numeric-ids --relative --delete-excluded \
+   rsync -a "$VERBOSE" --delete --numeric-ids --relative --delete-excluded \
       "$EXCLUDE" "$source" "$destination_dir"
    
    if [ $? -ne 0 ]; then
