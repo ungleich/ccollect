@@ -1,7 +1,5 @@
 - write a manpage
 - write a simple manual
-- implement verbosity
-   o general, very verbose (set -x)
 - implement general log
 - implement source specific log
 - implement parallel execution
@@ -9,3 +7,4 @@
 DONE
 - implement verbosity
    o per source (-v to rsync)
+   o general, very verbose (set -x)
