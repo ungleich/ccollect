@@ -1,10 +1,19 @@
 --------------------------------------------------------------------------------
-ccollect.sh, Nico Schottelius, 2005-12-07
+Configuration of ccollect.sh
+Nico Schottelius, 2005-12-07
 --------------------------------------------------------------------------------
+
 
 0. Runtime options
 1. General configuration
+1.2. Intervall definition
 2. Source configuration
+2.1. Detailled description of "source"
+2.2. Detailled description of "verbose"
+2.3. Detailled description of "exclude"
+2.4. Detailled description of "destination"
+2.5. Detailled description of "intervalls/"
+
 
 --------------------------------------------------------------------------------
 0. Runtime options
@@ -64,33 +73,43 @@ Example:
 --------------------------------------------------------------------------------
 2. Source configuration
 
-Each source configuration exists below $CCOLLECT_CONF/sources/$name.
-The name describes the source.
+Each source configuration exists below $CCOLLECT_CONF/sources/$name or
+/etc/ccollect/sources/$name.
 
-Each source has at least
+The name you choose for the subdirectory describes the source.
 
-   - source (a text file containing the path to backup)
-   - destination (a link to the directory we should backup to)
+Each source has at least the following files:
+
+   - source       (a text file containing the rsync compatible path to backup)
+   - destination  (a link to the directory we should backup to)
 
 Additionally a source may have the following files:
 
-   - verbose   whether to be verbose
-   - exclude   excludes for rsync. One exclude specification on each line
+   - verbose   whether to be verbose (passes -v to rsync)
+   - exclude   exclude list for rsync. One exclude specification on each line.
+
+Example:
+   [10:47] zaphodbeeblebrox:ccollect-0.2% ls -l  conf/sources/testsource2
+   insgesamt 12
+   lrwxrwxrwx  1 nico users   20 2005-11-17 16:44 destination -> /home/nico/backupdir
+   -rw-r--r--  1 nico users   62 2005-12-07 17:43 exclude
+   drwxr-xr-x  2 nico users 4096 2005-12-07 17:38 intervalls
+   -rw-r--r--  1 nico users   15 2005-11-17 16:44 source
+   [10:47] zaphodbeeblebrox:ccollect-0.2% cat conf/sources/testsource2/exclude 
+   openvpn-2.0.1.tar.gz
+   nicht_reinnehmen
+   etwas mit leerzeichenli
+   [10:47] zaphodbeeblebrox:ccollect-0.2% ls -l  conf/sources/testsource2/intervalls
+   insgesamt 4
+   -rw-r--r--  1 nico users 2 2005-12-07 17:38 daily
+   [10:48] zaphodbeeblebrox:ccollect-0.2% cat conf/sources/testsource2/intervalls/daily 
+   5
+   [10:48] zaphodbeeblebrox:ccollect-0.2% cat conf/sources/testsource2/source 
+   /home/nico/vpn
 
 
+2.1. Detailled description of "source"
 
-
---------------------------------------------------------------------------------
-$CCOLLECT_CONF/
-   -> Directories, which are so called 'backup-definitions'
-
-   $dir/
-      source -> file with the source
-      destination -> link to the destination
-      exclude -> \n seperated
-
-
---------------------------------------------------------------------------------
    source            - a rsync compatible source (one liner)
       
       For instance:
@@ -103,22 +122,57 @@ $CCOLLECT_CONF/
 
          Have a look at rsync(1).
          
---------------------------------------------------------------------------------
+2.2. Detailled description of "verbose"
+
    verbose           - should we log verbose or silent
 
    If this file exists in the source specification -v will be passed to rsync.
 
---------------------------------------------------------------------------------
+Example:
+   [11:35] zaphodbeeblebrox:ccollect-0.2% touch conf/sources/testsource1/verbose
+
+
+2.3. Detailled description of "exclude"
+
    exclude           - a new line seperated list of paths to exclude
 
---------------------------------------------------------------------------------
+Example:
+
+   [11:35] zaphodbeeblebrox:ccollect-0.2% cat conf/sources/testsource2/exclude 
+   openvpn-2.0.1.tar.gz
+   nicht_reinnehmen
+   etwas mit leerzeichenli
+
+
+2.4. Detailled description of "destination"
+
    destination       - a link to the destination directory
 
---------------------------------------------------------------------------------
+Example:
+   [11:36] zaphodbeeblebrox:ccollect-0.2% ls -l conf/sources/testsource2/destination 
+   lrwxrwxrwx  1 nico users 20 2005-11-17 16:44 conf/sources/testsource2/destination -> /home/nico/backupdir
+
+2.5. Detailled description of "intervalls/"
+
    intervalls/       - subdirectory of source or defaults
       
       Each file below this directory describe an intervalls.
+
+Example:
+   [11:37] zaphodbeeblebrox:ccollect-0.2% ls -l conf/sources/testsource2/intervalls/      
+   insgesamt 8
+   -rw-r--r--  1 nico users 2 2005-12-07 17:38 daily
+   -rw-r--r--  1 nico users 3 2005-12-14 11:33 yearly
+   [11:37] zaphodbeeblebrox:ccollect-0.2% cat  conf/sources/testsource2/intervalls/*
+   5
+   20
+
 --------------------------------------------------------------------------------
+NOT IMPLEMENTED BELOW THE FOLLIWNG LINE
+--------------------------------------------------------------------------------
+
+2.6. Detailled description of "log"
+
    log               - link to file we should log to
       
       If a backup source exists (the cconfig dir exists) all logs for this
@@ -131,5 +185,3 @@ $CCOLLECT_CONF/
 
       If you REALLY REALLY REALLY want to have all in one logfile, simply
       link all "log" entries to the same file, output will be appended.
---------------------------------------------------------------------------------
-      
