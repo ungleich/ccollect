@@ -26,11 +26,12 @@ There are also some self explaining parameters you can pass to ccollect, simply 
 1. General configuration
 
 The general configuration can be found below $CCOLLECT_CONF/defaults or
-/etc/ccollect/defaults. All options specified here are valid for
-all source definitions, if the values are not overwritten in the source
+/etc/ccollect/defaults. All options specified here are generally valid for
+all source definitions. Though the values can be overwritten in the source
 configuration.
 
-All configuration entries are plain-text files.
+All configuration entries are plain-text (use UTF-8 if you use
+non ASCII characters) files.
 
 
 1.2. Intervall definition
@@ -46,7 +47,19 @@ name of the intervall:
 The content of this file should be a single line containing a number.
 This number defines how many versions of this intervall to keep.
 
-STOPPED HERE.
+Example:
+   
+   [10:23] zaphodbeeblebrox:ccollect-0.2% ls -l conf/defaults/intervalls/
+   insgesamt 12
+   -rw-r--r--  1 nico users 3 2005-12-08 10:24 daily
+   -rw-r--r--  1 nico users 3 2005-12-08 11:36 monthly
+   -rw-r--r--  1 nico users 2 2005-12-08 11:36 weekly
+   [10:23] zaphodbeeblebrox:ccollect-0.2% cat conf/defaults/intervalls/*
+   28
+   12
+   4
+
+   This means to keep 28 daily backups, 12 monthly backups and 4 weekly.
 
 --------------------------------------------------------------------------------
 2. Source configuration
