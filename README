@@ -7,9 +7,10 @@ ccollect backups data from local or remote hosts to your local harddisk.
 
 You can retriev the latest version of ccollect at [0].
 
-doc/REQUIREMENTS  shows dependencies of ccollect.
-doc/INSTALL       describes how to install it.
-doc/configuration describes how to configure it.
+doc/REQUIREMENTS           shows dependencies of ccollect.
+doc/INSTALL                describes how to install it.
+doc/configuration          describes how to configure it.
+doc/configuration.example  is a log of how I created a configuration.
 
 
 ccollect was inspired by rsnapshot [1], which had some problems:
