@@ -30,7 +30,7 @@ srwali01:/etc/ccollect/sources# mkdir windos-wl6
 srwali01:/etc/ccollect/sources# cd windos-wl6/
 srwali01:/etc/ccollect/sources/windos-wl6# echo /mnt/win/SYS/WL6 > source
 srwali01:/etc/ccollect/sources/windos-wl6# ln -s /mnt/hdbackup/wl6 destination
-msrwali01:/etc/ccollect/sources/windos-wl6# mkdir /mnt/hdbackup/wl6
+srwali01:/etc/ccollect/sources/windos-wl6# mkdir /mnt/hdbackup/wl6
 srwali01:/etc/ccollect/sources/windos-wl6# cd ..
 srwali01:/etc/ccollect/sources# mkdir windos-daten
 srwali01:/etc/ccollect/sources/windos-daten# echo /mnt/win/Daten > source
