@@ -14,19 +14,28 @@ TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
 WE=$(basename $0)
 
 #
+# unset parallel execution
+#
+PARALLEL=""
+
+#
 # catch signals
 #
 trap "rm -f \"$TMP\"" 1 2 15
 
 
 #
-# errors!
+# output and errors
 #
 errecho()
 {
-   echo "|E> Error: $@" >&2
+   echo "[$name][err] $@" >&2
 }
 
+stdecho()
+{
+   echo "[$name] $@"
+}
 
 #
 # Tell how to use us
@@ -88,7 +97,7 @@ while [ $i -le $# ]; do
             VERBOSE=1
             ;;
          -p|--parallel)
-            PARALLEL=1
+            PARALLEL="&"
             ;;
          -h|--help)
             usage
@@ -164,8 +173,9 @@ while [ "$i" -lt "$no_shares" ]; do
    c_dest="$backup/destination"
    c_exclude="$backup/exclude"
    c_verbose="$backup/verbose"
+   c_rsync_extra="$backup/rsync_options"
 
-   echo "/=> Beginning to backup \"$name\" ..."
+   echo "Beginning to backup \"$name\" ..."
    i=$[$i+1]
    
    #
@@ -181,7 +191,7 @@ while [ "$i" -lt "$no_shares" ]; do
    fi
 
    #
-   # intervall definiition: First try source specific, fallback to default
+   # intervall definition: First try source specific, fallback to default
    #
    c_intervall="$(cat "$backup/intervalls/$INTERVALL" 2>/dev/null)"
 
@@ -199,6 +209,7 @@ while [ "$i" -lt "$no_shares" ]; do
    #
    VERBOSE=""
    EXCLUDE=""
+   RSYNC_EXTRA=""
 
    #
    # next configuration checks
@@ -222,6 +233,11 @@ while [ "$i" -lt "$no_shares" ]; do
    # exclude
    if [ -f "$c_exclude" ]; then
       EXCLUDE="--exclude-from=$c_exclude"
+   fi
+   
+   # extra options for rsync
+   if [ -f "$c_rsync_extra" ]; then
+      RSYNC_EXTRA="$(cat "$c_rsync_extra")"
    fi
    
    # verbose
@@ -264,7 +280,7 @@ while [ "$i" -lt "$no_shares" ]; do
 
    # only copy if a directory exists
    if [ "$last_dir" ]; then
-      cp $VERBOSE -al "$last_dir" "$destination_dir"
+      cp "$VERBOSE" -al "$last_dir" "$destination_dir"
    else
       mkdir "$destination_dir"
    fi
@@ -280,7 +296,7 @@ while [ "$i" -lt "$no_shares" ]; do
    #
    
    rsync -a "$VERBOSE" --delete --numeric-ids --relative --delete-excluded \
-      "$EXCLUDE" "$source" "$destination_dir"
+      "$EXCLUDE" "$RSYNC_EXTRA" "$source" "$destination_dir"
    
    if [ $? -ne 0 ]; then
       errecho "rsync failed, backup may be broken (see rsync errors)"
