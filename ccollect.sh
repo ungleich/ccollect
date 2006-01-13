@@ -170,9 +170,22 @@ i=0
 while [ "$i" -lt "$no_shares" ]; do
 
    #
-   # Standard locations
+   # Get current share
    #
    eval name=\$share_${i}
+   i=$[$i+1]
+   
+   #
+   # start ourself, if we want parallel execution
+   #
+   if [ "$PARALLEL" ]; then
+      $0 "$INTERVALL" "$name" &
+      continue
+   fi
+
+   #
+   # Standard locations
+   #
    backup="$CSOURCES/$name"
    c_source="$backup/source"
    c_dest="$backup/destination"
@@ -181,7 +194,6 @@ while [ "$i" -lt "$no_shares" ]; do
    c_rsync_extra="$backup/rsync_options"
 
    stdecho "Beginning to backup this source ..."
-   i=$[$i+1]
    
    #
    # Standard configuration checks
@@ -299,24 +311,18 @@ while [ "$i" -lt "$no_shares" ]; do
 
    #
    # the rsync part
-   # options stolen shameless from rsnapshot
+   # options partly stolen from rsnapshot
    #
    
    stdecho "Transferring files..."
 
-   # non parallel
-   if [ -z "$PARALLEL" ]; then
-      rsync -a $VERBOSE $RSYNC_EXTRA $EXCLUDE \
-         --delete --numeric-ids --relative --delete-excluded \
-         "$source" "$destination_dir" 2>&1 | add_name
-   # parallel execution
-   else
-      (rsync -a $VERBOSE $RSYNC_EXTRA $EXCLUDE \
-         --delete --numeric-ids --relative --delete-excluded \
-         "$source" "$destination_dir" 2>&1 | add_name ) &
-   fi
+   rsync -a $VERBOSE $RSYNC_EXTRA $EXCLUDE \
+      --delete --numeric-ids --relative --delete-excluded \
+      "$source" "$destination_dir" 2>&1; zurueck=$? | add_name
+   
+   echo $zurueck
 
-   if [ $? -ne 0 ]; then
+   if [ "$zurueck" -ne 0 ]; then
       errecho "rsync failed, backup may be broken (see rsync errors)"
       continue
    fi
