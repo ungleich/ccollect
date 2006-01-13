@@ -12,6 +12,8 @@ CSOURCES=$CCOLLECT_CONF/sources
 CDEFAULTS=$CCOLLECT_CONF/defaults
 TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
 WE=$(basename $0)
+VERSION=0.2
+RELEASE="2006-01-13"
 
 #
 # unset parallel execution
@@ -48,6 +50,7 @@ usage()
    echo ""
    echo "   Retrieve latest ccollect at http://linux.schottelius.org/ccollect/."
    echo ""
+   echo "   Version: $VERSION ($RELEASE, Black Friday Release)"
    exit 0
 }
 

@@ -17,7 +17,7 @@ path_destination=$(path_dir)/$(CCOLLECT)
 all:
 	@echo "Nothing to make, make install."
 
-doc:
+documentation:
 	@asciidoc -n -o doc/ccollect.html  doc/ccollect.text
 
 install:
