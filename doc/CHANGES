@@ -3,3 +3,4 @@
    * Updated and made documentation readable
    * implemented verbose option
    * Fixed double exclude parameter bug
+   * Added much better documentation (asciidoc)

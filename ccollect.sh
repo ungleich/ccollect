@@ -180,7 +180,7 @@ while [ "$i" -lt "$no_shares" ]; do
    c_verbose="$backup/verbose"
    c_rsync_extra="$backup/rsync_options"
 
-   stdecho "Beginning to backup \"$name\" ..."
+   stdecho "Beginning to backup this source ..."
    i=$[$i+1]
    
    #
@@ -285,9 +285,10 @@ while [ "$i" -lt "$no_shares" ]; do
 
    # only copy if a directory exists
    if [ "$last_dir" ]; then
-      cp "$VERBOSE" -al "$last_dir" "$destination_dir" 2>&1 | add_name
+      echo cp "$VERBOSE" -al "$last_dir" "$destination_dir" 2>&1 | add_name
    else
-      mkdir "$destination_dir" 2>&1 | add_name
+      stdecho "Creating $destination_di"
+      echo mkdir "$destination_dir" 2>&1 | add_name
    fi
 
    if [ $? -ne 0 ]; then
@@ -300,8 +301,8 @@ while [ "$i" -lt "$no_shares" ]; do
    # options stolen shameless from rsnapshot
    #
    
-   rsync -a "$VERBOSE" --delete --numeric-ids --relative --delete-excluded \
-      "$EXCLUDE" "$RSYNC_EXTRA" "$source" "$destination_dir" 2>&1 | \
+   echo rsync -a "$VERBOSE" --delete --numeric-ids --relative --delete-excluded \
+      "$EXCLUDE" "$RSYNC_EXTRA" "$source" "$destination_dir" 2>&1 $PARALLEL | \
       add_name
    
    if [ $? -ne 0 ]; then
@@ -316,6 +317,7 @@ done
 # Be a good parent and wait for our children, if they are running wild parallel
 #
 if [ "$PARALLEL" ]; then
+   echo "Waiting for rsync jobs to complete..."
    wait
 fi
 
