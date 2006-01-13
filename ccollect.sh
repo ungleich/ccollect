@@ -2,7 +2,7 @@
 # Nico Schottelius
 # written for SyGroup (www.sygroup.ch)
 # Date: Mon Nov 14 11:45:11 CET 2005
-# Last Modified: 
+# Last Modified: (See ls -l or git)
 
 #
 # where to find our configuration and temporary file
@@ -18,26 +18,12 @@ WE=$(basename $0)
 #
 PARALLEL=""
 
+
 #
 # catch signals
 #
 trap "rm -f \"$TMP\"" 1 2 15
 
-
-#
-# output and errors
-#
-errecho()
-{
-#   echo "[$name][err] $@" >> "$TMP" 2>&1
-   echo $@
-}
-
-stdecho()
-{
-   echo $@
-#   echo "[$name] $@" >> "$TMP" 2>&1
-}
 
 add_name()
 {
@@ -250,7 +236,7 @@ while [ "$i" -lt "$no_shares" ]; do
    else
       source=$(cat "$c_source")
       if [ $? -ne 0 ]; then
-         stdecho "Skipping: Source $c_source is not readable"
+         echo "Skipping: Source $c_source is not readable"
          exit 1
       fi
    fi
@@ -292,7 +278,7 @@ while [ "$i" -lt "$no_shares" ]; do
       while read to_remove; do
          dir="$to_remove"
          echo "Removing $dir ..."
-         rm -rf "$dir" 2>&1 | add_name
+         rm -rf "$dir"
       done < "$TMP"
    fi
    
