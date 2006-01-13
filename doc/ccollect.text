@@ -1,0 +1,297 @@
+ccollect - Installing, Configuring and Using
+============================================
+Nico Schottelius <nico-linux-ccollect__@__schottelius.org>
+v0.1, 2005-01-11
+:Author Initials: NS
+
+(pseudo) incremental backup
+with different exclude lists
+using hardlinks and `rsync`
+
+Introduction
+------------
+ccollect is a backup utitily written in the sh-scripting language.
+It does not depend on a specific shell, only `/bin/sh` needs to be
+bourne shell compatibel (like 'dash', 'zsh' or 'bash').
+
+
+Why you can only backup TO localhost
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+While thinking about the design of ccollect, I thought about enabling
+backup to *remote* hosts. Though this sounds like a nice feature
+('Backup my notebook to the server now.'), it is in my opinion a
+bad idea to backup to a remote host, because you have to open
+security at your backup host. Think of the following situation: You backup
+your farm of webservers *to* a backup host somewhere else. One of
+your webservers gets compromised, then your backup server will be compromised,
+too. Think of it the other way round: The backup server (now behind a
+firewall using NAT and strong firewall rules) connects to the
+webservers and pulls the data to it. If someone gets access to the
+webserver, the person will perhaps not even see your machine. If
+he/she sees that there are connections from a host to the compromised
+machine, he/she will not be able to login to the backup machine.
+All other backups are still secure.
+
+
+Requirements
+------------
+
+Installing ccollect
+~~~~~~~~~~~~~~~~~~~
+
+For the installation, you need at least
+  - either 'cp' and 'chmod' or 'install
+  - for more comfort: 'make'
+  - for rebuilding the generated documentation: additionally 'asciidoc'
+
+
+Using ccollect
+~~~~~~~~~~~~~~
+.When running ccollect, it requires the following tools installed:
+   - `bc`
+   - `cp` with support for hard links ('cp -al')
+   - `rsync`
+   - `ssh` (if you want to use rsync over ssh, which is recommened for security)
+
+
+Installing
+----------
+Either type 'make install' or simply copy it to a directory in your
+$PATH and execute 'chmod *0755* /path/to/ccollect.sh'.
+
+
+Configuring
+-----------
+
+Runtime options
+~~~~~~~~~~~~~~~
+`ccollect` looks for its configuration in '/etc/ccollect' or, if set, in
+the directory specified by the variable '$CCOLLECT_CONF'
+(use 'CCOLLECT_CONF=/your/config/dir ccollect.sh' on the shell).
+
+When you start `ccollect`, you have either to specify which intervall
+to backup (daily, weekly, yearly; you can specify the names yourself, see below).
+
+The intervall is used to specify how many backups to keep.
+
+There are also some self explaining parameters you can pass to ccollect, simply use
+"ccollect.sh --help" for info.
+
+
+General configuration
+~~~~~~~~~~~~~~~~~~~~~
+The general configuration can be found below $CCOLLECT_CONF/defaults or
+/etc/ccollect/defaults. All options specified here are generally valid for
+all source definitions. Though the values can be overwritten in the source
+configuration.
+
+All configuration entries are plain-text (use UTF-8 if you use
+non ASCII characters) files.
+
+
+Intervall definition
+^^^^^^^^^^^^^^^^^^^^
+The intervall definition can be found below
+'$CCOLLECT_CONF/defaults/intervalls/' or '/etc/ccollect/defaults/intervalls'. 
+Every file below this directory specifies an intervall. The name of the file is the
+name of the intervall: `intervalls/'<intervall name>'`.
+
+The content of this file should be a single line containing a number.
+This number defines how many versions of this intervall to keep.
+
+Example:
+-------------------------------------------------------------------------
+   [10:23] zaphodbeeblebrox:ccollect-0.2% ls -l conf/defaults/intervalls/
+   insgesamt 12
+   -rw-r--r--  1 nico users 3 2005-12-08 10:24 daily
+   -rw-r--r--  1 nico users 3 2005-12-08 11:36 monthly
+   -rw-r--r--  1 nico users 2 2005-12-08 11:36 weekly
+   [10:23] zaphodbeeblebrox:ccollect-0.2% cat conf/defaults/intervalls/*
+   28
+   12
+   4
+--------------------------------------------------------------------------------
+This means to keep 28 daily backups, 12 monthly backups and 4 weekly.
+
+Source configuration
+~~~~~~~~~~~~~~~~~~~~
+Each source configuration exists below '$CCOLLECT_CONF/sources/$name' or
+'/etc/ccollect/sources/$name'.
+
+The name you choose for the subdirectory describes the source.
+
+Each source has at least the following files:
+
+   - `source`       (a text file containing the rsync compatible path to backup)
+   - `destination`  (a link to the directory we should backup to)
+
+Additionally a source may have the following files:
+
+   - `verbose`   whether to be verbose (passes -v to rsync)
+   - `exclude`   exclude list for rsync. One exclude specification on each line.
+
+Example:
+--------------------------------------------------------------------------------
+   [10:47] zaphodbeeblebrox:ccollect-0.2% ls -l  conf/sources/testsource2
+   insgesamt 12
+   lrwxrwxrwx  1 nico users   20 2005-11-17 16:44 destination -> /home/nico/backupdir
+   -rw-r--r--  1 nico users   62 2005-12-07 17:43 exclude
+   drwxr-xr-x  2 nico users 4096 2005-12-07 17:38 intervalls
+   -rw-r--r--  1 nico users   15 2005-11-17 16:44 source
+   [10:47] zaphodbeeblebrox:ccollect-0.2% cat conf/sources/testsource2/exclude 
+   openvpn-2.0.1.tar.gz
+   nicht_reinnehmen
+   etwas mit leerzeichenli
+   [10:47] zaphodbeeblebrox:ccollect-0.2% ls -l  conf/sources/testsource2/intervalls
+   insgesamt 4
+   -rw-r--r--  1 nico users 2 2005-12-07 17:38 daily
+   [10:48] zaphodbeeblebrox:ccollect-0.2% cat conf/sources/testsource2/intervalls/daily 
+   5
+   [10:48] zaphodbeeblebrox:ccollect-0.2% cat conf/sources/testsource2/source 
+   /home/nico/vpn
+--------------------------------------------------------------------------------
+
+Detailled description of "source"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+`source` describes a rsync compatible source (one line only).
+ 
+For instance 'backup_user@foreign_host:/home/server/video'.
+To use the rsync protocol without the ssh-tunnel, use
+'rsync::USER@HOST/SRC'. For more information have a look at rsync(1).
+ 
+Detailled description of "verbose"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+`verbose` tells `ccollect` that the log should contain verbose messages.
+
+If this file exists in the source specification *-v* will be passed to `rsync`.
+
+Example:
+--------------------------------------------------------------------------------
+   [11:35] zaphodbeeblebrox:ccollect-0.2% touch conf/sources/testsource1/verbose
+--------------------------------------------------------------------------------
+
+
+Detailled description of "exclude"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+`exclude` specifies a list of paths to exclude. The entries are new line (\n)
+seperated.
+
+Example:
+--------------------------------------------------------------------------------
+   [11:35] zaphodbeeblebrox:ccollect-0.2% cat conf/sources/testsource2/exclude 
+   openvpn-2.0.1.tar.gz
+   nicht_reinnehmen
+   etwas mit leerzeichenli
+   something with spaces is not a problem
+--------------------------------------------------------------------------------
+
+
+Detailled description of "destination"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+`destination` must be a link to the destination directory.
+
+Example:
+--------------------------------------------------------------------------------
+   [11:36] zaphodbeeblebrox:ccollect-0.2% ls -l conf/sources/testsource2/destination 
+   lrwxrwxrwx  1 nico users 20 2005-11-17 16:44 conf/sources/testsource2/destination -> /home/nico/backupdir
+--------------------------------------------------------------------------------
+
+
+Detailled description of "intervalls/"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+When you create a subdirectory `intervalls/` within your source configuration
+directory, you can specify individiual intervalls for this specific source.
+Each file below this directory describes an intervall.
+
+Example:
+--------------------------------------------------------------------------------
+   [11:37] zaphodbeeblebrox:ccollect-0.2% ls -l conf/sources/testsource2/intervalls/      
+   insgesamt 8
+   -rw-r--r--  1 nico users 2 2005-12-07 17:38 daily
+   -rw-r--r--  1 nico users 3 2005-12-14 11:33 yearly
+   [11:37] zaphodbeeblebrox:ccollect-0.2% cat  conf/sources/testsource2/intervalls/*
+   5
+   20
+--------------------------------------------------------------------------------
+
+
+Examples
+--------
+
+A backup host configuration from scratch
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+--------------------------------------------------------------------------------
+srwali01:~# mkdir /etc/ccollect
+srwali01:~# mkdir -p /etc/ccollect/defaults/intervalls/
+srwali01:~# echo 28 > /etc/ccollect/defaults/intervalls/taeglich
+srwali01:~# echo 52 > /etc/ccollect/defaults/intervalls/woechentlich
+srwali01:~# cd /etc/ccollect/
+srwali01:/etc/ccollect# mkdir sources
+srwali01:/etc/ccollect# cd sources/
+srwali01:/etc/ccollect/sources# ls
+srwali01:/etc/ccollect/sources# mkdir local-root
+srwali01:/etc/ccollect/sources# cd local-root/
+srwali01:/etc/ccollect/sources/local-root# echo / > source
+srwali01:/etc/ccollect/sources/local-root# cat > exclude << EOF
+> /proc
+> /sys
+> /mnt
+> EOF
+srwali01:/etc/ccollect/sources/local-root# ln -s /mnt/hdbackup/local-root destination
+srwali01:/etc/ccollect/sources/local-root# mkdir /mnt/hdbackup/local-root
+srwali01:/etc/ccollect/sources/local-root# ccollect.sh taeglich local-root
+/o> ccollect.sh: Beginning backup using intervall taeglich
+/=> Beginning to backup "local-root" ...
+|-> 0 backup(s) already exist, keeping 28 backup(s).
+--------------------------------------------------------------------------------
+
+After that, I added some more sources:
+--------------------------------------------------------------------------------
+srwali01:~# cd /etc/ccollect/sources
+srwali01:/etc/ccollect/sources# mkdir windos-wl6
+srwali01:/etc/ccollect/sources# cd windos-wl6/
+srwali01:/etc/ccollect/sources/windos-wl6# echo /mnt/win/SYS/WL6 > source
+srwali01:/etc/ccollect/sources/windos-wl6# ln -s /mnt/hdbackup/wl6 destination
+srwali01:/etc/ccollect/sources/windos-wl6# mkdir /mnt/hdbackup/wl6
+srwali01:/etc/ccollect/sources/windos-wl6# cd ..
+srwali01:/etc/ccollect/sources# mkdir windos-daten
+srwali01:/etc/ccollect/sources/windos-daten# echo /mnt/win/Daten > source
+srwali01:/etc/ccollect/sources/windos-daten# ln -s /mnt/hdbackup/windos-daten destination
+srwali01:/etc/ccollect/sources/windos-daten# mkdir /mnt/hdbackup/windos-daten
+
+# Now add some remote source
+srwali01:/etc/ccollect/sources/windos-daten# cd ..
+srwali01:/etc/ccollect/sources# mkdir srwali03
+srwali01:/etc/ccollect/sources# cd srwali03/
+srwali01:/etc/ccollect/sources/srwali03# cat > exclude << EOF
+> /proc
+> /sys
+> /mnt
+> /home
+> EOF
+srwali01:/etc/ccollect/sources/srwali03# echo 'root@10.103.2.3:/' > source
+srwali01:/etc/ccollect/sources/srwali03# ln -s /mnt/hdbackup/srwali03 destination
+srwali01:/etc/ccollect/sources/srwali03# mkdir /mnt/hdbackup/srwali03
+--------------------------------------------------------------------------------
+
+Using hard-links requires less disk space
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-------------------------------------------------------------------------
+[10:53] srsyg01:sources% du -sh ~/backupdir 
+4.6M    /home/nico/backupdir
+[10:53] srsyg01:sources% du -sh ~/backupdir/*
+4.1M    /home/nico/backupdir/daily.2005-12-08-10:52.28456
+4.1M    /home/nico/backupdir/daily.2005-12-08-10:53.28484
+4.1M    /home/nico/backupdir/daily.2005-12-08-10:53.28507
+4.1M    /home/nico/backupdir/daily.2005-12-08-10:53.28531
+4.1M    /home/nico/backupdir/daily.2005-12-08-10:53.28554
+4.1M    /home/nico/backupdir/daily.2005-12-08-10:53.28577
+
+srwali01:/etc/ccollect/sources# du -sh /mnt/hdbackup/wl6/         
+186M    /mnt/hdbackup/wl6/
+srwali01:/etc/ccollect/sources# du -sh /mnt/hdbackup/wl6/*
+147M    /mnt/hdbackup/wl6/taeglich.2005-12-08-14:42.312
+147M    /mnt/hdbackup/wl6/taeglich.2005-12-08-14:45.588
+-------------------------------------------------------------------------
