@@ -207,18 +207,17 @@ while [ "$i" -lt "$no_shares" ]; do
    c_rsync_extra="$backup/rsync_options"
 
    echo "Beginning to backup this source ..."
-   
 
    #
    # Standard configuration checks
    #
    if [ ! -e "$backup" ]; then
       echo "Source does not exist."
-      continue
+      exit 1
    fi
    if [ ! -d "$backup" ]; then
       echo "\"$name\" is not a cconfig-directory. Skipping."
-      continue
+      exit 1
    fi
 
    #
@@ -230,8 +229,8 @@ while [ "$i" -lt "$no_shares" ]; do
       c_intervall=$D_INTERVALL
 
       if [ -z "$c_intervall" ]; then
-         errecho "Default and source specific intervall missing. Skipping."
-         continue
+         echo "Default and source specific intervall missing. Skipping."
+         exit 1
       fi
    fi
 
@@ -246,19 +245,19 @@ while [ "$i" -lt "$no_shares" ]; do
    # next configuration checks
    #
    if [ ! -f "$c_source" ]; then
-      stdecho "Source description $c_source is not a file. Skipping."
-      continue
+      echo "Source description $c_source is not a file. Skipping."
+      exit 1
    else
       source=$(cat "$c_source")
       if [ $? -ne 0 ]; then
          stdecho "Skipping: Source $c_source is not readable"
-         continue
+         exit 1
       fi
    fi
 
    if [ ! -d "$c_dest" ]; then
-      errecho "Destination $c_dest does not link to a directory. Skipping"
-      continue
+      echo "Destination $c_dest does not link to a directory. Skipping"
+      exit 1
    fi
 
    # exclude
@@ -282,17 +281,17 @@ while [ "$i" -lt "$no_shares" ]; do
    
    # the created directories are named $INTERVALL.$DA
    count=$(ls -d "$c_dest/${INTERVALL}."?*  2>/dev/null | wc -l)
-   stdecho "Currently $count backup(s) exist, total keeping $c_intervall backup(s)."
+   echo "Currently $count backup(s) exist, total keeping $c_intervall backup(s)."
    
    if [ "$count" -ge "$c_intervall" ]; then
       substract=$(echo $c_intervall - 1 | bc)
       remove=$(echo $count - $substract | bc)
-      stdecho "Removing $remove backup(s)..."
+      echo "Removing $remove backup(s)..."
 
       ls -d "$c_dest/${INTERVALL}."?* | sort -n | head -n $remove > "$TMP"
       while read to_remove; do
          dir="$to_remove"
-         stdecho "Removing $dir ..."
+         echo "Removing $dir ..."
          rm -rf "$dir" 2>&1 | add_name
       done < "$TMP"
    fi
@@ -307,7 +306,7 @@ while [ "$i" -lt "$no_shares" ]; do
    last_dir=$(ls -d "$c_dest/${INTERVALL}."?* 2>/dev/null | sort -n | tail -n 1)
    
    # give some info
-   stdecho "Beginning to backup, this may take some time..."
+   echo "Beginning to backup, this may take some time..."
 
    # only copy if a directory exists
    if [ "$last_dir" ]; then
@@ -319,8 +318,8 @@ while [ "$i" -lt "$no_shares" ]; do
    fi
 
    if [ $? -ne 0 ]; then
-      errecho "Creating/cloning backup directory failed. Skipping backup."
-      continue
+      echo "Creating/cloning backup directory failed. Skipping backup."
+      exit 1
    fi
 
    #
@@ -335,11 +334,9 @@ while [ "$i" -lt "$no_shares" ]; do
       "$source" "$destination_dir"
    
    if [ "$?" -ne 0 ]; then
-      errecho "rsync failed, backup may be broken (see rsync errors)"
-      continue
+      echo "rsync failed, backup may be broken (see rsync errors)"
+      exit 1
    fi
-
-   exit 0
 
    echo "Successfully finished backup."
 
