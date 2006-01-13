@@ -1,3 +1,8 @@
+if [ $# -ne 1 ]; then
+   echo "$0: ccollect dir"
+   exit 23
+fi
+
 NAME=$1
 TARNAME=${NAME}.tar.bz2
 
