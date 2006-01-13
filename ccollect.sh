@@ -29,12 +29,14 @@ trap "rm -f \"$TMP\"" 1 2 15
 #
 errecho()
 {
-   echo "[$name][err] $@" >&2
+#   echo "[$name][err] $@" >> "$TMP" 2>&1
+   echo $@
 }
 
 stdecho()
 {
-   echo "[$name] $@"
+   echo $@
+#   echo "[$name] $@" >> "$TMP" 2>&1
 }
 
 add_name()
@@ -74,7 +76,7 @@ fi
 # check for configuraton directory
 #
 if [ ! -d "$CCOLLECT_CONF" ]; then
-   errecho "Configuration \"$CCOLLECT_CONF\" not found."
+   echo "Configuration \"$CCOLLECT_CONF\" not found."
    exit 1
 fi
 
@@ -174,7 +176,9 @@ while [ "$i" -lt "$no_shares" ]; do
    #
    eval name=\$share_${i}
    i=$[$i+1]
-   
+
+   export name
+
    #
    # start ourself, if we want parallel execution
    #
@@ -182,6 +186,15 @@ while [ "$i" -lt "$no_shares" ]; do
       $0 "$INTERVALL" "$name" &
       continue
    fi
+
+#
+# Start subshell for easy log editing
+#
+(
+   #
+   # Stderr to stdout, so we can produce nice logs
+   #
+   exec 2>&1
 
    #
    # Standard locations
@@ -193,17 +206,18 @@ while [ "$i" -lt "$no_shares" ]; do
    c_verbose="$backup/verbose"
    c_rsync_extra="$backup/rsync_options"
 
-   stdecho "Beginning to backup this source ..."
+   echo "Beginning to backup this source ..."
    
+
    #
    # Standard configuration checks
    #
    if [ ! -e "$backup" ]; then
-      errecho "Source does not exist."
+      echo "Source does not exist."
       continue
    fi
    if [ ! -d "$backup" ]; then
-      errecho "\"$name\" is not a cconfig-directory. Skipping."
+      echo "\"$name\" is not a cconfig-directory. Skipping."
       continue
    fi
 
@@ -266,7 +280,7 @@ while [ "$i" -lt "$no_shares" ]; do
    # check if maximum number of backups is reached, if so remove
    #
    
-   # the created directories are named $INTERVALL.$DATE
+   # the created directories are named $INTERVALL.$DA
    count=$(ls -d "$c_dest/${INTERVALL}."?*  2>/dev/null | wc -l)
    stdecho "Currently $count backup(s) exist, total keeping $c_intervall backup(s)."
    
@@ -297,11 +311,11 @@ while [ "$i" -lt "$no_shares" ]; do
 
    # only copy if a directory exists
    if [ "$last_dir" ]; then
-      stdecho "Hard linking..."
-      cp -al $VERBOSE "$last_dir" "$destination_dir" 2>&1 | add_name
+      echo "Hard linking..."
+      cp -al $VERBOSE "$last_dir" "$destination_dir"
    else
-      stdecho "Creating $destination_dir"
-      mkdir "$destination_dir" 2>&1 | add_name
+      echo "Creating $destination_dir"
+      mkdir "$destination_dir"
    fi
 
    if [ $? -ne 0 ]; then
@@ -314,27 +328,29 @@ while [ "$i" -lt "$no_shares" ]; do
    # options partly stolen from rsnapshot
    #
    
-   stdecho "Transferring files..."
+   echo "Transferring files..."
 
    rsync -a $VERBOSE $RSYNC_EXTRA $EXCLUDE \
       --delete --numeric-ids --relative --delete-excluded \
-      "$source" "$destination_dir" 2>&1; zurueck=$? | add_name
+      "$source" "$destination_dir"
    
-   echo $zurueck
-
-   if [ "$zurueck" -ne 0 ]; then
+   if [ "$?" -ne 0 ]; then
       errecho "rsync failed, backup may be broken (see rsync errors)"
       continue
    fi
-   
-   stdecho "Successfully finished backup."
+
+   exit 0
+
+   echo "Successfully finished backup."
+
+) | add_name
 done
 
 #
 # Be a good parent and wait for our children, if they are running wild parallel
 #
 if [ "$PARALLEL" ]; then
-   echo "Waiting for rsync jobs to complete..."
+   echo "Waiting for child jobs to complete..."
    wait
 fi
 

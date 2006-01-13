@@ -4,3 +4,4 @@
    * implemented verbose option
    * Fixed double exclude parameter bug
    * Added much better documentation (asciidoc)
+   * added rsync extra parameter option
