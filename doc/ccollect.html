@@ -1,0 +1,571 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 7.0.2" />
+<style type="text/css">
+/* Debug borders */
+p, li, dt, dd, div, pre, h1, h2, h3, h4, h5, h6 {
+/*
+  border: 1px solid red;
+*/
+}
+
+body {
+  margin: 1em 5% 1em 5%;
+}
+
+a { color: blue; }
+a:visited { color: fuchsia; }
+
+em {
+  font-style: italic;
+}
+
+strong {
+  font-weight: bold;
+}
+
+tt {
+  color: navy;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #527bbd;
+  font-family: sans-serif;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+
+h1 {
+  border-bottom: 2px solid silver;
+}
+h2 {
+  border-bottom: 2px solid silver;
+  padding-top: 0.5em;
+}
+
+div.sectionbody {
+  font-family: serif;
+  margin-left: 0;
+}
+
+hr {
+  border: 1px solid silver;
+}
+
+p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+pre {
+  padding: 0;
+  margin: 0;
+}
+
+span#author {
+  color: #527bbd;
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+span#email {
+}
+span#revision {
+  font-family: sans-serif;
+}
+
+div#footer {
+  font-family: sans-serif;
+  font-size: small;
+  border-top: 2px solid silver;
+  padding-top: 0.5em;
+  margin-top: 4.0em;
+}
+div#footer-text {
+  float: left;
+  padding-bottom: 0.5em;
+}
+div#footer-badges {
+  float: right;
+  padding-bottom: 0.5em;
+}
+
+div#preamble,
+div.tableblock, div.imageblock, div.exampleblock, div.verseblock,
+div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
+div.admonitionblock {
+  margin-right: 10%;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+div.admonitionblock {
+  margin-top: 2.5em;
+  margin-bottom: 2.5em;
+}
+
+div.content { /* Block element content. */
+  padding: 0;
+}
+
+/* Block element titles. */
+div.title, caption.title {
+  font-family: sans-serif;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+div.title + * {
+  margin-top: 0;
+}
+
+td div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content + div.title {
+  margin-top: 0.0em;
+}
+
+div.sidebarblock > div.content {
+  background: #ffffee;
+  border: 1px solid silver;
+  padding: 0.5em;
+}
+
+div.listingblock > div.content {
+  border: 1px solid silver;
+  background: #f4f4f4;
+  padding: 0.5em;
+}
+
+div.quoteblock > div.content {
+  padding-left: 2.0em;
+}
+div.quoteblock .attribution {
+  text-align: right;
+}
+
+div.admonitionblock .icon {
+  vertical-align: top;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #527bbd;
+  padding-right: 0.5em;
+}
+div.admonitionblock td.content {
+  padding-left: 0.5em;
+  border-left: 2px solid silver;
+}
+
+div.exampleblock > div.content {
+  border-left: 2px solid silver;
+  padding: 0.5em;
+}
+
+div.verseblock div.content {
+  white-space: pre;
+}
+
+div.imageblock div.content { padding-left: 0; }
+div.imageblock img { border: 1px solid silver; }
+span.image img { border-style: none; }
+
+dl {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+dt {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  font-style: italic;
+}
+dd > *:first-child {
+  margin-top: 0;
+}
+
+ul, ol {
+    list-style-position: outside;
+}
+ol.olist2 {
+  list-style-type: lower-alpha;
+}
+
+div.tableblock > table {
+  border-color: #527bbd;
+  border-width: 3px;
+}
+thead {
+  font-family: sans-serif;
+  font-weight: bold;
+}
+tfoot {
+  font-weight: bold;
+}
+
+div.hlist {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+td.hlist1 {
+  vertical-align: top;
+  font-style: italic;
+  padding-right: 0.8em;
+}
+td.hlist2 {
+  vertical-align: top;
+}
+
+@media print {
+  div#footer-badges { display: none; }
+}
+/* Workarounds for IE6's broken and incomplete CSS2. */
+
+div.sidebar-content {
+  background: #ffffee;
+  border: 1px solid silver;
+  padding: 0.5em;
+}
+div.sidebar-title, div.image-title {
+  font-family: sans-serif;
+  font-weight: bold;
+  margin-top: 0.0em;
+  margin-bottom: 0.5em;
+}
+
+div.listingblock div.content {
+  border: 1px solid silver;
+  background: #f4f4f4;
+  padding: 0.5em;
+}
+
+div.quoteblock-content {
+  padding-left: 2.0em;
+}
+
+div.exampleblock-content {
+  border-left: 2px solid silver;
+  padding-left: 0.5em;
+}
+</style>
+<title>ccollect - Installing, Configuring and Using</title>
+</head>
+<body>
+<div id="header">
+<h1>ccollect - Installing, Configuring and Using</h1>
+<span id="author">Nico Schottelius</span><br />
+<span id="email"><tt>&lt;<a href="mailto:nico-linux-ccollect__@__schottelius.org">nico-linux-ccollect__@__schottelius.org</a>&gt;</tt></span><br />
+<span id="revision">version 0.2,</span>
+2005-01-13
+</div>
+<div id="preamble">
+<div class="sectionbody">
+<p>(pseudo) incremental backup
+with different exclude lists
+using hardlinks and <tt>rsync</tt></p>
+</div>
+</div>
+<h2>1. Introduction</h2>
+<div class="sectionbody">
+<p>ccollect is a backup utitily written in the sh-scripting language.
+It does not depend on a specific shell, only <tt>/bin/sh</tt> needs to be
+bourne shell compatibel (like <em>dash</em>, <em>zsh</em> or <em>bash</em>).</p>
+<h3>1.1. Why you can only backup TO localhost</h3>
+<p>While thinking about the design of ccollect, I thought about enabling
+backup to <strong>remote</strong> hosts. Though this sounds like a nice feature
+(<em>Backup my notebook to the server now.</em>), it is in my opinion a
+bad idea to backup to a remote host, because you have to open
+security at your backup host. Think of the following situation: You backup
+your farm of webservers <strong>to</strong> a backup host somewhere else. One of
+your webservers gets compromised, then your backup server will be compromised,
+too. Think of it the other way round: The backup server (now behind a
+firewall using NAT and strong firewall rules) connects to the
+webservers and pulls the data to it. If someone gets access to the
+webserver, the person will perhaps not even see your machine. If
+he/she sees that there are connections from a host to the compromised
+machine, he/she will not be able to login to the backup machine.
+All other backups are still secure.</p>
+</div>
+<h2>2. Requirements</h2>
+<div class="sectionbody">
+<h3>2.1. Installing ccollect</h3>
+<p>For the installation, you need at least
+  - either <em>cp</em> and <em>chmod</em> or <em>install
+  - for more comfort: 'make</em>
+  - for rebuilding the generated documentation: additionally <em>asciidoc</em></p>
+<h3>2.2. Using ccollect</h3>
+<div class="title">When running ccollect, it requires the following tools installed:</div><ul>
+<li>
+<p>
+<tt>bc</tt>
+</p>
+</li>
+<li>
+<p>
+<tt>cp</tt> with support for hard links (<em>cp -al</em>)
+</p>
+</li>
+<li>
+<p>
+<tt>rsync</tt>
+</p>
+</li>
+<li>
+<p>
+<tt>ssh</tt> (if you want to use rsync over ssh, which is recommened for security)
+</p>
+</li>
+</ul>
+</div>
+<h2>3. Installing</h2>
+<div class="sectionbody">
+<p>Either type <em>make install</em> or simply copy it to a directory in your
+$PATH and execute <em>chmod <strong>0755</strong> /path/to/ccollect.sh</em>.</p>
+</div>
+<h2>4. Configuring</h2>
+<div class="sectionbody">
+<h3>4.1. Runtime options</h3>
+<p><tt>ccollect</tt> looks for its configuration in <em>/etc/ccollect</em> or, if set, in
+the directory specified by the variable <em>$CCOLLECT_CONF</em>
+(use <em>CCOLLECT_CONF=/your/config/dir ccollect.sh</em> on the shell).</p>
+<p>When you start <tt>ccollect</tt>, you have either to specify which intervall
+to backup (daily, weekly, yearly; you can specify the names yourself, see below).</p>
+<p>The intervall is used to specify how many backups to keep.</p>
+<p>There are also some self explaining parameters you can pass to ccollect, simply use
+"ccollect.sh &#8212;help" for info.</p>
+<h3>4.2. General configuration</h3>
+<p>The general configuration can be found below $CCOLLECT_CONF/defaults or
+/etc/ccollect/defaults. All options specified here are generally valid for
+all source definitions. Though the values can be overwritten in the source
+configuration.</p>
+<p>All configuration entries are plain-text (use UTF-8 if you use
+non ASCII characters) files.</p>
+<h4>4.2.1. Intervall definition</h4>
+<p>The intervall definition can be found below
+<em>$CCOLLECT_CONF/defaults/intervalls/</em> or <em>/etc/ccollect/defaults/intervalls</em>.
+Every file below this directory specifies an intervall. The name of the file is the
+name of the intervall: <tt>intervalls/<em>&lt;intervall name&gt;</em></tt>.</p>
+<p>The content of this file should be a single line containing a number.
+This number defines how many versions of this intervall to keep.</p>
+<p>Example:</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>   [10:23] zaphodbeeblebrox:ccollect-0.2% ls -l conf/defaults/intervalls/
+   insgesamt 12
+   -rw-r--r--  1 nico users 3 2005-12-08 10:24 daily
+   -rw-r--r--  1 nico users 3 2005-12-08 11:36 monthly
+   -rw-r--r--  1 nico users 2 2005-12-08 11:36 weekly
+   [10:23] zaphodbeeblebrox:ccollect-0.2% cat conf/defaults/intervalls/*
+   28
+   12
+   4</tt></pre>
+</div></div>
+<p>This means to keep 28 daily backups, 12 monthly backups and 4 weekly.</p>
+<h3>4.3. Source configuration</h3>
+<p>Each source configuration exists below <em>$CCOLLECT_CONF/sources/$name</em> or
+<em>/etc/ccollect/sources/$name</em>.</p>
+<p>The name you choose for the subdirectory describes the source.</p>
+<p>Each source has at least the following files:</p>
+<ul>
+<li>
+<p>
+<tt>source</tt>       (a text file containing the rsync compatible path to backup)
+</p>
+</li>
+<li>
+<p>
+<tt>destination</tt>  (a link to the directory we should backup to)
+</p>
+</li>
+</ul>
+<p>Additionally a source may have the following files:</p>
+<ul>
+<li>
+<p>
+<tt>verbose</tt>   whether to be verbose (passes -v to rsync)
+</p>
+</li>
+<li>
+<p>
+<tt>exclude</tt>   exclude list for rsync. One exclude specification on each line.
+</p>
+</li>
+<li>
+<p>
+`rsync_options' extra options to pass to rsync
+</p>
+</li>
+</ul>
+<p>Example:</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>   [10:47] zaphodbeeblebrox:ccollect-0.2% ls -l  conf/sources/testsource2
+   insgesamt 12
+   lrwxrwxrwx  1 nico users   20 2005-11-17 16:44 destination -&gt; /home/nico/backupdir
+   -rw-r--r--  1 nico users   62 2005-12-07 17:43 exclude
+   drwxr-xr-x  2 nico users 4096 2005-12-07 17:38 intervalls
+   -rw-r--r--  1 nico users   15 2005-11-17 16:44 source
+   [10:47] zaphodbeeblebrox:ccollect-0.2% cat conf/sources/testsource2/exclude
+   openvpn-2.0.1.tar.gz
+   nicht_reinnehmen
+   etwas mit leerzeichenli
+   [10:47] zaphodbeeblebrox:ccollect-0.2% ls -l  conf/sources/testsource2/intervalls
+   insgesamt 4
+   -rw-r--r--  1 nico users 2 2005-12-07 17:38 daily
+   [10:48] zaphodbeeblebrox:ccollect-0.2% cat conf/sources/testsource2/intervalls/daily
+   5
+   [10:48] zaphodbeeblebrox:ccollect-0.2% cat conf/sources/testsource2/source
+   /home/nico/vpn</tt></pre>
+</div></div>
+<h4>4.3.1. Detailled description of "source"</h4>
+<p><tt>source</tt> describes a rsync compatible source (one line only).</p>
+<p>For instance <em>backup_user@foreign_host:/home/server/video</em>.
+To use the rsync protocol without the ssh-tunnel, use
+<em>rsync::USER@HOST/SRC</em>. For more information have a look at rsync(1).</p>
+<h4>4.3.2. Detailled description of "verbose"</h4>
+<p><tt>verbose</tt> tells <tt>ccollect</tt> that the log should contain verbose messages.</p>
+<p>If this file exists in the source specification <strong>-v</strong> will be passed to <tt>rsync</tt>.</p>
+<p>Example:</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>   [11:35] zaphodbeeblebrox:ccollect-0.2% touch conf/sources/testsource1/verbose</tt></pre>
+</div></div>
+<h4>4.3.3. Detailled description of "exclude"</h4>
+<p><tt>exclude</tt> specifies a list of paths to exclude. The entries are new line (\n)
+seperated.</p>
+<p>Example:</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>   [11:35] zaphodbeeblebrox:ccollect-0.2% cat conf/sources/testsource2/exclude
+   openvpn-2.0.1.tar.gz
+   nicht_reinnehmen
+   etwas mit leerzeichenli
+   something with spaces is not a problem</tt></pre>
+</div></div>
+<h4>4.3.4. Detailled description of "destination"</h4>
+<p><tt>destination</tt> must be a link to the destination directory.</p>
+<p>Example:</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>   [11:36] zaphodbeeblebrox:ccollect-0.2% ls -l conf/sources/testsource2/destination
+   lrwxrwxrwx  1 nico users 20 2005-11-17 16:44 conf/sources/testsource2/destination -&gt; /home/nico/backupdir</tt></pre>
+</div></div>
+<h4>4.3.5. Detailled description of "intervalls/"</h4>
+<p>When you create a subdirectory <tt>intervalls/</tt> within your source configuration
+directory, you can specify individiual intervalls for this specific source.
+Each file below this directory describes an intervall.</p>
+<p>Example:</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>   [11:37] zaphodbeeblebrox:ccollect-0.2% ls -l conf/sources/testsource2/intervalls/
+   insgesamt 8
+   -rw-r--r--  1 nico users 2 2005-12-07 17:38 daily
+   -rw-r--r--  1 nico users 3 2005-12-14 11:33 yearly
+   [11:37] zaphodbeeblebrox:ccollect-0.2% cat  conf/sources/testsource2/intervalls/*
+   5
+   20</tt></pre>
+</div></div>
+<h4>4.3.6. Detailled description of "rsync_options"</h4>
+<p>When you create the file "rsync_options" below your source configuration,
+all the parameters found in this file will be passed to rsync. This
+way you may specify a rsync-passwordfile for automatic backup over
+the rsync-protocoll.</p>
+<p>Example:</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>   [23:42] hydrogenium:ccollect-0.2% cat conf/sources/test_rsync/rsync_options
+   --password-file=/home/user/backup/protected_password_file</tt></pre>
+</div></div>
+</div>
+<h2>5. Examples</h2>
+<div class="sectionbody">
+<h3>5.1. A backup host configuration from scratch</h3>
+<div class="listingblock">
+<div class="content">
+<pre><tt>srwali01:~# mkdir /etc/ccollect
+srwali01:~# mkdir -p /etc/ccollect/defaults/intervalls/
+srwali01:~# echo 28 &gt; /etc/ccollect/defaults/intervalls/taeglich
+srwali01:~# echo 52 &gt; /etc/ccollect/defaults/intervalls/woechentlich
+srwali01:~# cd /etc/ccollect/
+srwali01:/etc/ccollect# mkdir sources
+srwali01:/etc/ccollect# cd sources/
+srwali01:/etc/ccollect/sources# ls
+srwali01:/etc/ccollect/sources# mkdir local-root
+srwali01:/etc/ccollect/sources# cd local-root/
+srwali01:/etc/ccollect/sources/local-root# echo / &gt; source
+srwali01:/etc/ccollect/sources/local-root# cat &gt; exclude &lt;&lt; EOF
+&gt; /proc
+&gt; /sys
+&gt; /mnt
+&gt; EOF
+srwali01:/etc/ccollect/sources/local-root# ln -s /mnt/hdbackup/local-root destination
+srwali01:/etc/ccollect/sources/local-root# mkdir /mnt/hdbackup/local-root
+srwali01:/etc/ccollect/sources/local-root# ccollect.sh taeglich local-root
+/o&gt; ccollect.sh: Beginning backup using intervall taeglich
+/=&gt; Beginning to backup "local-root" ...
+|-&gt; 0 backup(s) already exist, keeping 28 backup(s).</tt></pre>
+</div></div>
+<p>After that, I added some more sources:</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>srwali01:~# cd /etc/ccollect/sources
+srwali01:/etc/ccollect/sources# mkdir windos-wl6
+srwali01:/etc/ccollect/sources# cd windos-wl6/
+srwali01:/etc/ccollect/sources/windos-wl6# echo /mnt/win/SYS/WL6 &gt; source
+srwali01:/etc/ccollect/sources/windos-wl6# ln -s /mnt/hdbackup/wl6 destination
+srwali01:/etc/ccollect/sources/windos-wl6# mkdir /mnt/hdbackup/wl6
+srwali01:/etc/ccollect/sources/windos-wl6# cd ..
+srwali01:/etc/ccollect/sources# mkdir windos-daten
+srwali01:/etc/ccollect/sources/windos-daten# echo /mnt/win/Daten &gt; source
+srwali01:/etc/ccollect/sources/windos-daten# ln -s /mnt/hdbackup/windos-daten destination
+srwali01:/etc/ccollect/sources/windos-daten# mkdir /mnt/hdbackup/windos-daten
+
+# Now add some remote source
+srwali01:/etc/ccollect/sources/windos-daten# cd ..
+srwali01:/etc/ccollect/sources# mkdir srwali03
+srwali01:/etc/ccollect/sources# cd srwali03/
+srwali01:/etc/ccollect/sources/srwali03# cat &gt; exclude &lt;&lt; EOF
+&gt; /proc
+&gt; /sys
+&gt; /mnt
+&gt; /home
+&gt; EOF
+srwali01:/etc/ccollect/sources/srwali03# echo 'root@10.103.2.3:/' &gt; source
+srwali01:/etc/ccollect/sources/srwali03# ln -s /mnt/hdbackup/srwali03 destination
+srwali01:/etc/ccollect/sources/srwali03# mkdir /mnt/hdbackup/srwali03</tt></pre>
+</div></div>
+<h3>5.2. Using hard-links requires less disk space</h3>
+<div class="listingblock">
+<div class="content">
+<pre><tt>[10:53] srsyg01:sources% du -sh ~/backupdir
+4.6M    /home/nico/backupdir
+[10:53] srsyg01:sources% du -sh ~/backupdir/*
+4.1M    /home/nico/backupdir/daily.2005-12-08-10:52.28456
+4.1M    /home/nico/backupdir/daily.2005-12-08-10:53.28484
+4.1M    /home/nico/backupdir/daily.2005-12-08-10:53.28507
+4.1M    /home/nico/backupdir/daily.2005-12-08-10:53.28531
+4.1M    /home/nico/backupdir/daily.2005-12-08-10:53.28554
+4.1M    /home/nico/backupdir/daily.2005-12-08-10:53.28577
+
+srwali01:/etc/ccollect/sources# du -sh /mnt/hdbackup/wl6/
+186M    /mnt/hdbackup/wl6/
+srwali01:/etc/ccollect/sources# du -sh /mnt/hdbackup/wl6/*
+147M    /mnt/hdbackup/wl6/taeglich.2005-12-08-14:42.312
+147M    /mnt/hdbackup/wl6/taeglich.2005-12-08-14:45.588</tt></pre>
+</div></div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Version 0.2<br />
+Last updated 13-Jan-2006 23:47:12 CEST
+</div>
+</div>
+</body>
+</html>
