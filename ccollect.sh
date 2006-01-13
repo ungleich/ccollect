@@ -102,7 +102,7 @@ while [ $i -le $# ]; do
             VERBOSE=1
             ;;
          -p|--parallel)
-            PARALLEL="&"
+            PARALLEL="1"
             ;;
          -h|--help)
             usage
@@ -303,10 +303,19 @@ while [ "$i" -lt "$no_shares" ]; do
    #
    
    stdecho "Transferring files..."
-   rsync -a $VERBOSE $RSYNC_EXTRA $EXCLUDE \
-      --delete --numeric-ids --relative --delete-excluded \
-      "$source" "$destination_dir" 2>&1 $PARALLEL | add_name
-   
+
+   # non parallel
+   if [ -z "$PARALLEL" ]; then
+      rsync -a $VERBOSE $RSYNC_EXTRA $EXCLUDE \
+         --delete --numeric-ids --relative --delete-excluded \
+         "$source" "$destination_dir" 2>&1 | add_name
+   # parallel execution
+   else
+      (rsync -a $VERBOSE $RSYNC_EXTRA $EXCLUDE \
+         --delete --numeric-ids --relative --delete-excluded \
+         "$source" "$destination_dir" 2>&1 | add_name ) &
+   fi
+
    if [ $? -ne 0 ]; then
       errecho "rsync failed, backup may be broken (see rsync errors)"
       continue
