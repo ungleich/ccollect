@@ -5,10 +5,9 @@ DHOST=nico@creme.schottelius.org
 DDIR=www/org/schottelius/linux/ccollect/
 DESTINATION="$DHOST:$DDIR"
 
-tar cvfj "$TARNAME"
+tar cvfj "$TARNAME" \
    --exclude=.git \
-   --exclude="conf/sources/*/destination/*" \
-   "$NAME"
+   --exclude="conf/sources/*/destination/*" "$NAME"
 
 scp "${TARNAME}" "$DESTINATION"
 

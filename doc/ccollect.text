@@ -129,6 +129,7 @@ Additionally a source may have the following files:
 
    - `verbose`   whether to be verbose (passes -v to rsync)
    - `exclude`   exclude list for rsync. One exclude specification on each line.
+   - `rsync_options' extra options to pass to rsync
 
 Example:
 --------------------------------------------------------------------------------
@@ -212,6 +213,20 @@ Example:
    [11:37] zaphodbeeblebrox:ccollect-0.2% cat  conf/sources/testsource2/intervalls/*
    5
    20
+--------------------------------------------------------------------------------
+
+Detailled description of "rsync_options"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When you create the file "rsync_options" below your source configuration,
+all the parameters found in this file will be passed to rsync. This
+way you may specify a rsync-passwordfile for automatic backup over
+the rsync-protocoll.
+
+Example:
+--------------------------------------------------------------------------------
+   [23:42] hydrogenium:ccollect-0.2% cat conf/sources/test_rsync/rsync_options
+   --password-file=/home/user/backup/protected_password_file
 --------------------------------------------------------------------------------
 
 
