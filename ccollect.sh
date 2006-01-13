@@ -256,7 +256,7 @@ while [ "$i" -lt "$no_shares" ]; do
    
    # the created directories are named $INTERVALL.$DATE
    count=$(ls -d "$c_dest/${INTERVALL}."?*  2>/dev/null | wc -l)
-   stdecho "$count backup(s) already exist, keeping $c_intervall backup(s)."
+   stdecho "Currently $count backup(s) exist, total keeping $c_intervall backup(s)."
    
    if [ "$count" -ge "$c_intervall" ]; then
       substract=$(echo $c_intervall - 1 | bc)
@@ -285,10 +285,11 @@ while [ "$i" -lt "$no_shares" ]; do
 
    # only copy if a directory exists
    if [ "$last_dir" ]; then
-      echo cp "$VERBOSE" -al "$last_dir" "$destination_dir" 2>&1 | add_name
+      stdecho "Hard linking..."
+      cp -al $VERBOSE "$last_dir" "$destination_dir" 2>&1 | add_name
    else
-      stdecho "Creating $destination_di"
-      echo mkdir "$destination_dir" 2>&1 | add_name
+      stdecho "Creating $destination_dir"
+      mkdir "$destination_dir" 2>&1 | add_name
    fi
 
    if [ $? -ne 0 ]; then
@@ -301,9 +302,10 @@ while [ "$i" -lt "$no_shares" ]; do
    # options stolen shameless from rsnapshot
    #
    
-   echo rsync -a "$VERBOSE" --delete --numeric-ids --relative --delete-excluded \
-      "$EXCLUDE" "$RSYNC_EXTRA" "$source" "$destination_dir" 2>&1 $PARALLEL | \
-      add_name
+   stdecho "Transferring files..."
+   rsync -a $VERBOSE $RSYNC_EXTRA $EXCLUDE \
+      --delete --numeric-ids --relative --delete-excluded \
+      "$source" "$destination_dir" 2>&1 $PARALLEL | add_name
    
    if [ $? -ne 0 ]; then
       errecho "rsync failed, backup may be broken (see rsync errors)"
