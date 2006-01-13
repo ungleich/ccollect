@@ -1,11 +1,11 @@
-- the name prefix is currently somehow inconsistent
 - write a manpage
-- write a simple manual
-- implement general log
-- implement source specific log
-- implement parallel execution
 
 DONE
 - implement verbosity
    o per source (-v to rsync)
    o general, very verbose (set -x)
+- write a simple manual
+- implement parallel execution
+- implement general log
+- implement source specific log (canceled)
+- the name prefix is currently somehow inconsistent
