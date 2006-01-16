@@ -301,7 +301,7 @@ All other backups are still secure.</p>
   - for more comfort: 'make</em>
   - for rebuilding the generated documentation: additionally <em>asciidoc</em></p>
 <h3>2.2. Using ccollect</h3>
-<div class="title">When running ccollect, it requires the following tools installed:</div><ul>
+<div class="title">Running ccollect requires the following tools installed:</div><ul>
 <li>
 <p>
 <tt>bc</tt>
@@ -473,10 +473,11 @@ Each file below this directory describes an intervall.</p>
    20</tt></pre>
 </div></div>
 <h4>4.3.6. Detailled description of "rsync_options"</h4>
-<p>When you create the file "rsync_options" below your source configuration,
+<p>When you create the file <tt>rsync_options</tt> below your source configuration,
 all the parameters found in this file will be passed to rsync. This
-way you may specify a rsync-passwordfile for automatic backup over
-the rsync-protocoll.</p>
+way you can pass additional options to rsync. For instance you can tell rsync
+to show progress ("&#8212;progress") or which -password-file ("&#8212;password-file")
+to use for automatic backup over the rsync-protocol.</p>
 <p>Example:</p>
 <div class="listingblock">
 <div class="content">
@@ -484,9 +485,47 @@ the rsync-protocoll.</p>
    --password-file=/home/user/backup/protected_password_file</tt></pre>
 </div></div>
 </div>
-<h2>5. Examples</h2>
+<h2>5. Hints</h2>
 <div class="sectionbody">
-<h3>5.1. A backup host configuration from scratch</h3>
+<h3>5.1. Using rsync protocol without ssh</h3>
+<p>When you have a computer with little computing power, it may be useful to use
+rsync without ssh, directly using the rsync protocol
+(specify <em>user@host::share</em> in <tt>source</tt>). You may wish to use
+<tt>rsync_options</tt> to specify a password file to use for automatic backup.</p>
+<p>Example:</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>backup:~# cat /etc/ccollect/sources/sample.backup.host.org/source
+backup@webserver::backup-share
+
+backup:~# cat /etc/ccollect/sources/sample.backup.host.org/rsync_options
+--password-file=/etc/ccollect/sources/sample.backup.host.org/rsync_password
+
+backup:~# cat /etc/ccollect/sources/sample.backup.host.org/rsync_password
+this_is_the_rsync_password</tt></pre>
+</div></div>
+<p>This hint was reported by Daniel Aubry.</p>
+<h3>5.2. Not-excluding top-level directories</h3>
+<p>When you exclude "/proc" or "/mnt" from your backup, you may run into
+trouble when you restore your backup. When you use "/proc/*" or "/mnt/*"
+instead <tt>ccollect</tt> will backup empty directories.</p>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<p>When those directories contain hidden files
+(those beginning with a dot (<tt>"."</tt>)),
+they will still be transferred!</p>
+</td>
+</tr></table>
+</div>
+<p>This hint was reported by Marcus Wagner.</p>
+</div>
+<h2>6. Examples</h2>
+<div class="sectionbody">
+<h3>6.1. A backup host configuration from scratch</h3>
 <div class="listingblock">
 <div class="content">
 <pre><tt>srwali01:~# mkdir /etc/ccollect
@@ -541,7 +580,7 @@ srwali01:/etc/ccollect/sources/srwali03# echo 'root@10.103.2.3:/' &gt; source
 srwali01:/etc/ccollect/sources/srwali03# ln -s /mnt/hdbackup/srwali03 destination
 srwali01:/etc/ccollect/sources/srwali03# mkdir /mnt/hdbackup/srwali03</tt></pre>
 </div></div>
-<h3>5.2. Using hard-links requires less disk space</h3>
+<h3>6.2. Using hard-links requires less disk space</h3>
 <div class="listingblock">
 <div class="content">
 <pre><tt>[10:53] srsyg01:sources% du -sh ~/backupdir
@@ -564,7 +603,7 @@ srwali01:/etc/ccollect/sources# du -sh /mnt/hdbackup/wl6/*
 <div id="footer">
 <div id="footer-text">
 Version 0.2<br />
-Last updated 14-Jan-2006 18:36:32 CEST
+Last updated 16-Jan-2006 18:44:23 CEST
 </div>
 </div>
 </body>

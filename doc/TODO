@@ -1,15 +1,18 @@
-- write a manpage
-- add note to --exclude=/proc/ vs. --exclude=/proc/*
-- rsync_options, example paswd
-- rsync_options \n seperated
+- Documentation
+   - write/generate a manpage
+   - rsync_options \n seperated
 
 
 DONE
 - implement verbosity
    o per source (-v to rsync)
    o general, very verbose (set -x)
-- write a simple manual
 - implement parallel execution
 - implement general log
 - implement source specific log (canceled)
 - the name prefix is currently somehow inconsistent
+- Documentation
+   - rsync_options, example paswd
+   - write a simple manual
+   - Hints section
+   - add note to --exclude=/proc/ vs. --exclude=/proc/*

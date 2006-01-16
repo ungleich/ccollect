@@ -47,7 +47,7 @@ For the installation, you need at least
 
 Using ccollect
 ~~~~~~~~~~~~~~
-.When running ccollect, it requires the following tools installed:
+.Running ccollect requires the following tools installed:
    - `bc`
    - `cp` with support for hard links ('cp -al')
    - `rsync`
@@ -218,10 +218,11 @@ Example:
 Detailled description of "rsync_options"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-When you create the file "rsync_options" below your source configuration,
+When you create the file `rsync_options` below your source configuration,
 all the parameters found in this file will be passed to rsync. This
-way you may specify a rsync-passwordfile for automatic backup over
-the rsync-protocoll.
+way you can pass additional options to rsync. For instance you can tell rsync
+to show progress ("--progress") or which -password-file ("--password-file")
+to use for automatic backup over the rsync-protocol.
 
 Example:
 --------------------------------------------------------------------------------
@@ -229,6 +230,47 @@ Example:
    --password-file=/home/user/backup/protected_password_file
 --------------------------------------------------------------------------------
 
+
+Hints
+-----
+
+Using rsync protocol without ssh
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When you have a computer with little computing power, it may be useful to use
+rsync without ssh, directly using the rsync protocol
+(specify 'user@host::share' in `source`). You may wish to use
+`rsync_options` to specify a password file to use for automatic backup.
+
+
+Example:
+--------------------------------------------------------------------------------
+backup:~# cat /etc/ccollect/sources/sample.backup.host.org/source         
+backup@webserver::backup-share
+
+backup:~# cat /etc/ccollect/sources/sample.backup.host.org/rsync_options 
+--password-file=/etc/ccollect/sources/sample.backup.host.org/rsync_password
+
+backup:~# cat /etc/ccollect/sources/sample.backup.host.org/rsync_password 
+this_is_the_rsync_password
+--------------------------------------------------------------------------------
+This hint was reported by Daniel Aubry.
+
+
+Not-excluding top-level directories
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When you exclude "/proc" or "/mnt" from your backup, you may run into
+trouble when you restore your backup. When you use "/proc/\*" or "/mnt/\*"
+instead `ccollect` will backup empty directories.
+
+[NOTE]
+===========================================
+When those directories contain hidden files
+(those beginning with a dot (`"."`)),
+they will still be transferred!
+===========================================
+This hint was reported by Marcus Wagner.
 
 Examples
 --------
