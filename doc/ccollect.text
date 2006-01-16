@@ -267,7 +267,7 @@ instead `ccollect` will backup empty directories.
 [NOTE]
 ===========================================
 When those directories contain hidden files
-(those beginning with a dot (`"."`)),
+(those beginning with a dot (*.*)),
 they will still be transferred!
 ===========================================
 This hint was reported by Marcus Wagner.
