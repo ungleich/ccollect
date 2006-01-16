@@ -1,4 +1,5 @@
 - write a manpage
+- add note to --exclude=/proc/ vs. --exclude=/proc/*
 
 DONE
 - implement verbosity
