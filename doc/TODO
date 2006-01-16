@@ -1,5 +1,8 @@
 - write a manpage
 - add note to --exclude=/proc/ vs. --exclude=/proc/*
+- rsync_options, example paswd
+- rsync_options \n seperated
+
 
 DONE
 - implement verbosity
