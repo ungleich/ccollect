@@ -272,6 +272,12 @@ they will still be transferred!
 ===========================================
 This hint was reported by Marcus Wagner.
 
+
+Re-using already created rsync-backups
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+mkdir intervall.0 ; mv * intervall; 
+
 Examples
 --------
 
