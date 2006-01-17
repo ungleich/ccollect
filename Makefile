@@ -22,14 +22,25 @@ docdir=$(dir)/doc
 all:
 	@echo "Nothing to make, make install."
 
+install:
+	$(INSTALL) -D -m 0755 -s $(CCOLLECT) $(destination)
+	$(LN) $(destination) $(path_destination)
+
 documentation:
 	@echo "Generating HTML-documentation"
 	@asciidoc -n -o doc/ccollect.html  doc/ccollect.text
+
+#
+# Developer targets
+#
+update:
+	@cg-update creme
+
+push-work:
+	@cg-push creme
+	@cg-push main
 
 publish-doc: documentation
 	@chmod a+r doc/ccollect.html
 	@scp doc/ccollect.html doc/ccollect.text $(host):$(docdir)
 
-install:
-	$(INSTALL) -D -m 0755 -s $(CCOLLECT) $(destination)
-	$(LN) $(destination) $(path_destination)
