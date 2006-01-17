@@ -262,8 +262,8 @@ div.exampleblock-content {
 <h1>ccollect - Installing, Configuring and Using</h1>
 <span id="author">Nico Schottelius</span><br />
 <span id="email"><tt>&lt;<a href="mailto:nico-linux-ccollect__@__schottelius.org">nico-linux-ccollect__@__schottelius.org</a>&gt;</tt></span><br />
-<span id="revision">version 0.2,</span>
-2005-01-13
+<span id="revision">version 0.2.2,</span>
+for ccollect 0.2, Initial Version 2005-01-13
 </div>
 <div id="preamble">
 <div class="sectionbody">
@@ -523,11 +523,54 @@ they will still be transferred!</p>
 </div>
 <p>This hint was reported by Marcus Wagner.</p>
 <h3>5.3. Re-using already created rsync-backups</h3>
-<p>mkdir intervall.0 ; mv * intervall;</p>
+<p>If you used <tt>rsync</tt> directly before you use <tt>ccollect</tt>, you can
+use this old backup as initial backup for <tt>ccollect</tt>: You
+simply move it into a subdirectory named "<em>intervall</em>.0".</p>
+<p>Example:</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>backup:/home/backup/web1# ls
+bin   dev  etc   initrd  lost+found  mnt  root  srv  usr  vmlinuz
+boot  doc  home  lib     media       opt  sbin  tmp  var  vmlinuz.old
+
+backup:/home/backup/web1# mkdir daily.0
+
+# ignore error about copying to itself
+backup:/home/backup/web1# mv * daily.0 2&gt;/dev/null
+
+backup:/home/backup/web1# ls
+daily.0</tt></pre>
+</div></div>
+<p>Now you could use /home/backup/web1 as the <tt>destination</tt> for the backup.</p>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<p>Do <strong>not</strong> name the first backup something like "daily.initial", but use
+the "<strong>0</strong>" (or some very low number, at least lower than the current year)
+as extension. <tt>ccollect</tt> uses <tt>sort</tt> to find the latest backup. <tt>ccollect</tt>
+itself uses <em>intervall.YEAR-MONTH-DAY-HOUR:MINUTE.PID</em>. This notation will
+<strong>always</strong> be before "daily.initial", as numbers are earlier in the list
+which is produced by <tt>sort</tt>. So, if you have a directory named "daily.initial",
+<tt>ccollect</tt> will always diff against this backup and transfer and delete
+files which where deleted in previous backups. This means you simply
+waste resources, but your backup will be complete.</p>
+</td>
+</tr></table>
 </div>
-<h2>6. Examples</h2>
+</div>
+<h2>6. F.A.Q.</h2>
 <div class="sectionbody">
-<h3>6.1. A backup host configuration from scratch</h3>
+<h3>6.1. What happens, if one backup is broken / empty?</h3>
+<p>Let us assume, that one backup failed (connection broke or hard disk had
+some failures). So we've one backup in our history, which is incomplete.</p>
+<p>The next time you use <tt>ccollect</tt>, it will transfer the missing files</p>
+</div>
+<h2>7. Examples</h2>
+<div class="sectionbody">
+<h3>7.1. A backup host configuration from scratch</h3>
 <div class="listingblock">
 <div class="content">
 <pre><tt>srwali01:~# mkdir /etc/ccollect
@@ -582,7 +625,7 @@ srwali01:/etc/ccollect/sources/srwali03# echo 'root@10.103.2.3:/' &gt; source
 srwali01:/etc/ccollect/sources/srwali03# ln -s /mnt/hdbackup/srwali03 destination
 srwali01:/etc/ccollect/sources/srwali03# mkdir /mnt/hdbackup/srwali03</tt></pre>
 </div></div>
-<h3>6.2. Using hard-links requires less disk space</h3>
+<h3>7.2. Using hard-links requires less disk space</h3>
 <div class="listingblock">
 <div class="content">
 <pre><tt>[10:53] srsyg01:sources% du -sh ~/backupdir
@@ -604,8 +647,8 @@ srwali01:/etc/ccollect/sources# du -sh /mnt/hdbackup/wl6/*
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.2<br />
-Last updated 17-Jan-2006 12:09:51 CEST
+Version 0.2.2<br />
+Last updated 17-Jan-2006 12:59:55 CEST
 </div>
 </div>
 </body>

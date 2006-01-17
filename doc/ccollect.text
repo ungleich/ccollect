@@ -1,7 +1,7 @@
 ccollect - Installing, Configuring and Using
 ============================================
 Nico Schottelius <nico-linux-ccollect__@__schottelius.org>
-v0.2, 2005-01-13
+0.2.2, for ccollect 0.2, Initial Version from 2005-01-13
 :Author Initials: NS
 
 (pseudo) incremental backup
@@ -276,7 +276,51 @@ This hint was reported by Marcus Wagner.
 Re-using already created rsync-backups
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-mkdir intervall.0 ; mv * intervall; 
+If you used `rsync` directly before you use `ccollect`, you can
+use this old backup as initial backup for `ccollect`: You
+simply move it into a subdirectory named "'intervall'.0".
+
+Example:
+-------------------------------------------------------------------------------
+backup:/home/backup/web1# ls
+bin   dev  etc   initrd  lost+found  mnt  root  srv  usr  vmlinuz
+boot  doc  home  lib     media       opt  sbin  tmp  var  vmlinuz.old
+
+backup:/home/backup/web1# mkdir daily.0
+
+# ignore error about copying to itself
+backup:/home/backup/web1# mv * daily.0 2>/dev/null
+
+backup:/home/backup/web1# ls
+daily.0
+-------------------------------------------------------------------------------
+Now you could use /home/backup/web1 as the `destination` for the backup.
+
+[NOTE]
+===============================================================================
+Do *not* name the first backup something like "daily.initial", but use
+the "*0*" (or some very low number, at least lower than the current year)
+as extension. `ccollect` uses `sort` to find the latest backup. `ccollect`
+itself uses 'intervall.YEAR-MONTH-DAY-HOUR:MINUTE.PID'. This notation will
+*always* be before "daily.initial", as numbers are earlier in the list
+which is produced by `sort`. So, if you have a directory named "daily.initial",
+`ccollect` will always diff against this backup and transfer and delete
+files which where deleted in previous backups. This means you simply
+waste resources, but your backup will be complete.
+===============================================================================
+
+
+F.A.Q.
+------
+
+What happens, if one backup is broken / empty?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Let us assume, that one backup failed (connection broke or hard disk had
+some failures). So we've one backup in our history, which is incomplete.
+
+The next time you use `ccollect`, it will transfer the missing files
+
 
 Examples
 --------
