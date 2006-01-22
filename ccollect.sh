@@ -4,7 +4,6 @@
 # Date: Mon Nov 14 11:45:11 CET 2005
 # Last Modified: (See ls -l or git)
 
-echo hier8
 #
 # where to find our configuration and temporary file
 #
@@ -35,7 +34,6 @@ add_name()
 {
    sed "s/^/\[$name\] /"
 }
-echo hier5
 
 #
 # Tell how to use us
@@ -59,7 +57,6 @@ usage()
    exit 0
 }
 
-echo hier4
 #
 # need at least intervall and one source or --all
 #
@@ -74,7 +71,6 @@ if [ ! -d "$CCOLLECT_CONF" ]; then
    echo "Configuration \"$CCOLLECT_CONF\" not found."
    exit 1
 fi
-echo hier3
 
 #
 # Filter arguments
@@ -124,7 +120,6 @@ done
 if [ "$VERBOSE" = 1 ]; then
    set -x
 fi
-echo hier4
 
 #
 # Look, if we should take ALL sources
@@ -146,7 +141,6 @@ if [ "$ALL" = 1 ]; then
    done < "$TMP"
 fi
 
-echo hier6
 #
 # Need at least ONE source to backup
 #
