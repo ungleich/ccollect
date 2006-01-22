@@ -68,19 +68,18 @@ fi
 # check for configuraton directory
 #
 if [ ! -d "$CCOLLECT_CONF" ]; then
-   echo "Configuration \"$CCOLLECT_CONF\" not found."
+   echo "No configuration found in \"$CCOLLECT_CONF\"" \
+        " (set \$CCOLLECT_CONF corectly?)"
    exit 1
 fi
 
 #
 # Filter arguments
 #
-
 INTERVALL=$1; shift
 i=1
 no_shares=0
 
-set -x
 while [ $i -le $# ]; do
    eval arg=\$$i
    
@@ -161,7 +160,9 @@ D_INTERVALL=$(cat $D_FILE_INTERVALL 2>/dev/null)
 # Look for pre-exec command (general)
 #
 if [ -x "$CPREEXEC" ]; then
+   echo "Executing $CPREEXEC ..."
    "$CPREEXEC"
+   echo "Finished ${CPREEXEC}."
 fi
 
 #
@@ -268,7 +269,9 @@ while [ "$i" -lt "$no_shares" ]; do
    # pre_exec
    #
    if [ -x "$c_pre_exec" ]; then
-      "$pre_exec"
+      echo "Executing $c_pre_exec ..."
+      $c_pre_exec
+      echo "Finished ${c_pre_exec}."
    fi
    
    # exclude
@@ -356,11 +359,14 @@ while [ "$i" -lt "$no_shares" ]; do
    fi
 
    echo "Successfully finished backup."
+
    #
    # post_exec
    #
    if [ -x "$c_post_exec" ]; then
-      "$post_exec"
+      echo "Executing $c_post_exec ..."
+      "$c_post_exec"
+      echo "Finished ${c_post_exec}."
    fi
 
 ) | add_name
@@ -377,8 +383,10 @@ fi
 #
 # Look for post-exec command (general)
 #
-if [ -x "$POSTEXEC" ]; then
-   "$POSTEXEC"
+if [ -x "$CPOSTEXEC" ]; then
+   echo "Executing $CPOSTEXEC ..."
+   "$CPOSTEXEC"
+   echo "Finished ${CPOSTEXEC}."
 fi
 
 rm -f "$TMP"

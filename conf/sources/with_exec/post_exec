@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Show whats free after
+
+df -h
