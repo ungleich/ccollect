@@ -266,8 +266,9 @@ while [ "$i" -lt "$no_shares" ]; do
       VERBOSE="-v"
    fi
    
-   # verbosity for cp
+   # MORE verbosity, includes standard verbosity
    if [ -f "$c_vverbose" ]; then
+      VERBOSE="-v"
       VVERBOSE="-v"
    fi
    

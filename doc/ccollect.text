@@ -127,8 +127,9 @@ Each source has at least the following files:
 
 Additionally a source may have the following files:
 
-   - `verbose`   whether to be verbose (passes -v to rsync)
-   - `exclude`   exclude list for rsync. One exclude specification on each line.
+   - `verbose`       whether to be verbose (passes -v to rsync)
+   - `very_verbose`  be very verbose (-v also for mkdir, cp, rm)
+   - `exclude`       exclude list for rsync. '\\n' seperated list.
    - `rsync_options' extra options to pass to rsync
 
 Example:

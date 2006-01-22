@@ -1,3 +1,7 @@
+0.2 to 0.3:
+   * added "very_verbose"
+   * normal "verbose" is now less verbose
+
 0.1 to 0.2:
    * Added plausibility check
    * Updated and made documentation readable
