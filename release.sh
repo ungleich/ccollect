@@ -17,3 +17,7 @@ tar cvfj "$TARNAME" \
 scp "${TARNAME}" "$DESTINATION"
 
 ssh "$DHOST" "( cd $DDIR; tar xfj \"$TARNAME\" )"
+
+echo "setting paranoid permissions to public..."
+ssh "$DHOST" "( cd $DDIR; find -type d -exec chmod 0755 {} \; )"
+ssh "$DHOST" "( cd $DDIR; find -type f -exec chmod 0644 {} \; )"
