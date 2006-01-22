@@ -426,3 +426,6 @@ srwali01:/etc/ccollect/sources# du -sh /mnt/hdbackup/wl6/*
 147M    /mnt/hdbackup/wl6/taeglich.2005-12-08-14:42.312
 147M    /mnt/hdbackup/wl6/taeglich.2005-12-08-14:45.588
 -------------------------------------------------------------------------
+
+
+pre/postexec: only when executable!

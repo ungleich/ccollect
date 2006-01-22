@@ -10,10 +10,13 @@
 CCOLLECT_CONF=${CCOLLECT_CONF:-/etc/ccollect}
 CSOURCES=$CCOLLECT_CONF/sources
 CDEFAULTS=$CCOLLECT_CONF/defaults
+CPREEXEC="$CDEFAULTS/pre_exec"
+CPOSTEXEC="$CDEFAULTS/post_exec"
+
 TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
 WE=$(basename $0)
-VERSION=0.2
-RELEASE="2006-01-13"
+VERSION=0.3
+RELEASE="2006-01-22"
 
 #
 # unset parallel execution
@@ -50,7 +53,7 @@ usage()
    echo ""
    echo "   Retrieve latest ccollect at http://linux.schottelius.org/ccollect/."
    echo ""
-   echo "   Version: $VERSION ($RELEASE, Black Friday Release)"
+   echo "   Version: $VERSION ($RELEASE, Grey Sunday Release)"
    exit 0
 }
 
@@ -153,6 +156,13 @@ fi
 
 D_FILE_INTERVALL="$CDEFAULTS/intervalls/$INTERVALL"
 D_INTERVALL=$(cat $D_FILE_INTERVALL 2>/dev/null)
+
+#
+# Look for pre-exec command (general)
+#
+if [ -x "$CPREEXEC" ]; then
+   "$CPREEXEC"
+fi
 
 #
 # Let's do the backup
@@ -346,6 +356,13 @@ done
 if [ "$PARALLEL" ]; then
    echo "Waiting for child jobs to complete..."
    wait
+fi
+
+#
+# Look for post-exec command (general)
+#
+if [ -x "$POSTEXEC" ]; then
+   "$POSTEXEC"
 fi
 
 rm -f "$TMP"
