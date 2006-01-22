@@ -429,3 +429,5 @@ srwali01:/etc/ccollect/sources# du -sh /mnt/hdbackup/wl6/*
 
 
 pre/postexec: only when executable!
+pre/postexec: link, script or executable
+
