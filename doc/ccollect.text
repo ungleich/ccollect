@@ -113,6 +113,26 @@ Example:
 --------------------------------------------------------------------------------
 This means to keep 28 daily backups, 12 monthly backups and 4 weekly.
 
+General pre- and post-execution
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you add '$CCOLLECT_CONF/defaults/`pre_exec`' or
+'/etc/ccollect/defaults/`pre_exec`' (same with `post_exec`), `ccollect`
+will start `pre_exec` before the whole backup process and
+`post_exec` after backup of all sources is done.
+
+Example:
+-------------------------------------------------------------------------
+[13:00] hydrogenium:~# mkdir -p /etc/ccollect/defaults/
+[13:00] hydrogenium:~# echo '!/bin/sh' > /etc/ccollect/defaults/pre_exec
+[13:01] hydrogenium:~# echo '' > /etc/ccollect/defaults/pre_exec 
+[13:01] hydrogenium:~# echo '!/bin/sh' > /etc/ccollect/defaults/pre_exec
+[13:01] hydrogenium:~# echo '' >> /etc/ccollect/defaults/pre_exec       
+[13:01] hydrogenium:~# echo 'df -h' >> /etc/ccollect/defaults/pre_exec
+[13:01] hydrogenium:~# chmod 0755 /etc/ccollect/defaults/pre_exec
+[13:01] hydrogenium:~# cp /etc/ccollect/defaults/pre_exec /etc/ccollect/defaults/post_exec
+-------------------------------------------------------------------------
+
 Source configuration
 ~~~~~~~~~~~~~~~~~~~~
 Each source configuration exists below '$CCOLLECT_CONF/sources/$name' or
