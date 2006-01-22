@@ -172,6 +172,18 @@ Example:
    [11:35] zaphodbeeblebrox:ccollect-0.2% touch conf/sources/testsource1/verbose
 --------------------------------------------------------------------------------
 
+Detailled description of "very_verbose"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+`very_verbose` tells `ccollect` that it should log very verbose.
+
+If this file exists in the source specification *-v* will be passed to
+`rsync`, `cp`, `rm` and `mkdir`.
+
+Example:
+--------------------------------------------------------------------------------
+   [23:67] nohost:~% touch conf/sources/testsource1/very_verbose
+--------------------------------------------------------------------------------
+
 
 Detailled description of "exclude"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
