@@ -13,10 +13,11 @@ doc/ccollect.html          Manual in xhtml
 ccollect was inspired by rsnapshot [1], which had some problems:
    - configuration parameters had to be TAB seperated
    - you could not specify exclude lists differently for every source
+   - no per source pre/post execution support
    - no parallel execution
    - I didn't like the configuration at all, so I used the cconfig style [2].
 
 
 [0]: ccollect:    http://linux.schottelius.org/ccollect/
-[1]: rsnapshot:   htt://www.rsnapshot.org/
+[1]: rsnapshot:   http://www.rsnapshot.org/
 [2]: cconfig:     http://nico.schotteli.us/papers/linux/cconfig/
