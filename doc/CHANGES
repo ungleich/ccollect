@@ -1,6 +1,8 @@
 0.2 to 0.3:
    * added "very_verbose"
    * normal "verbose" is now less verbose
+   * added general 'pre_exec' and 'post_exec' support
+   * added source specfifc 'pre_exec' and 'post_exec' support
 
 0.1 to 0.2:
    * Added plausibility check

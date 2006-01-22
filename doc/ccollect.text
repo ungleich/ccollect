@@ -1,7 +1,7 @@
 ccollect - Installing, Configuring and Using
 ============================================
 Nico Schottelius <nico-linux-ccollect__@__schottelius.org>
-0.2.2, for ccollect 0.2, Initial Version from 2005-01-13
+0.3.0, for ccollect 0.3, Initial Version from 2005-01-13
 :Author Initials: NS
 
 (pseudo) incremental backup
@@ -12,7 +12,7 @@ Introduction
 ------------
 ccollect is a backup utitily written in the sh-scripting language.
 It does not depend on a specific shell, only `/bin/sh` needs to be
-bourne shell compatibel (like 'dash', 'zsh' or 'bash').
+bourne shell compatibel (like 'dash', 'ksh', 'zsh', 'bash', ...).
 
 
 Why you can only backup TO localhost
@@ -40,9 +40,10 @@ Installing ccollect
 ~~~~~~~~~~~~~~~~~~~
 
 For the installation, you need at least
-  - either 'cp' and 'chmod' or 'install
-  - for more comfort: 'make'
-  - for rebuilding the generated documentation: additionally 'asciidoc'
+
+  - either `cp` and `chmod` or `install`
+  - for more comfort: `make`
+  - for rebuilding the generated documentation: additionally `asciidoc`
 
 
 Using ccollect
@@ -149,8 +150,11 @@ Additionally a source may have the following files:
 
    - `verbose`       whether to be verbose (passes -v to `rsync`)
    - `very_verbose`  be very verbose (-v also for `mkdir`, `cp`, `rm`)
-   - `exclude`       exclude list for `rsync`. '\\n' seperated list.
+   - `exclude`       exclude list for `rsync`. newline ('\n') seperated list.
    - `rsync_options' extra options to pass to `rsync`
+
+   - `pre_exec`      program to execute before backuping this source
+   - `post_exec`     program to execute after backuping this source
 
 Example:
 --------------------------------------------------------------------------------
@@ -263,6 +267,28 @@ Example:
    --password-file=/home/user/backup/protected_password_file
 --------------------------------------------------------------------------------
 
+Detailled description of "pre_exec" and "post_exec"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When you create `pre_exec` and / or `post_exec` below your source
+configuration, `ccollect` will execute this command before,
+respective after doing the backup for *this specific* source.
+If you want to have pre-/post-exec before and after *all*
+backups, see above for general configuration.
+
+Example:
+--------------------------------------------------------------------------------
+[13:09] hydrogenium:ccollect-0.3% cat conf/sources/with_exec/pre_exec 
+#!/bin/sh
+
+# Show whats free before
+df -h
+[13:09] hydrogenium:ccollect-0.3% cat conf/sources/with_exec/post_exec 
+#!/bin/sh
+
+# Show whats free after
+df -h
+--------------------------------------------------------------------------------
 
 Hints
 -----
@@ -343,6 +369,16 @@ waste resources, but your backup will be complete.
 ===============================================================================
 
 
+Using pre_/post_exec
+~~~~~~~~~~~~~~~~~~~~
+Your pre_/post_exec script does not need to be a script, you can also
+use a link to
+
+   - an existing program
+   - an already written script
+
+The only requirement is that it is executable.
+
 F.A.Q.
 ------
 
@@ -364,6 +400,12 @@ comes from local harddisk or from a remote server. And it does not want
 to. When you backup from the local harddisk (which is perhaps not
 even a good idea when thinking of security) add the `destination`
 to 'source/exclude'. (Daniel Aubry reported this problem)
+
+
+Why does ccollect say "Permission denied" with my pre-/postexec script?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The most common error is to not give your script the correct
+permissions. Try `chmod 0755 '/etc/ccollect/sources/yoursource/*_exec'`.
 
 
 Examples
@@ -446,8 +488,3 @@ srwali01:/etc/ccollect/sources# du -sh /mnt/hdbackup/wl6/*
 147M    /mnt/hdbackup/wl6/taeglich.2005-12-08-14:42.312
 147M    /mnt/hdbackup/wl6/taeglich.2005-12-08-14:45.588
 -------------------------------------------------------------------------
-
-
-pre/postexec: only when executable!
-pre/postexec: link, script or executable
-

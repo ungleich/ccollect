@@ -262,8 +262,8 @@ div.exampleblock-content {
 <h1>ccollect - Installing, Configuring and Using</h1>
 <span id="author">Nico Schottelius</span><br />
 <span id="email"><tt>&lt;<a href="mailto:nico-linux-ccollect__@__schottelius.org">nico-linux-ccollect__@__schottelius.org</a>&gt;</tt></span><br />
-<span id="revision">version 0.2.2,</span>
-for ccollect 0.2, Initial Version from 2005-01-13
+<span id="revision">version 0.3.0,</span>
+for ccollect 0.3, Initial Version from 2005-01-13
 </div>
 <div id="preamble">
 <div class="sectionbody">
@@ -276,7 +276,7 @@ using hardlinks and <tt>rsync</tt></p>
 <div class="sectionbody">
 <p>ccollect is a backup utitily written in the sh-scripting language.
 It does not depend on a specific shell, only <tt>/bin/sh</tt> needs to be
-bourne shell compatibel (like <em>dash</em>, <em>zsh</em> or <em>bash</em>).</p>
+bourne shell compatibel (like <em>dash</em>, <em>ksh</em>, <em>zsh</em>, <em>bash</em>, &#8230;).</p>
 <h3>1.1. Why you can only backup TO localhost</h3>
 <p>While thinking about the design of ccollect, I thought about enabling
 backup to <strong>remote</strong> hosts. Though this sounds like a nice feature
@@ -296,10 +296,24 @@ All other backups are still secure.</p>
 <h2>2. Requirements</h2>
 <div class="sectionbody">
 <h3>2.1. Installing ccollect</h3>
-<p>For the installation, you need at least
-  - either <em>cp</em> and <em>chmod</em> or <em>install
-  - for more comfort: 'make</em>
-  - for rebuilding the generated documentation: additionally <em>asciidoc</em></p>
+<p>For the installation, you need at least</p>
+<ul>
+<li>
+<p>
+either <tt>cp</tt> and <tt>chmod</tt> or <tt>install</tt>
+</p>
+</li>
+<li>
+<p>
+for more comfort: <tt>make</tt>
+</p>
+</li>
+<li>
+<p>
+for rebuilding the generated documentation: additionally <tt>asciidoc</tt>
+</p>
+</li>
+</ul>
 <h3>2.2. Using ccollect</h3>
 <div class="title">Running ccollect requires the following tools installed:</div><ul>
 <li>
@@ -368,6 +382,23 @@ This number defines how many versions of this intervall to keep.</p>
    4</tt></pre>
 </div></div>
 <p>This means to keep 28 daily backups, 12 monthly backups and 4 weekly.</p>
+<h4>4.2.2. General pre- and post-execution</h4>
+<p>If you add <em>$CCOLLECT_CONF/defaults/<tt>pre_exec</tt></em> or
+<em>/etc/ccollect/defaults/<tt>pre_exec</tt></em> (same with <tt>post_exec</tt>), <tt>ccollect</tt>
+will start <tt>pre_exec</tt> before the whole backup process and
+<tt>post_exec</tt> after backup of all sources is done.</p>
+<p>Example:</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>[13:00] hydrogenium:~# mkdir -p /etc/ccollect/defaults/
+[13:00] hydrogenium:~# echo '!/bin/sh' &gt; /etc/ccollect/defaults/pre_exec
+[13:01] hydrogenium:~# echo '' &gt; /etc/ccollect/defaults/pre_exec
+[13:01] hydrogenium:~# echo '!/bin/sh' &gt; /etc/ccollect/defaults/pre_exec
+[13:01] hydrogenium:~# echo '' &gt;&gt; /etc/ccollect/defaults/pre_exec
+[13:01] hydrogenium:~# echo 'df -h' &gt;&gt; /etc/ccollect/defaults/pre_exec
+[13:01] hydrogenium:~# chmod 0755 /etc/ccollect/defaults/pre_exec
+[13:01] hydrogenium:~# cp /etc/ccollect/defaults/pre_exec /etc/ccollect/defaults/post_exec</tt></pre>
+</div></div>
 <h3>4.3. Source configuration</h3>
 <p>Each source configuration exists below <em>$CCOLLECT_CONF/sources/$name</em> or
 <em>/etc/ccollect/sources/$name</em>.</p>
@@ -376,7 +407,7 @@ This number defines how many versions of this intervall to keep.</p>
 <ul>
 <li>
 <p>
-<tt>source</tt>       (a text file containing the rsync compatible path to backup)
+<tt>source</tt>       (a text file containing the <tt>rsync</tt> compatible path to backup)
 </p>
 </li>
 <li>
@@ -389,22 +420,32 @@ This number defines how many versions of this intervall to keep.</p>
 <ul>
 <li>
 <p>
-<tt>verbose</tt>       whether to be verbose (passes -v to rsync)
+<tt>verbose</tt>       whether to be verbose (passes -v to <tt>rsync</tt>)
 </p>
 </li>
 <li>
 <p>
-<tt>very_verbose</tt>  be very verbose (-v also for mkdir, cp, rm)
+<tt>very_verbose</tt>  be very verbose (-v also for <tt>mkdir</tt>, <tt>cp</tt>, <tt>rm</tt>)
 </p>
 </li>
 <li>
 <p>
-<tt>exclude</tt>       exclude list for rsync. <em>\\n</em> seperated list.
+<tt>exclude</tt>       exclude list for <tt>rsync</tt>. newline (<em>\n</em>) seperated list.
 </p>
 </li>
 <li>
 <p>
-`rsync_options' extra options to pass to rsync
+<tt>rsync_options' extra options to pass to `rsync</tt>
+</p>
+</li>
+<li>
+<p>
+<tt>pre_exec</tt>      program to execute before backuping this source
+</p>
+</li>
+<li>
+<p>
+<tt>post_exec</tt>     program to execute after backuping this source
 </p>
 </li>
 </ul>
@@ -430,10 +471,10 @@ This number defines how many versions of this intervall to keep.</p>
    /home/nico/vpn</tt></pre>
 </div></div>
 <h4>4.3.1. Detailled description of "source"</h4>
-<p><tt>source</tt> describes a rsync compatible source (one line only).</p>
+<p><tt>source</tt> describes a <tt>rsync</tt> compatible source (one line only).</p>
 <p>For instance <em>backup_user@foreign_host:/home/server/video</em>.
-To use the rsync protocol without the ssh-tunnel, use
-<em>rsync::USER@HOST/SRC</em>. For more information have a look at rsync(1).</p>
+To use the <tt>rsync</tt> protocol without the <tt>ssh</tt>-tunnel, use
+<em>rsync::USER@HOST/SRC</em>. For more information have a look at <tt>rsync</tt>(1).</p>
 <h4>4.3.2. Detailled description of "verbose"</h4>
 <p><tt>verbose</tt> tells <tt>ccollect</tt> that the log should contain verbose messages.</p>
 <p>If this file exists in the source specification <strong>-v</strong> will be passed to <tt>rsync</tt>.</p>
@@ -497,6 +538,26 @@ to use for automatic backup over the rsync-protocol.</p>
 <div class="content">
 <pre><tt>   [23:42] hydrogenium:ccollect-0.2% cat conf/sources/test_rsync/rsync_options
    --password-file=/home/user/backup/protected_password_file</tt></pre>
+</div></div>
+<h4>4.3.8. Detailled description of "pre_exec" and "post_exec"</h4>
+<p>When you create <tt>pre_exec</tt> and / or <tt>post_exec</tt> below your source
+configuration, <tt>ccollect</tt> will execute this command before,
+respective after doing the backup for <strong>this specific</strong> source.
+If you want to have pre-/post-exec before and after <strong>all</strong>
+backups, see above for general configuration.</p>
+<p>Example:</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>[13:09] hydrogenium:ccollect-0.3% cat conf/sources/with_exec/pre_exec
+#!/bin/sh
+
+# Show whats free before
+df -h
+[13:09] hydrogenium:ccollect-0.3% cat conf/sources/with_exec/post_exec
+#!/bin/sh
+
+# Show whats free after
+df -h</tt></pre>
 </div></div>
 </div>
 <h2>5. Hints</h2>
@@ -574,6 +635,22 @@ waste resources, but your backup will be complete.</p>
 </td>
 </tr></table>
 </div>
+<h3>5.4. Using pre_/post_exec</h3>
+<p>Your pre_/post_exec script does not need to be a script, you can also
+use a link to</p>
+<ul>
+<li>
+<p>
+an existing program
+</p>
+</li>
+<li>
+<p>
+an already written script
+</p>
+</li>
+</ul>
+<p>The only requirement is that it is executable.</p>
 </div>
 <h2>6. F.A.Q.</h2>
 <div class="sectionbody">
@@ -588,6 +665,9 @@ comes from local harddisk or from a remote server. And it does not want
 to. When you backup from the local harddisk (which is perhaps not
 even a good idea when thinking of security) add the <tt>destination</tt>
 to <em>source/exclude</em>. (Daniel Aubry reported this problem)</p>
+<h3>6.3. Why does ccollect say "Permission denied" with my pre-/postexec script?</h3>
+<p>The most common error is to not give your script the correct
+permissions. Try <tt>chmod 0755 <em>/etc/ccollect/sources/yoursource/*_exec</em></tt>.</p>
 </div>
 <h2>7. Examples</h2>
 <div class="sectionbody">
@@ -668,8 +748,8 @@ srwali01:/etc/ccollect/sources# du -sh /mnt/hdbackup/wl6/*
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.2.2<br />
-Last updated 22-Jan-2006 10:49:24 CEST
+Version 0.3.0<br />
+Last updated 22-Jan-2006 13:26:51 CEST
 </div>
 </div>
 </body>
