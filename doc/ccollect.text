@@ -313,13 +313,24 @@ waste resources, but your backup will be complete.
 F.A.Q.
 ------
 
-What happens, if one backup is broken / empty?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+What happens, if one backup is broken or empty?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Let us assume, that one backup failed (connection broke or hard disk had
 some failures). So we've one backup in our history, which is incomplete.
 
 The next time you use `ccollect`, it will transfer the missing files
+
+
+When backing up from localhost the destination is also included. Is this a bug?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+No. `ccollect` passes your source definition directly to `rsync`. It
+does not try to analyze it. So it actually does not know if a source
+comes from local harddisk or from a remote server. And it does not want
+to. When you backup from the local harddisk (which is perhaps not
+even a good idea when thinking of security) add the `destination`
+to 'source/exclude'. (Daniel Aubry reported this problem)
 
 
 Examples

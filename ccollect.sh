@@ -193,6 +193,7 @@ while [ "$i" -lt "$no_shares" ]; do
    c_dest="$backup/destination"
    c_exclude="$backup/exclude"
    c_verbose="$backup/verbose"
+   c_vverbose="$backup/very_verbose"
    c_rsync_extra="$backup/rsync_options"
 
    echo "Beginning to backup this source ..."
@@ -227,6 +228,7 @@ while [ "$i" -lt "$no_shares" ]; do
    # standard rsync options
    #
    VERBOSE=""
+   VVERBOSE=""
    EXCLUDE=""
    RSYNC_EXTRA=""
 
@@ -259,9 +261,14 @@ while [ "$i" -lt "$no_shares" ]; do
       RSYNC_EXTRA="$(cat "$c_rsync_extra")"
    fi
    
-   # verbose
+   # verbosity for rsync
    if [ -f "$c_verbose" ]; then
       VERBOSE="-v"
+   fi
+   
+   # verbosity for cp
+   if [ -f "$c_vverbose" ]; then
+      VVERBOSE="-v"
    fi
    
    #
@@ -281,7 +288,7 @@ while [ "$i" -lt "$no_shares" ]; do
       while read to_remove; do
          dir="$to_remove"
          echo "Removing $dir ..."
-         rm -rf "$dir"
+         rm $VVERBOSE -rf "$dir"
       done < "$TMP"
    fi
    
@@ -300,10 +307,10 @@ while [ "$i" -lt "$no_shares" ]; do
    # only copy if a directory exists
    if [ "$last_dir" ]; then
       echo "Hard linking..."
-      cp -al $VERBOSE "$last_dir" "$destination_dir"
+      cp -al $VVERBOSE "$last_dir" "$destination_dir"
    else
       echo "Creating $destination_dir"
-      mkdir "$destination_dir"
+      mkdir $VVERBOSE "$destination_dir"
    fi
 
    if [ $? -ne 0 ]; then
