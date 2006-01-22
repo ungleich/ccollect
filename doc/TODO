@@ -1,3 +1,7 @@
+- implement pre- and post-exec commands
+   o For the general backup process
+   o source specific
+
 - Documentation
    - write/generate a manpage
    - rsync_options \n seperated
