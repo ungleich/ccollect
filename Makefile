@@ -19,12 +19,19 @@ host=creme.schottelius.org
 dir=www/org/schottelius/linux/ccollect
 docdir=$(dir)/doc
 
+#
+# End user targets
+#
 all:
 	@echo "Nothing to make, make install."
 
-install:
-	$(INSTALL) -D -m 0755 -s $(CCOLLECT) $(destination)
+install: install-script install-link
+
+install-link: install-script
 	$(LN) $(destination) $(path_destination)
+
+install-script:
+	$(INSTALL) -D -m 0755 -s $(CCOLLECT) $(destination)
 
 documentation:
 	@echo "Generating HTML-documentation"

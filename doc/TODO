@@ -1,6 +1,11 @@
+- write mkccollectconfig
+   o create source configuration
+   o another script for changing defaults
+      x intervalls
+      x pre-/post exec
+   o dialog based?
+
 - implement pre- and post-exec commands
-   o For the general backup process
-   o source specific
    o what to do with return values?
 
 - Documentation
@@ -21,3 +26,6 @@ DONE
    - write a simple manual
    - Hints section
    - add note to --exclude=/proc/ vs. --exclude=/proc/*
+- implement pre- and post-exec commands
+   o For the general backup process
+   o source specific

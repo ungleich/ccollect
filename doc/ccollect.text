@@ -122,15 +122,15 @@ The name you choose for the subdirectory describes the source.
 
 Each source has at least the following files:
 
-   - `source`       (a text file containing the rsync compatible path to backup)
+   - `source`       (a text file containing the `rsync` compatible path to backup)
    - `destination`  (a link to the directory we should backup to)
 
 Additionally a source may have the following files:
 
-   - `verbose`       whether to be verbose (passes -v to rsync)
-   - `very_verbose`  be very verbose (-v also for mkdir, cp, rm)
-   - `exclude`       exclude list for rsync. '\\n' seperated list.
-   - `rsync_options' extra options to pass to rsync
+   - `verbose`       whether to be verbose (passes -v to `rsync`)
+   - `very_verbose`  be very verbose (-v also for `mkdir`, `cp`, `rm`)
+   - `exclude`       exclude list for `rsync`. '\\n' seperated list.
+   - `rsync_options' extra options to pass to `rsync`
 
 Example:
 --------------------------------------------------------------------------------
@@ -155,11 +155,11 @@ Example:
 
 Detailled description of "source"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-`source` describes a rsync compatible source (one line only).
+`source` describes a `rsync` compatible source (one line only).
  
 For instance 'backup_user@foreign_host:/home/server/video'.
-To use the rsync protocol without the ssh-tunnel, use
-'rsync::USER@HOST/SRC'. For more information have a look at rsync(1).
+To use the `rsync` protocol without the `ssh`-tunnel, use
+'rsync::USER@HOST/SRC'. For more information have a look at `rsync`(1).
  
 Detailled description of "verbose"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
