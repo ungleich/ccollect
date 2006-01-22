@@ -1,6 +1,7 @@
 - implement pre- and post-exec commands
    o For the general backup process
    o source specific
+   o what to do with return values?
 
 - Documentation
    - write/generate a manpage

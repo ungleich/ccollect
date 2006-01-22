@@ -4,6 +4,7 @@
 # Date: Mon Nov 14 11:45:11 CET 2005
 # Last Modified: (See ls -l or git)
 
+echo hier8
 #
 # where to find our configuration and temporary file
 #
@@ -34,6 +35,7 @@ add_name()
 {
    sed "s/^/\[$name\] /"
 }
+echo hier5
 
 #
 # Tell how to use us
@@ -57,6 +59,7 @@ usage()
    exit 0
 }
 
+echo hier4
 #
 # need at least intervall and one source or --all
 #
@@ -71,22 +74,23 @@ if [ ! -d "$CCOLLECT_CONF" ]; then
    echo "Configuration \"$CCOLLECT_CONF\" not found."
    exit 1
 fi
+echo hier3
 
 #
 # Filter arguments
 #
 
 INTERVALL=$1; shift
-
 i=1
 no_shares=0
 
+set -x
 while [ $i -le $# ]; do
    eval arg=\$$i
    
    if [ "$NO_MORE_ARGS" = 1 ]; then
         eval share_${no_shares}=\"$arg\"
-        no_shares=$[$no_shares+1]
+        no_shares=$(($no_shares+1))
    else
       case $arg in
          -a|--all)
@@ -106,12 +110,12 @@ while [ $i -le $# ]; do
             ;;
          *)
             eval share_${no_shares}=\"$arg\"
-            no_shares=$[$no_shares+1]
+            no_shares=$(($no_shares+1))
             ;;
       esac
    fi
 
-   i=$[$i+1]
+   i=$(($i+1))
 done
 
 #
@@ -120,6 +124,7 @@ done
 if [ "$VERBOSE" = 1 ]; then
    set -x
 fi
+echo hier4
 
 #
 # Look, if we should take ALL sources
@@ -137,10 +142,11 @@ if [ "$ALL" = 1 ]; then
    
    while read tmp; do
       eval share_${no_shares}=\"$tmp\"
-      no_shares=$[$no_shares+1]
+      no_shares=$(($no_shares+1))
    done < "$TMP"
 fi
 
+echo hier6
 #
 # Need at least ONE source to backup
 #
@@ -174,7 +180,7 @@ while [ "$i" -lt "$no_shares" ]; do
    # Get current share
    #
    eval name=\$share_${i}
-   i=$[$i+1]
+   i=$(($i+1))
 
    export name
 
@@ -205,6 +211,9 @@ while [ "$i" -lt "$no_shares" ]; do
    c_verbose="$backup/verbose"
    c_vverbose="$backup/very_verbose"
    c_rsync_extra="$backup/rsync_options"
+
+   c_pre_exec="$backup/pre_exec"
+   c_post_exec="$backup/post_exec"
 
    echo "Beginning to backup this source ..."
 
@@ -260,7 +269,14 @@ while [ "$i" -lt "$no_shares" ]; do
       echo "Destination $c_dest does not link to a directory. Skipping"
       exit 1
    fi
-
+   
+   #
+   # pre_exec
+   #
+   if [ -x "$c_pre_exec" ]; then
+      "$pre_exec"
+   fi
+   
    # exclude
    if [ -f "$c_exclude" ]; then
       EXCLUDE="--exclude-from=$c_exclude"
@@ -346,6 +362,12 @@ while [ "$i" -lt "$no_shares" ]; do
    fi
 
    echo "Successfully finished backup."
+   #
+   # post_exec
+   #
+   if [ -x "$c_post_exec" ]; then
+      "$post_exec"
+   fi
 
 ) | add_name
 done
