@@ -46,15 +46,16 @@ usage()
    echo "   ccollect creates (pseudo) incremental backups"
    echo ""
    echo "   -h, --help:          Show this help screen"
-   echo "   -p, --parallel:      Parellize backup process"
+   echo "   -p, --parallel:      Parallelise backup processes"
    echo "   -a, --all:           Backup all sources specified in $CSOURCES"
-   echo "   -v, --verbose:       Be very verbose."
+   echo "   -v, --verbose:       Be very verbose (uses set -x)."
    echo ""
-   echo "   Retrieve latest ccollect at http://linux.schottelius.org/ccollect/."
    echo ""
-   echo "   Version: $FULL_VERSION"
+   echo "   On 2005-12-05 ccollect was written by Nico Schottelius."
    echo ""
-   echo "   Initial Version written on 2005-12-06 by Nico Schottelius"
+   echo "   This is version $VERSION, released at ${RELEASE}."
+   echo ""
+   echo "   Retrieve latest ccollect at http://linux.schottelius.org/ccollect/"
    exit 0
 }
 
