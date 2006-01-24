@@ -15,8 +15,8 @@ CPOSTEXEC="$CDEFAULTS/post_exec"
 
 TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
 WE=$(basename $0)
-VERSION=0.3
-RELEASE="2006-01-22"
+VERSION=0.3.1
+RELEASE="2006-XX-XX"
 
 #
 # unset parallel execution
@@ -206,6 +206,7 @@ while [ "$i" -lt "$no_shares" ]; do
    c_verbose="$backup/verbose"
    c_vverbose="$backup/very_verbose"
    c_rsync_extra="$backup/rsync_options"
+   c_summary="$backup/summary"
 
    c_pre_exec="$backup/pre_exec"
    c_post_exec="$backup/post_exec"
@@ -239,12 +240,13 @@ while [ "$i" -lt "$no_shares" ]; do
    fi
 
    #
-   # standard rsync options
+   # unset possible options
    #
-   VERBOSE=""
-   VVERBOSE=""
    EXCLUDE=""
    RSYNC_EXTRA=""
+   SUMMARY=""
+   VERBOSE=""
+   VVERBOSE=""
 
    #
    # next configuration checks
@@ -287,6 +289,11 @@ while [ "$i" -lt "$no_shares" ]; do
    # verbosity for rsync
    if [ -f "$c_verbose" ]; then
       VERBOSE="-v"
+   fi
+   
+   # Output a summary
+   if [ -f "$c_summary" ]; then
+      SUMMARY="--stats"
    fi
    
    # MORE verbosity, includes standard verbosity
@@ -349,7 +356,7 @@ while [ "$i" -lt "$no_shares" ]; do
    
    echo "Transferring files..."
 
-   rsync -a $VERBOSE $RSYNC_EXTRA $EXCLUDE \
+   rsync -a $VERBOSE $RSYNC_EXTRA $EXCLUDE $SUMMARY \
       --delete --numeric-ids --relative --delete-excluded \
       "$source" "$destination_dir"
    
