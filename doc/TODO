@@ -1,3 +1,6 @@
+- update documentation:
+   - exit pre/post exec -> error codes (after implementation!)
+   - summary support -> release 0.3.1
 - write mkccollectconfig
    o create source configuration
    o another script for changing defaults

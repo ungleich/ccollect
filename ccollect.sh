@@ -14,9 +14,10 @@ CPREEXEC="$CDEFAULTS/pre_exec"
 CPOSTEXEC="$CDEFAULTS/post_exec"
 
 TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
-WE=$(basename $0)
 VERSION=0.3.1
 RELEASE="2006-XX-XX"
+HALF_VERSION="ccollect $VERSION"
+FULL_VERSION="ccollect $VERSION ($RELEASE)"
 
 #
 # unset parallel execution
@@ -40,11 +41,9 @@ add_name()
 #
 usage()
 {
-   echo "$WE: <intervall name> [args] <sources to backup>"
+   echo "$(basename $0): <intervall name> [args] <sources to backup>"
    echo ""
-   echo "   Nico Schottelius (nico-linux-ccollect schottelius.org) - 2005-12-06"
-   echo ""
-   echo "   Backup data pseudo incremental"
+   echo "   ccollect creates (pseudo) incremental backups"
    echo ""
    echo "   -h, --help:          Show this help screen"
    echo "   -p, --parallel:      Parellize backup process"
@@ -53,7 +52,9 @@ usage()
    echo ""
    echo "   Retrieve latest ccollect at http://linux.schottelius.org/ccollect/."
    echo ""
-   echo "   Version: $VERSION ($RELEASE, Grey Sunday Release)"
+   echo "   Version: $FULL_VERSION"
+   echo ""
+   echo "   Initial Version written on 2005-12-06 by Nico Schottelius"
    exit 0
 }
 
@@ -146,7 +147,7 @@ fi
 if [ "$no_shares" -lt 1 ]; then
    usage   
 else
-   echo "==> $WE: Beginning backup using intervall $INTERVALL <=="
+   echo "==> $HALF_VERSION: Beginning backup using intervall $INTERVALL <=="
 fi
 
 #
