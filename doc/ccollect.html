@@ -262,8 +262,8 @@ div.exampleblock-content {
 <h1>ccollect - Installing, Configuring and Using</h1>
 <span id="author">Nico Schottelius</span><br />
 <span id="email"><tt>&lt;<a href="mailto:nico-linux-ccollect__@__schottelius.org">nico-linux-ccollect__@__schottelius.org</a>&gt;</tt></span><br />
-<span id="revision">version 0.3.0,</span>
-for ccollect 0.3, Initial Version from 2005-01-13
+<span id="revision">version 0.3.1,</span>
+for ccollect 0.3.1, Initial Version from 2005-01-13
 </div>
 <div id="preamble">
 <div class="sectionbody">
@@ -430,6 +430,11 @@ will start <tt>pre_exec</tt> before the whole backup process and
 </li>
 <li>
 <p>
+<tt>summary</tt>       create a transfer summary when <tt>rsync</tt> finished
+</p>
+</li>
+<li>
+<p>
 <tt>exclude</tt>       exclude list for <tt>rsync</tt>. newline (<em>\n</em>) seperated list.
 </p>
 </li>
@@ -492,7 +497,41 @@ To use the <tt>rsync</tt> protocol without the <tt>ssh</tt>-tunnel, use
 <div class="content">
 <pre><tt>   [23:67] nohost:~% touch conf/sources/testsource1/very_verbose</tt></pre>
 </div></div>
-<h4>4.3.4. Detailled description of "exclude"</h4>
+<h4>4.3.4. Detailled description of "summary"</h4>
+<p>If you create the file <tt>summary</tt> below the source definition,
+<tt>ccollect</tt> will present you with a nice summary at the end.</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>backup:~# touch /etc/ccollect/sources/root/summary
+backup:~# ccollect.sh werktags root
+==&gt; ccollect.sh: Beginning backup using intervall werktags &lt;==
+[root] Beginning to backup this source ...
+[root] Currently 3 backup(s) exist, total keeping 50 backup(s).
+[root] Beginning to backup, this may take some time...
+[root] Hard linking...
+[root] Transferring files...
+[root]
+[root] Number of files: 84183
+[root] Number of files transferred: 32
+[root] Total file size: 26234080536 bytes
+[root] Total transferred file size: 9988252 bytes
+[root] Literal data: 9988252 bytes
+[root] Matched data: 0 bytes
+[root] File list size: 3016771
+[root] File list generation time: 1.786 seconds
+[root] File list transfer time: 0.000 seconds
+[root] Total bytes sent: 13009119
+[root] Total bytes received: 2152
+[root]
+[root] sent 13009119 bytes  received 2152 bytes  2891393.56 bytes/sec
+[root] total size is 26234080536  speedup is 2016.26
+[root] Successfully finished backup.
+==&gt; Finished ccollect.sh &lt;==</tt></pre>
+</div></div>
+<p>You could also combine it with <tt>verbose</tt> or <tt>very_verbose</tt>, but they
+already print some statistics (but not all / the same as presented by
+<tt>summary</tt>).</p>
+<h4>4.3.5. Detailled description of "exclude"</h4>
 <p><tt>exclude</tt> specifies a list of paths to exclude. The entries are new line (\n)
 seperated.</p>
 <p>Example:</p>
@@ -504,7 +543,7 @@ seperated.</p>
    etwas mit leerzeichenli
    something with spaces is not a problem</tt></pre>
 </div></div>
-<h4>4.3.5. Detailled description of "destination"</h4>
+<h4>4.3.6. Detailled description of "destination"</h4>
 <p><tt>destination</tt> must be a link to the destination directory.</p>
 <p>Example:</p>
 <div class="listingblock">
@@ -512,7 +551,7 @@ seperated.</p>
 <pre><tt>   [11:36] zaphodbeeblebrox:ccollect-0.2% ls -l conf/sources/testsource2/destination
    lrwxrwxrwx  1 nico users 20 2005-11-17 16:44 conf/sources/testsource2/destination -&gt; /home/nico/backupdir</tt></pre>
 </div></div>
-<h4>4.3.6. Detailled description of "intervalls/"</h4>
+<h4>4.3.7. Detailled description of "intervalls/"</h4>
 <p>When you create a subdirectory <tt>intervalls/</tt> within your source configuration
 directory, you can specify individiual intervalls for this specific source.
 Each file below this directory describes an intervall.</p>
@@ -527,7 +566,7 @@ Each file below this directory describes an intervall.</p>
    5
    20</tt></pre>
 </div></div>
-<h4>4.3.7. Detailled description of "rsync_options"</h4>
+<h4>4.3.8. Detailled description of "rsync_options"</h4>
 <p>When you create the file <tt>rsync_options</tt> below your source configuration,
 all the parameters found in this file will be passed to rsync. This
 way you can pass additional options to rsync. For instance you can tell rsync
@@ -539,7 +578,7 @@ to use for automatic backup over the rsync-protocol.</p>
 <pre><tt>   [23:42] hydrogenium:ccollect-0.2% cat conf/sources/test_rsync/rsync_options
    --password-file=/home/user/backup/protected_password_file</tt></pre>
 </div></div>
-<h4>4.3.8. Detailled description of "pre_exec" and "post_exec"</h4>
+<h4>4.3.9. Detailled description of "pre_exec" and "post_exec"</h4>
 <p>When you create <tt>pre_exec</tt> and / or <tt>post_exec</tt> below your source
 configuration, <tt>ccollect</tt> will execute this command before,
 respective after doing the backup for <strong>this specific</strong> source.
@@ -748,8 +787,8 @@ srwali01:/etc/ccollect/sources# du -sh /mnt/hdbackup/wl6/*
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.3.0<br />
-Last updated 22-Jan-2006 13:32:34 CEST
+Version 0.3.1<br />
+Last updated 25-Jan-2006 00:12:06 CEST
 </div>
 </div>
 </body>

@@ -1,7 +1,7 @@
 ccollect - Installing, Configuring and Using
 ============================================
 Nico Schottelius <nico-linux-ccollect__@__schottelius.org>
-0.3.0, for ccollect 0.3, Initial Version from 2005-01-13
+0.3.1, for ccollect 0.3.1, Initial Version from 2005-01-13
 :Author Initials: NS
 
 (pseudo) incremental backup
@@ -150,6 +150,8 @@ Additionally a source may have the following files:
 
    - `verbose`       whether to be verbose (passes -v to `rsync`)
    - `very_verbose`  be very verbose (-v also for `mkdir`, `cp`, `rm`)
+   - `summary`       create a transfer summary when `rsync` finished
+
    - `exclude`       exclude list for `rsync`. newline ('\n') seperated list.
    - `rsync_options' extra options to pass to `rsync`
 
@@ -207,6 +209,44 @@ Example:
 --------------------------------------------------------------------------------
    [23:67] nohost:~% touch conf/sources/testsource1/very_verbose
 --------------------------------------------------------------------------------
+
+Detailled description of "summary"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you create the file `summary` below the source definition,
+`ccollect` will present you with a nice summary at the end.
+
+-------------------------------------------------------------------------------
+backup:~# touch /etc/ccollect/sources/root/summary
+backup:~# ccollect.sh werktags root
+==> ccollect.sh: Beginning backup using intervall werktags <==
+[root] Beginning to backup this source ...
+[root] Currently 3 backup(s) exist, total keeping 50 backup(s).
+[root] Beginning to backup, this may take some time...
+[root] Hard linking...
+[root] Transferring files...
+[root] 
+[root] Number of files: 84183
+[root] Number of files transferred: 32
+[root] Total file size: 26234080536 bytes
+[root] Total transferred file size: 9988252 bytes
+[root] Literal data: 9988252 bytes
+[root] Matched data: 0 bytes
+[root] File list size: 3016771
+[root] File list generation time: 1.786 seconds
+[root] File list transfer time: 0.000 seconds
+[root] Total bytes sent: 13009119
+[root] Total bytes received: 2152
+[root] 
+[root] sent 13009119 bytes  received 2152 bytes  2891393.56 bytes/sec
+[root] total size is 26234080536  speedup is 2016.26
+[root] Successfully finished backup.
+==> Finished ccollect.sh <==
+-------------------------------------------------------------------------------
+
+You could also combine it with `verbose` or `very_verbose`, but they
+already print some statistics (but not all / the same as presented by
+`summary`).
 
 
 Detailled description of "exclude"
