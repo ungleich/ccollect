@@ -14,8 +14,8 @@ CPREEXEC="$CDEFAULTS/pre_exec"
 CPOSTEXEC="$CDEFAULTS/post_exec"
 
 TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
-VERSION=0.3.1
-RELEASE="2006-XX-XX"
+VERSION=0.3.2
+RELEASE="2006-CHANGE-IT-THIS-TIME-NICO"
 HALF_VERSION="ccollect $VERSION"
 FULL_VERSION="ccollect $VERSION ($RELEASE)"
 
@@ -213,7 +213,10 @@ while [ "$i" -lt "$no_shares" ]; do
    c_pre_exec="$backup/pre_exec"
    c_post_exec="$backup/post_exec"
 
-   echo "Beginning to backup this source ..."
+   begin=$(date)
+   begin_s=$(date +%s)
+
+   echo "$begin Beginning to backup"
 
    #
    # Standard configuration checks
@@ -367,16 +370,26 @@ while [ "$i" -lt "$no_shares" ]; do
       exit 1
    fi
 
-   echo "Successfully finished backup."
+   echo "$(date) Successfully finished backup"
 
    #
    # post_exec
    #
    if [ -x "$c_post_exec" ]; then
-      echo "Executing $c_post_exec ..."
+      echo "$(date) Executing $c_post_exec ..."
       "$c_post_exec"
-      echo "Finished ${c_post_exec}."
+      echo "$(date) Finished ${c_post_exec}."
    fi
+
+   end_s=$(date +%s)
+
+   full_seconds=$(echo "$end_s - $begin_s" | bc -l)
+   hours=$(echo $full_seconds / 3600 | bc)
+   seconds=$(echo "$full_seconds - ($hours * 3600)" | bc)
+   minutes=$(echo $seconds / 60 | bc)
+   seconds=$(echo "$seconds - ($minutes * 60)" | bc)
+
+   echo "Backup lasted: ${hours}:$minutes:$seconds (h:m:s)"
 
 ) | add_name
 done
