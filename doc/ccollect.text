@@ -445,7 +445,7 @@ to 'source/exclude'. (Daniel Aubry reported this problem)
 Why does ccollect say "Permission denied" with my pre-/postexec script?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The most common error is to not give your script the correct
-permissions. Try `chmod 0755 '/etc/ccollect/sources/yoursource/*_exec'`.
+permissions. Try `chmod 0755 /etc/ccollect/sources/'yoursource'/*_exec``.
 
 
 Examples

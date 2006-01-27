@@ -392,17 +392,16 @@ This number defines how many versions of this intervall to keep.</p>
 <em>/etc/ccollect/defaults/<tt>pre_exec</tt></em> (same with <tt>post_exec</tt>), <tt>ccollect</tt>
 will start <tt>pre_exec</tt> before the whole backup process and
 <tt>post_exec</tt> after backup of all sources is done.</p>
-<p>Example:</p>
+<p>The following Example describes how to report free disk space in
+human readable format before and after the whole backup process:</p>
 <div class="listingblock">
 <div class="content">
 <pre><tt>[13:00] hydrogenium:~# mkdir -p /etc/ccollect/defaults/
-[13:00] hydrogenium:~# echo '!/bin/sh' &gt; /etc/ccollect/defaults/pre_exec
-[13:01] hydrogenium:~# echo '' &gt; /etc/ccollect/defaults/pre_exec
-[13:01] hydrogenium:~# echo '!/bin/sh' &gt; /etc/ccollect/defaults/pre_exec
-[13:01] hydrogenium:~# echo '' &gt;&gt; /etc/ccollect/defaults/pre_exec
-[13:01] hydrogenium:~# echo 'df -h' &gt;&gt; /etc/ccollect/defaults/pre_exec
+[13:00] hydrogenium:~# echo '!/bin/sh' &gt;  /etc/ccollect/defaults/pre_exec
+[13:01] hydrogenium:~# echo ''         &gt;&gt; /etc/ccollect/defaults/pre_exec
+[13:01] hydrogenium:~# echo 'df -h'    &gt;&gt; /etc/ccollect/defaults/pre_exec
 [13:01] hydrogenium:~# chmod 0755 /etc/ccollect/defaults/pre_exec
-[13:01] hydrogenium:~# cp /etc/ccollect/defaults/pre_exec /etc/ccollect/defaults/post_exec</tt></pre>
+[13:01] hydrogenium:~# ln -s /etc/ccollect/defaults/pre_exec /etc/ccollect/defaults/post_exec</tt></pre>
 </div></div>
 <h3>4.3. Source configuration</h3>
 <p>Each source configuration exists below <em>$CCOLLECT_CONF/sources/$name</em> or
@@ -711,7 +710,7 @@ even a good idea when thinking of security) add the <tt>destination</tt>
 to <em>source/exclude</em>. (Daniel Aubry reported this problem)</p>
 <h3>6.3. Why does ccollect say "Permission denied" with my pre-/postexec script?</h3>
 <p>The most common error is to not give your script the correct
-permissions. Try <tt>chmod 0755 <em>/etc/ccollect/sources/yoursource/*_exec</em></tt>.</p>
+permissions. Try <tt>chmod 0755 /etc/ccollect/sources/<em>yoursource</em>/*_exec</tt>`.</p>
 </div>
 <h2>7. Examples</h2>
 <div class="sectionbody">
@@ -813,7 +812,7 @@ the hardlinks allocate.</p>
 <div id="footer">
 <div id="footer-text">
 Version 0.3.1<br />
-Last updated 27-Jan-2006 22:01:39 CEST
+Last updated 27-Jan-2006 23:07:06 CEST
 </div>
 </div>
 </body>
