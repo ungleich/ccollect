@@ -1,19 +1,18 @@
 - update documentation:
-   - exit pre/post exec -> error codes (after implementation!)
-   - summary support -> release 0.3.1
+   - exit pre/post exec -> error codes (after implementation!) (in 0.4)
 - write mkccollectconfig
    o create source configuration
    o another script for changing defaults
       x intervalls
       x pre-/post exec
-   o dialog based?
+   o (X)dialog based
 
 - implement pre- and post-exec commands
    o what to do with return values?
+   -> Check them, abort on error
 
 - Documentation
    - write/generate a manpage
-   - rsync_options \n seperated
 
 
 DONE
@@ -29,6 +28,7 @@ DONE
    - write a simple manual
    - Hints section
    - add note to --exclude=/proc/ vs. --exclude=/proc/*
+   - rsync_options \n seperated
 - implement pre- and post-exec commands
    o For the general backup process
    o source specific
