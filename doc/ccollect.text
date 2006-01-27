@@ -123,16 +123,15 @@ If you add '$CCOLLECT_CONF/defaults/`pre_exec`' or
 will start `pre_exec` before the whole backup process and
 `post_exec` after backup of all sources is done.
 
-Example:
+The following Example describes how to report free disk space in
+human readable format before and after the whole backup process:
 -------------------------------------------------------------------------
 [13:00] hydrogenium:~# mkdir -p /etc/ccollect/defaults/
-[13:00] hydrogenium:~# echo '!/bin/sh' > /etc/ccollect/defaults/pre_exec
-[13:01] hydrogenium:~# echo '' > /etc/ccollect/defaults/pre_exec 
-[13:01] hydrogenium:~# echo '!/bin/sh' > /etc/ccollect/defaults/pre_exec
-[13:01] hydrogenium:~# echo '' >> /etc/ccollect/defaults/pre_exec       
-[13:01] hydrogenium:~# echo 'df -h' >> /etc/ccollect/defaults/pre_exec
+[13:00] hydrogenium:~# echo '!/bin/sh' >  /etc/ccollect/defaults/pre_exec
+[13:01] hydrogenium:~# echo ''         >> /etc/ccollect/defaults/pre_exec 
+[13:01] hydrogenium:~# echo 'df -h'    >> /etc/ccollect/defaults/pre_exec
 [13:01] hydrogenium:~# chmod 0755 /etc/ccollect/defaults/pre_exec
-[13:01] hydrogenium:~# cp /etc/ccollect/defaults/pre_exec /etc/ccollect/defaults/post_exec
+[13:01] hydrogenium:~# ln -s /etc/ccollect/defaults/pre_exec /etc/ccollect/defaults/post_exec
 -------------------------------------------------------------------------
 
 Source configuration
@@ -513,6 +512,7 @@ Using hard-links requires less disk space
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -------------------------------------------------------------------------
+# du (coreutils) 5.2.1
 [10:53] srsyg01:sources% du -sh ~/backupdir 
 4.6M    /home/nico/backupdir
 [10:53] srsyg01:sources% du -sh ~/backupdir/*
@@ -529,3 +529,23 @@ srwali01:/etc/ccollect/sources# du -sh /mnt/hdbackup/wl6/*
 147M    /mnt/hdbackup/wl6/taeglich.2005-12-08-14:42.312
 147M    /mnt/hdbackup/wl6/taeglich.2005-12-08-14:45.588
 -------------------------------------------------------------------------
+
+Newer versions of du also detect the hardlinks, so we can even compare
+the sizes directly with du:
+-------------------------------------------------------------------------
+[8:16] eiche:~# du --version | head -n 1
+du (GNU coreutils) 5.93
+[8:17] eiche:schwarzesloch# du -slh hydrogenium/*                                  
+19G     hydrogenium/durcheinander.0
+18G     hydrogenium/durcheinander.2006-01-17-00:27.13820
+19G     hydrogenium/durcheinander.2006-01-25-23:18.31328
+19G     hydrogenium/durcheinander.2006-01-26-00:11.3332
+[8:22] eiche:schwarzesloch# du -sh hydrogenium/* 
+19G     hydrogenium/durcheinander.0
+12G     hydrogenium/durcheinander.2006-01-17-00:27.13820
+1.5G    hydrogenium/durcheinander.2006-01-25-23:18.31328
+200M    hydrogenium/durcheinander.2006-01-26-00:11.3332
+-------------------------------------------------------------------------
+
+In the second report the sizes include the space the inodes of
+the hardlinks allocate.

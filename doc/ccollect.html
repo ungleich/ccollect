@@ -328,6 +328,11 @@ for rebuilding the generated documentation: additionally <tt>asciidoc</tt>
 </li>
 <li>
 <p>
+<tt>date</tt>
+</p>
+</li>
+<li>
+<p>
 <tt>rsync</tt>
 </p>
 </li>
@@ -768,7 +773,8 @@ srwali01:/etc/ccollect/sources/srwali03# mkdir /mnt/hdbackup/srwali03</tt></pre>
 <h3>7.2. Using hard-links requires less disk space</h3>
 <div class="listingblock">
 <div class="content">
-<pre><tt>[10:53] srsyg01:sources% du -sh ~/backupdir
+<pre><tt># du (coreutils) 5.2.1
+[10:53] srsyg01:sources% du -sh ~/backupdir
 4.6M    /home/nico/backupdir
 [10:53] srsyg01:sources% du -sh ~/backupdir/*
 4.1M    /home/nico/backupdir/daily.2005-12-08-10:52.28456
@@ -784,11 +790,30 @@ srwali01:/etc/ccollect/sources# du -sh /mnt/hdbackup/wl6/*
 147M    /mnt/hdbackup/wl6/taeglich.2005-12-08-14:42.312
 147M    /mnt/hdbackup/wl6/taeglich.2005-12-08-14:45.588</tt></pre>
 </div></div>
+<p>Newer versions of du also detect the hardlinks, so we can even compare
+the sizes directly with du:</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>[8:16] eiche:~# du --version | head -n 1
+du (GNU coreutils) 5.93
+[8:17] eiche:schwarzesloch# du -slh hydrogenium/*
+19G     hydrogenium/durcheinander.0
+18G     hydrogenium/durcheinander.2006-01-17-00:27.13820
+19G     hydrogenium/durcheinander.2006-01-25-23:18.31328
+19G     hydrogenium/durcheinander.2006-01-26-00:11.3332
+[8:22] eiche:schwarzesloch# du -sh hydrogenium/*
+19G     hydrogenium/durcheinander.0
+12G     hydrogenium/durcheinander.2006-01-17-00:27.13820
+1.5G    hydrogenium/durcheinander.2006-01-25-23:18.31328
+200M    hydrogenium/durcheinander.2006-01-26-00:11.3332</tt></pre>
+</div></div>
+<p>In the second report the sizes include the space the inodes of
+the hardlinks allocate.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.3.1<br />
-Last updated 25-Jan-2006 00:15:41 CEST
+Last updated 27-Jan-2006 22:01:39 CEST
 </div>
 </div>
 </body>
