@@ -366,7 +366,7 @@ while [ "$i" -lt "$no_shares" ]; do
       "$source" "$destination_dir"
    
    if [ "$?" -ne 0 ]; then
-      echo "rsync failed, backup may be broken (see rsync errors)"
+      echo "rsync reported an error. The backup may be broken (see rsync errors)"
       exit 1
    fi
 
