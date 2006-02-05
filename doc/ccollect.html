@@ -789,6 +789,28 @@ srwali01:/etc/ccollect/sources# du -sh /mnt/hdbackup/wl6/*
 147M    /mnt/hdbackup/wl6/taeglich.2005-12-08-14:42.312
 147M    /mnt/hdbackup/wl6/taeglich.2005-12-08-14:45.588</tt></pre>
 </div></div>
+<p>The backup of our main fileserver:</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>backup:~# df -h /home/backup/srsyg01/
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/mapper/backup--01-srsyg01
+                      591G  451G  111G  81% /home/backup/srsyg01
+backup:~# du -sh /home/backup/srsyg01/*
+432G    /home/backup/srsyg01/daily.2006-01-24-01:00.15990
+432G    /home/backup/srsyg01/daily.2006-01-26-01:00.30152
+434G    /home/backup/srsyg01/daily.2006-01-27-01:00.4596
+435G    /home/backup/srsyg01/daily.2006-01-28-01:00.11998
+437G    /home/backup/srsyg01/daily.2006-01-29-01:00.19115
+437G    /home/backup/srsyg01/daily.2006-01-30-01:00.26405
+438G    /home/backup/srsyg01/daily.2006-01-31-01:00.1148
+439G    /home/backup/srsyg01/daily.2006-02-01-01:00.8321
+439G    /home/backup/srsyg01/daily.2006-02-02-01:00.15383
+439G    /home/backup/srsyg01/daily.2006-02-03-01:00.22567
+16K     /home/backup/srsyg01/lost+found
+backup:~# du --version | head -n1
+du (coreutils) 5.2.1</tt></pre>
+</div></div>
 <p>Newer versions of du also detect the hardlinks, so we can even compare
 the sizes directly with du:</p>
 <div class="listingblock">
@@ -812,7 +834,7 @@ the hardlinks allocate.</p>
 <div id="footer">
 <div id="footer-text">
 Version 0.3.1<br />
-Last updated 27-Jan-2006 23:07:06 CEST
+Last updated 05-Feb-2006 18:43:17 CEST
 </div>
 </div>
 </body>
