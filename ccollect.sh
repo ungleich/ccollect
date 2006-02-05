@@ -183,7 +183,7 @@ while [ "$i" -lt "$no_shares" ]; do
    # start ourself, if we want parallel execution
    #
    if [ "$PARALLEL" ]; then
-      $0 "$INTERVALL" "$name" &
+      "$0" "$INTERVALL" "$name" &
       continue
    fi
 
