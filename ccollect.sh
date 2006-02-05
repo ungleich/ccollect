@@ -311,7 +311,8 @@ while [ "$i" -lt "$no_shares" ]; do
    
    # the created directories are named $INTERVALL.$DA
    count=$(ls -d "$c_dest/${INTERVALL}."?*  2>/dev/null | wc -l)
-   echo "Currently $count backup(s) exist, total keeping $c_intervall backup(s)."
+   echo -n "Currently $count backup(s) exist(s),"
+   echo " total keeping $c_intervall backup(s)."
    
    if [ "$count" -ge "$c_intervall" ]; then
       substract=$(echo $c_intervall - 1 | bc)
