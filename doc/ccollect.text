@@ -26,7 +26,7 @@ your farm of webservers *to* a backup host somewhere else. One of
 your webservers gets compromised, then your backup server will be compromised,
 too. Think of it the other way round: The backup server (now behind a
 firewall using NAT and strong firewall rules) connects to the
-webservers and pulls the data to it. If someone gets access to the
+webservers and pulls the data *from* them. If someone gets access to the
 webserver, the person will perhaps not even see your machine. If
 he/she sees that there are connections from a host to the compromised
 machine, he/she will not be able to login to the backup machine.
