@@ -15,7 +15,7 @@ CPOSTEXEC="$CDEFAULTS/post_exec"
 
 TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
 VERSION=0.3.2
-RELEASE="2006-CHANGE-IT-THIS-TIME-NICO"
+RELEASE="2006-02-05"
 HALF_VERSION="ccollect $VERSION"
 FULL_VERSION="ccollect $VERSION ($RELEASE)"
 
@@ -50,10 +50,8 @@ usage()
    echo "   -a, --all:           Backup all sources specified in $CSOURCES"
    echo "   -v, --verbose:       Be very verbose (uses set -x)."
    echo ""
-   echo ""
-   echo "   On 2005-12-05 ccollect was written by Nico Schottelius."
-   echo ""
-   echo "   This is version $VERSION, released at ${RELEASE}."
+   echo "   This is version $VERSION, released on ${RELEASE}"
+   echo "   (the first version was written  on 2005-12-05 by Nico Schottelius)."
    echo ""
    echo "   Retrieve latest ccollect at http://linux.schottelius.org/ccollect/"
    exit 0
