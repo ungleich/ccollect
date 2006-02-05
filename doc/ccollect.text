@@ -26,8 +26,8 @@ your farm of webservers *to* a backup host somewhere else. One of
 your webservers gets compromised, then your backup server will be compromised,
 too. Think of it the other way round: The backup server (now behind a
 firewall using NAT and strong firewall rules) connects to the
-webservers and pulls the data *from* them. If someone gets access to the
-webserver, the person will perhaps not even see your machine. If
+webservers and pulls the data *from* them. If someone gets access to one
+of the webservers, the person will perhaps not even see your machine. If
 he/she sees that there are connections from a host to the compromised
 machine, he/she will not be able to login to the backup machine.
 All other backups are still secure.
@@ -38,7 +38,6 @@ Requirements
 
 Installing ccollect
 ~~~~~~~~~~~~~~~~~~~
-
 For the installation, you need at least
 
   - either `cp` and `chmod` or `install`
@@ -115,15 +114,15 @@ Example:
 --------------------------------------------------------------------------------
 This means to keep 28 daily backups, 12 monthly backups and 4 weekly.
 
+
 General pre- and post-execution
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 If you add '$CCOLLECT_CONF/defaults/`pre_exec`' or
 '/etc/ccollect/defaults/`pre_exec`' (same with `post_exec`), `ccollect`
 will start `pre_exec` before the whole backup process and
 `post_exec` after backup of all sources is done.
 
-The following Example describes how to report free disk space in
+The following example describes how to report free disk space in
 human readable format before and after the whole backup process:
 -------------------------------------------------------------------------
 [13:00] hydrogenium:~# mkdir -p /etc/ccollect/defaults/
@@ -133,6 +132,7 @@ human readable format before and after the whole backup process:
 [13:01] hydrogenium:~# chmod 0755 /etc/ccollect/defaults/pre_exec
 [13:01] hydrogenium:~# ln -s /etc/ccollect/defaults/pre_exec /etc/ccollect/defaults/post_exec
 -------------------------------------------------------------------------
+
 
 Source configuration
 ~~~~~~~~~~~~~~~~~~~~
@@ -158,6 +158,7 @@ Additionally a source may have the following files:
    - `pre_exec`      program to execute before backuping this source
    - `post_exec`     program to execute after backuping this source
 
+
 Example:
 --------------------------------------------------------------------------------
    [10:47] zaphodbeeblebrox:ccollect-0.2% ls -l  conf/sources/testsource2
@@ -179,6 +180,7 @@ Example:
    /home/nico/vpn
 --------------------------------------------------------------------------------
 
+
 Detailled description of "source"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 `source` describes a `rsync` compatible source (one line only).
@@ -187,16 +189,19 @@ For instance 'backup_user@foreign_host:/home/server/video'.
 To use the `rsync` protocol without the `ssh`-tunnel, use
 'rsync::USER@HOST/SRC'. For more information have a look at `rsync`(1).
  
+
 Detailled description of "verbose"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 `verbose` tells `ccollect` that the log should contain verbose messages.
 
 If this file exists in the source specification *-v* will be passed to `rsync`.
 
+
 Example:
 --------------------------------------------------------------------------------
    [11:35] zaphodbeeblebrox:ccollect-0.2% touch conf/sources/testsource1/verbose
 --------------------------------------------------------------------------------
+
 
 Detailled description of "very_verbose"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -205,10 +210,12 @@ Detailled description of "very_verbose"
 If this file exists in the source specification *-v* will be passed to
 `rsync`, `cp`, `rm` and `mkdir`.
 
+
 Example:
 --------------------------------------------------------------------------------
    [23:67] nohost:~% touch conf/sources/testsource1/very_verbose
 --------------------------------------------------------------------------------
+
 
 Detailled description of "summary"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -268,11 +275,16 @@ Detailled description of "destination"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 `destination` must be a link to the destination directory.
 
+
 Example:
 --------------------------------------------------------------------------------
    [11:36] zaphodbeeblebrox:ccollect-0.2% ls -l conf/sources/testsource2/destination 
    lrwxrwxrwx  1 nico users 20 2005-11-17 16:44 conf/sources/testsource2/destination -> /home/nico/backupdir
 --------------------------------------------------------------------------------
+
+To speak truth, this is not fully correct. `ccollect` will also backup
+your data, if `destination` is a directory. But do you really want to have
+a backup below /etc?
 
 
 Detailled description of "intervalls/"
@@ -280,6 +292,7 @@ Detailled description of "intervalls/"
 When you create a subdirectory `intervalls/` within your source configuration
 directory, you can specify individiual intervalls for this specific source.
 Each file below this directory describes an intervall.
+
 
 Example:
 --------------------------------------------------------------------------------
@@ -292,14 +305,15 @@ Example:
    20
 --------------------------------------------------------------------------------
 
+
 Detailled description of "rsync_options"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 When you create the file `rsync_options` below your source configuration,
 all the parameters found in this file will be passed to rsync. This
 way you can pass additional options to rsync. For instance you can tell rsync
 to show progress ("--progress") or which -password-file ("--password-file")
 to use for automatic backup over the rsync-protocol.
+
 
 Example:
 --------------------------------------------------------------------------------
@@ -307,14 +321,15 @@ Example:
    --password-file=/home/user/backup/protected_password_file
 --------------------------------------------------------------------------------
 
+
 Detailled description of "pre_exec" and "post_exec"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 When you create `pre_exec` and / or `post_exec` below your source
 configuration, `ccollect` will execute this command before,
 respective after doing the backup for *this specific* source.
 If you want to have pre-/post-exec before and after *all*
 backups, see above for general configuration.
+
 
 Example:
 --------------------------------------------------------------------------------
@@ -330,12 +345,12 @@ df -h
 df -h
 --------------------------------------------------------------------------------
 
+
 Hints
 -----
 
 Using rsync protocol without ssh
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 When you have a computer with little computing power, it may be useful to use
 rsync without ssh, directly using the rsync protocol
 (specify 'user@host::share' in `source`). You may wish to use
@@ -358,7 +373,6 @@ This hint was reported by Daniel Aubry.
 
 Not-excluding top-level directories
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 When you exclude "/proc" or "/mnt" from your backup, you may run into
 trouble when you restore your backup. When you use "/proc/\*" or "/mnt/\*"
 instead `ccollect` will backup empty directories.
@@ -374,10 +388,10 @@ This hint was reported by Marcus Wagner.
 
 Re-using already created rsync-backups
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 If you used `rsync` directly before you use `ccollect`, you can
 use this old backup as initial backup for `ccollect`: You
 simply move it into a subdirectory named "'intervall'.0".
+
 
 Example:
 -------------------------------------------------------------------------------
@@ -424,7 +438,6 @@ F.A.Q.
 
 What happens, if one backup is broken or empty?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 Let us assume, that one backup failed (connection broke or hard disk had
 some failures). So we've one backup in our history, which is incomplete.
 
@@ -433,7 +446,6 @@ The next time you use `ccollect`, it will transfer the missing files
 
 When backing up from localhost the destination is also included. Is this a bug?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 No. `ccollect` passes your source definition directly to `rsync`. It
 does not try to analyze it. So it actually does not know if a source
 comes from local harddisk or from a remote server. And it does not want
@@ -479,6 +491,7 @@ srwali01:/etc/ccollect/sources/local-root# ccollect.sh taeglich local-root
 |-> 0 backup(s) already exist, keeping 28 backup(s).
 --------------------------------------------------------------------------------
 
+
 After that, I added some more sources:
 --------------------------------------------------------------------------------
 srwali01:~# cd /etc/ccollect/sources
@@ -507,6 +520,7 @@ srwali01:/etc/ccollect/sources/srwali03# echo 'root@10.103.2.3:/' > source
 srwali01:/etc/ccollect/sources/srwali03# ln -s /mnt/hdbackup/srwali03 destination
 srwali01:/etc/ccollect/sources/srwali03# mkdir /mnt/hdbackup/srwali03
 --------------------------------------------------------------------------------
+
 
 Using hard-links requires less disk space
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -569,5 +583,5 @@ du (GNU coreutils) 5.93
 200M    hydrogenium/durcheinander.2006-01-26-00:11.3332
 -------------------------------------------------------------------------
 
-In the second report the sizes include the space the inodes of
+In the second report (without -l) the sizes include the space the inodes of
 the hardlinks allocate.

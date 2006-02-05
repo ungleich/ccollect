@@ -287,8 +287,8 @@ your farm of webservers <strong>to</strong> a backup host somewhere else. One of
 your webservers gets compromised, then your backup server will be compromised,
 too. Think of it the other way round: The backup server (now behind a
 firewall using NAT and strong firewall rules) connects to the
-webservers and pulls the data to it. If someone gets access to the
-webserver, the person will perhaps not even see your machine. If
+webservers and pulls the data <strong>from</strong> them. If someone gets access to one
+of the webservers, the person will perhaps not even see your machine. If
 he/she sees that there are connections from a host to the compromised
 machine, he/she will not be able to login to the backup machine.
 All other backups are still secure.</p>
@@ -392,7 +392,7 @@ This number defines how many versions of this intervall to keep.</p>
 <em>/etc/ccollect/defaults/<tt>pre_exec</tt></em> (same with <tt>post_exec</tt>), <tt>ccollect</tt>
 will start <tt>pre_exec</tt> before the whole backup process and
 <tt>post_exec</tt> after backup of all sources is done.</p>
-<p>The following Example describes how to report free disk space in
+<p>The following example describes how to report free disk space in
 human readable format before and after the whole backup process:</p>
 <div class="listingblock">
 <div class="content">
@@ -555,6 +555,9 @@ seperated.</p>
 <pre><tt>   [11:36] zaphodbeeblebrox:ccollect-0.2% ls -l conf/sources/testsource2/destination
    lrwxrwxrwx  1 nico users 20 2005-11-17 16:44 conf/sources/testsource2/destination -&gt; /home/nico/backupdir</tt></pre>
 </div></div>
+<p>To speak truth, this is not fully correct. <tt>ccollect</tt> will also backup
+your data, if <tt>destination</tt> is a directory. But do you really want to have
+a backup below /etc?</p>
 <h4>4.3.7. Detailled description of "intervalls/"</h4>
 <p>When you create a subdirectory <tt>intervalls/</tt> within your source configuration
 directory, you can specify individiual intervalls for this specific source.
@@ -828,13 +831,13 @@ du (GNU coreutils) 5.93
 1.5G    hydrogenium/durcheinander.2006-01-25-23:18.31328
 200M    hydrogenium/durcheinander.2006-01-26-00:11.3332</tt></pre>
 </div></div>
-<p>In the second report the sizes include the space the inodes of
+<p>In the second report (without -l) the sizes include the space the inodes of
 the hardlinks allocate.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.3.1<br />
-Last updated 05-Feb-2006 18:56:42 CEST
+Last updated 06-Feb-2006 00:46:09 CEST
 </div>
 </div>
 </body>
