@@ -341,7 +341,7 @@ while [ "$i" -lt "$no_shares" ]; do
 
    # only copy if a directory exists
    if [ "$last_dir" ]; then
-      echo "Hard linking..."
+      echo "$(date) Hard linking..."
       cp -al $VVERBOSE "$last_dir" "$destination_dir"
    else
       echo "Creating $destination_dir"
@@ -358,7 +358,7 @@ while [ "$i" -lt "$no_shares" ]; do
    # options partly stolen from rsnapshot
    #
    
-   echo "Transferring files..."
+   echo "$(date) Transferring files..."
 
    rsync -a $VERBOSE $RSYNC_EXTRA $EXCLUDE $SUMMARY \
       --delete --numeric-ids --relative --delete-excluded \
