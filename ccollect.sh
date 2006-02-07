@@ -349,7 +349,8 @@ while [ "$i" -lt "$no_shares" ]; do
    fi
 
    if [ $? -ne 0 ]; then
-      echo "Creating/cloning backup directory failed. Skipping backup."
+      echo -n "$(date) Creating/cloning backup directory failed."
+      echo " Skipping backup."
       exit 1
    fi
 
