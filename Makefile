@@ -45,7 +45,7 @@ update:
 
 push-work:
 	@cg-push creme
-	@cg-push main
+	@cg-push sygroup
 
 publish-doc: documentation
 	@chmod a+r doc/ccollect.html
