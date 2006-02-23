@@ -397,9 +397,9 @@ human readable format before and after the whole backup process:</p>
 <div class="listingblock">
 <div class="content">
 <pre><tt>[13:00] hydrogenium:~# mkdir -p /etc/ccollect/defaults/
-[13:00] hydrogenium:~# echo '!/bin/sh' &gt;  /etc/ccollect/defaults/pre_exec
-[13:01] hydrogenium:~# echo ''         &gt;&gt; /etc/ccollect/defaults/pre_exec
-[13:01] hydrogenium:~# echo 'df -h'    &gt;&gt; /etc/ccollect/defaults/pre_exec
+[13:00] hydrogenium:~# echo '#!/bin/sh' &gt;  /etc/ccollect/defaults/pre_exec
+[13:01] hydrogenium:~# echo ''          &gt;&gt; /etc/ccollect/defaults/pre_exec
+[13:01] hydrogenium:~# echo 'df -h'     &gt;&gt; /etc/ccollect/defaults/pre_exec
 [13:01] hydrogenium:~# chmod 0755 /etc/ccollect/defaults/pre_exec
 [13:01] hydrogenium:~# ln -s /etc/ccollect/defaults/pre_exec /etc/ccollect/defaults/post_exec</tt></pre>
 </div></div>
@@ -837,7 +837,7 @@ the hardlinks allocate.</p>
 <div id="footer">
 <div id="footer-text">
 Version 0.3.2<br />
-Last updated 06-Feb-2006 08:20:48 CEST
+Last updated 23-Feb-2006 09:42:20 CEST
 </div>
 </div>
 </body>

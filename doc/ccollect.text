@@ -1,7 +1,7 @@
 ccollect - Installing, Configuring and Using
 ============================================
 Nico Schottelius <nico-linux-ccollect__@__schottelius.org>
-0.3.2, for ccollect 0.3.2, Initial Version from 2005-01-13
+0.3.3, for ccollect 0.3.2, Initial Version from 2006-01-13
 :Author Initials: NS
 
 (pseudo) incremental backup
@@ -153,7 +153,7 @@ Additionally a source may have the following files:
    - `summary`       create a transfer summary when `rsync` finished
 
    - `exclude`       exclude list for `rsync`. newline ('\n') seperated list.
-   - `rsync_options' extra options to pass to `rsync`
+   - `rsync_options` extra options to pass to `rsync`
 
    - `pre_exec`      program to execute before backuping this source
    - `post_exec`     program to execute after backuping this source
@@ -187,7 +187,8 @@ Detailled description of "source"
  
 For instance 'backup_user@foreign_host:/home/server/video'.
 To use the `rsync` protocol without the `ssh`-tunnel, use
-'rsync::USER@HOST/SRC'. For more information have a look at `rsync`(1).
+'rsync::USER@HOST/SRC'. For more information have a look at the manpage
+of `rsync`,`rsync`(1).
  
 
 Detailled description of "verbose"
@@ -438,10 +439,15 @@ F.A.Q.
 
 What happens, if one backup is broken or empty?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Let us assume, that one backup failed (connection broke or hard disk had
-some failures). So we've one backup in our history, which is incomplete.
+Let us assume, that one backup failed (connection broke or the source
+hard disk had some failures). So we've one backup in our history,
+which is incomplete.
 
-The next time you use `ccollect`, it will transfer the missing files
+The next time you use `ccollect`, it will transfer the missing files.
+This leads to
+
+   - more transferred files
+   - much greater disk space usage, as no hardlinks can be used
 
 
 When backing up from localhost the destination is also included. Is this a bug?
