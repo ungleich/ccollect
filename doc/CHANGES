@@ -1,3 +1,6 @@
+0.3.2 to 0.3.3:
+   * Fix a small bug, which suppressed information when rsync exits non-zero
+
 0.3.1 to 0.3.2:
    * ccollect now prints the start time, end time and duration of the backup
    
