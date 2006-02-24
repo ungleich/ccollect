@@ -367,10 +367,9 @@ while [ "$i" -lt "$no_shares" ]; do
    
    if [ "$?" -ne 0 ]; then
       echo "rsync reported an error. The backup may be broken (see rsync errors)"
-      exit 1
    fi
 
-   echo "$(date) Successfully finished backup"
+   echo "$(date) Finished backup"
 
    #
    # post_exec

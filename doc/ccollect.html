@@ -262,8 +262,8 @@ div.exampleblock-content {
 <h1>ccollect - Installing, Configuring and Using</h1>
 <span id="author">Nico Schottelius</span><br />
 <span id="email"><tt>&lt;<a href="mailto:nico-linux-ccollect__@__schottelius.org">nico-linux-ccollect__@__schottelius.org</a>&gt;</tt></span><br />
-<span id="revision">version 0.3.2,</span>
-for ccollect 0.3.2, Initial Version from 2005-01-13
+<span id="revision">version 0.3.3,</span>
+for ccollect 0.3.2-0.3.3, Initial Version from 2006-01-13
 </div>
 <div id="preamble">
 <div class="sectionbody">
@@ -444,7 +444,7 @@ human readable format before and after the whole backup process:</p>
 </li>
 <li>
 <p>
-<tt>rsync_options' extra options to pass to `rsync</tt>
+<tt>rsync_options</tt> extra options to pass to <tt>rsync</tt>
 </p>
 </li>
 <li>
@@ -483,7 +483,8 @@ human readable format before and after the whole backup process:</p>
 <p><tt>source</tt> describes a <tt>rsync</tt> compatible source (one line only).</p>
 <p>For instance <em>backup_user@foreign_host:/home/server/video</em>.
 To use the <tt>rsync</tt> protocol without the <tt>ssh</tt>-tunnel, use
-<em>rsync::USER@HOST/SRC</em>. For more information have a look at <tt>rsync</tt>(1).</p>
+<em>rsync::USER@HOST/SRC</em>. For more information have a look at the manpage
+of <tt>rsync</tt>,<tt>rsync</tt>(1).</p>
 <h4>4.3.2. Detailled description of "verbose"</h4>
 <p><tt>verbose</tt> tells <tt>ccollect</tt> that the log should contain verbose messages.</p>
 <p>If this file exists in the source specification <strong>-v</strong> will be passed to <tt>rsync</tt>.</p>
@@ -701,9 +702,23 @@ an already written script
 <h2>6. F.A.Q.</h2>
 <div class="sectionbody">
 <h3>6.1. What happens, if one backup is broken or empty?</h3>
-<p>Let us assume, that one backup failed (connection broke or hard disk had
-some failures). So we've one backup in our history, which is incomplete.</p>
-<p>The next time you use <tt>ccollect</tt>, it will transfer the missing files</p>
+<p>Let us assume, that one backup failed (connection broke or the source
+hard disk had some failures). So we've one backup in our history,
+which is incomplete.</p>
+<p>The next time you use <tt>ccollect</tt>, it will transfer the missing files.
+This leads to</p>
+<ul>
+<li>
+<p>
+more transferred files
+</p>
+</li>
+<li>
+<p>
+much greater disk space usage, as no hardlinks can be used
+</p>
+</li>
+</ul>
 <h3>6.2. When backing up from localhost the destination is also included. Is this a bug?</h3>
 <p>No. <tt>ccollect</tt> passes your source definition directly to <tt>rsync</tt>. It
 does not try to analyze it. So it actually does not know if a source
@@ -836,8 +851,8 @@ the hardlinks allocate.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.3.2<br />
-Last updated 23-Feb-2006 09:42:20 CEST
+Version 0.3.3<br />
+Last updated 24-Feb-2006 09:41:07 CEST
 </div>
 </div>
 </body>
