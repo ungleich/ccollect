@@ -3,6 +3,9 @@ if [ $# -ne 1 ]; then
    exit 23
 fi
 
+echo "Did you change version and date information in the script?"
+read bla
+
 NAME=$1
 TARNAME=${NAME}.tar.bz2
 
