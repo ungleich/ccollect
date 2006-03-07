@@ -1,0 +1,166 @@
+ccollect- Installieren, Konfigurieren und Anwenden
+=================================================== 
+Julian Meier <julian.meier@julian.mkr-tech.ch>
+v0.1, 2006-03-04
+:Author Initials: JM
+
+inkrementelle Datensicherung
+mit 'hardlinks' und 'rsync'
+
+Einleitung
+---------- 
+'ccollect' ist ein Backuptool geschrieben in der sh-script Programmiersprache.
+Es braucht nichts besonderes nur die '/bin/sh' Konsole oder eine kompatible. 
+
+Installation
+------------
+
+Anforderungen
+~~~~~~~~~~~~
+
+.Die aufgelisteten Werkzeuge müssen für das Benutzen von ccollect installiert sein.
+- bc
+- cp
+- rsync
+- ssh
+- date
+
+Am besten überprüfen Sie das mit dem Befehl 'apt-get install bc rsync ssh'. Beim Fehlen eines Werkzeuges wird
+dieses nachinstalliert. 
+
+Installieren
+~~~~~~~~~~~~ 
+
+. Laden Sie sich die neuste Version von ccollect herunter. Diese finden Sie unter:
+'http://linux.schottelius.org/ccollect'
+. Wechseln Sie in der Konsole mit 'cd /$pfad/' in das Verzeichniss indem sich das ccollect Archiv befindet. 
+Entpacken Sie das Archiv mit 'tar xvfi ccollect-$version.tar.bz2'.
+Am Besten ist es, wenn Sie jetzt in das Verzeichniss mit den entpackten Daten wechseln:
+'cd '$pfad-ccollect-$version'
+. Danach kopieren Sie die Datei 'ccollect.sh' aus dem entpackten Archiv nach /usr/local/bin.
+Das geht mit dem Befehl 'cp ccollect.sh /usr/local/bin'. 
+. Nun ändern Sie die Rechte für die Datei damit jeder Benutzer das Programm verwenden kann.
+'chmod 0755 /usr/local/bin/ccollect.sh'
+. Erstellen Sie das Konfigurationsverzeichnis für ccollect. 'mkdir /etc/ccollect/'
+. Starten sie nun zum Testen das Programm ccollect mit dem Befehl `ccollect.sh` in der Konsole.
+
+Konfiguration
+-------------
+
+Konfigurationsverzeichnisse 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+Die Konfigurationsdaten befinden sich bei ccollect im oben erstellten Verzeichnis: '/etc/ccollect'.
+
+.Um ccollect optimal konfigurieren zu können brauchen Sie noch ein paar weitere Verzeichnisse.
+- '/etc/ccollect/defaults' mit:
+  'mkdir /etc/ccollect/defaults'
+- '/etc/ccollect/defaults/intervalls' mit:
+  'mkdir /etc/ccollect/defaults/intervalls'
+- '/etc/ccollect/sources' mit:
+  'mkdir /etc/ccollect/sources'
+
+Intervalle
+~~~~~~~~~~ 
+
+Der Intervall-Wert steht dafür wie viele Backup-Versionen ccollect von dem gesicherten behalten soll.
+Der Name der Datei mit dem Wert ist zugleich auch der Name des Intervalls.
+
+----------------------
+julian@flumy:/etc/ccollect/defaults/intervalls$ ls
+daily
+julian@flumy:/etc/ccollect/defaults/intervalls$ cat daily
+7
+julian@flumy:/etc/ccollect/defaults/intervalls$ 
+---------------------- 
+
+Intervall erstellen
+^^^^^^^^^^^^^^^^^^^^ 
+Sie erstellen einen Intervall wie folgt:
+
+. Wechseln Sie in das Intervall-Verzeichnis: 'cd /etc/ccollect/defaults/intervalls'.
+. Schreiben Sie die Intervalls mit dem Befehl 'echo "$wert" > $intervall-name' ins Verzeichnis.
+
+Sources
+~~~~~~~
+
+Mit Sourcen meint man bei 'ccollect' die Quelldaten. Der Wert einer 'source'-Datei
+verweist auf einen Pfad in dem sich die zu sichernden Daten befinden. 
+
+.Im Ordner '/etc/ccollect/sources/*' wird festgelegt: 
+- Der Sicherungs-Titel
+- Quell- und Ziel Verzeichnis/Datei
+- Spezielles
+
+Sicherungs-Titel
+^^^^^^^^^^^^^^^^ 
+Der Sicherungstitel ist der Name eines Ordners in /etc/ccollect/sources.
+
+
+Man erstellt also ein neue neue Sicherung mit dem Befehl 'mkdir /etc/ccollect/sources/$Sicherungs-Titel'.
+In diesem Verzeichnis folgen dann die spezifischen Konfigurationsdaten nur für diese Sicherung.
+
+Quelle
+~~~~~~  
+Mit Quelle ist gemeint welche Daten gesichert werden. 
+Dies geschieht mit der Konfigurationsdatei 'source'. 
+
+Diese liegt im Verzeichnis '/etc/ccollect/sources/$Sicherungs-Titel'.
+Wechseln Sie in das Verzeichnis mit dem Sicherungs-Titel und erstellen Sie die  Datei mit 'echo $/Quellpfad/ > source'. 
+
+Exclude
+^^^^^^^ 
+Es kann vorkommen das man in einem Verzeichniss alles sichern will bis auf ein paar Unterordner. 
+Für dieses Vorhaben gibt es die Datei 'exclude', die sich wiederum im Verzeichnis mit dem $Sicherungs-Titel befindet. 
+
+Die Datei wird mit folgenden Schritten angelegt:
+
+. 'echo $/Quellpfad/verzeichnis1 > exclude' Ein Pfad wird weggelassen.
+. 'echo $/Quellpfad/verzeichnis2 >> exclude' Ein weiterer Pfad der weggelassen wird. Das zweite '>' bewirkt 
+das noch was an die  'exclude'-Datei angefügt wird.
+
+Ziel
+~~~~ 
+Mit dem Ziel ist gemeint wohin die Sicherung gespeichert wird.
+Dies geschieht mit einer Verknüpfung die 'destination' heisst. 
+
+.Erstellen Sie diese mit den Befehlen
+- 'ln -s /Pfad/zum/Speicherort/ destination'
+- 'ls -l destination' Mit dem Befehl kann man die Richtigkeit der Verknüpfung überprüfen. 
+
+[IMPORTANT]
+==============================
+Es 
+darf 
+immer 
+nur
+eine
+'source',
+'destination',
+und
+'exclude'
+Datei
+vorhanden
+sein.
+==============================
+
+Spezielles
+~~~~~~~~~~ 
+
+Im Ordner '/etc/ccollect/sources/$Sicherung' kann man weitere Daten einfügen Optionen auszulösen.
+
+'verbose'::
+   Beim Sicherungsvorgang ausführlich berichten. ( '-v' für 'rsync')
+'very_verbose'::
+   Beim Sicherungsvorgang sehr ausführlich berichten. ('-v' für 'rsync', 'mkdir', 'cp' und 'rm')
+'summary'::
+   'ccollect' erstellt beim Beenden des Sicherungsvorganges eine Zusammenfassung des Geschehenen.
+'rsync_option':: 
+   Alle Befehle in dieser Datei zu 'rsync' werden ausgeführt beim Sicherungsvorgang.
+'pre_exec':: 
+   Die Befehle im Inhalt dieser Datei werden vor dem Backup ausgeführt.
+'post_exec'::
+   Die Befehle im Inhalt dieser Datei werden nach dem Backup ausgeführt.
+
+
+
