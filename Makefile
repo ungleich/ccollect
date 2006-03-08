@@ -7,7 +7,7 @@ INSTALL=install
 CCOLLECT=ccollect.sh
 LN=ln -sf
 
-prefix=/usr/packages/ccollect-0.2
+prefix=/usr/packages/ccollect-git
 bindir=$(prefix)/bin
 destination=$(bindir)/$(CCOLLECT)
 
@@ -34,8 +34,9 @@ install-script:
 	$(INSTALL) -D -m 0755 -s $(CCOLLECT) $(destination)
 
 documentation:
-	@echo "Generating HTML-documentation"
+	@echo "Generating HTML-documentation (en de) ..."
 	@asciidoc -n -o doc/ccollect.html  doc/ccollect.text
+	@asciidoc -n -o doc/ccollect-DE.html  doc/ccollect-DE.text
 
 #
 # Developer targets
@@ -48,6 +49,7 @@ push-work:
 	@cg-push sygroup
 
 publish-doc: documentation
-	@chmod a+r doc/ccollect.html
-	@scp doc/ccollect.html doc/ccollect.text $(host):$(docdir)
+	@echo "Transferring files to $(host)"
+	@chmod a+r doc/*.html doc/*.text
+	@scp doc/*.text doc/*.html $(host):$(docdir)
 
