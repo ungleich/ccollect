@@ -1,7 +1,7 @@
 ccollect- Installieren, Konfigurieren und Anwenden
 =================================================== 
 Julian Meier <julian.meier@julian.mkr-tech.ch>
-v0.1, 2006-03-04
+v0.1, Initiale Version vom 2006-03-04
 :Author Initials: JM
 
 inkrementelle Datensicherung
@@ -9,8 +9,8 @@ mit 'hardlinks' und 'rsync'
 
 Einleitung
 ---------- 
-'ccollect' ist ein Backuptool geschrieben in der sh-script Programmiersprache.
-Es braucht nichts besonderes nur die '/bin/sh' Konsole oder eine kompatible. 
+'ccollect' ist ein Backuptool geschrieben in der sh-skript Programmiersprache.
+Es braucht nichts besonderes nur die '/bin/sh'-Konsole (oder eine kompatible). 
 
 Installation
 ------------
