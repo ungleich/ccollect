@@ -22,8 +22,8 @@ Anforderungen
 - bc
 - cp
 - rsync
-- ssh
 - date
+- ssh (optional, wenn man ssh-Verbindungen nutzen moechte)
 
 Am besten überprüfen Sie das mit dem Befehl 'apt-get install bc rsync ssh'.
 Beim Fehlen eines Werkzeuges wird dieses nachinstalliert. 
