@@ -16,33 +16,37 @@ Installation
 ------------
 
 Anforderungen
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
-.Die aufgelisteten Werkzeuge müssen für das Benutzen von ccollect installiert sein.
+.Die aufgelisteten Werkzeuge müssen für das Benutzen von ccollect installiert sein:
 - bc
 - cp
 - rsync
 - ssh
 - date
 
-Am besten überprüfen Sie das mit dem Befehl 'apt-get install bc rsync ssh'. Beim Fehlen eines Werkzeuges wird
-dieses nachinstalliert. 
+Am besten überprüfen Sie das mit dem Befehl 'apt-get install bc rsync ssh'.
+Beim Fehlen eines Werkzeuges wird dieses nachinstalliert. 
 
 Installieren
 ~~~~~~~~~~~~ 
 
-. Laden Sie sich die neuste Version von ccollect herunter. Diese finden Sie unter:
-'http://linux.schottelius.org/ccollect'
-. Wechseln Sie in der Konsole mit 'cd /$pfad/' in das Verzeichniss indem sich das ccollect Archiv befindet. 
-Entpacken Sie das Archiv mit 'tar xvfi ccollect-$version.tar.bz2'.
-Am Besten ist es, wenn Sie jetzt in das Verzeichniss mit den entpackten Daten wechseln:
-'cd '$pfad-ccollect-$version'
-. Danach kopieren Sie die Datei 'ccollect.sh' aus dem entpackten Archiv nach /usr/local/bin.
-Das geht mit dem Befehl 'cp ccollect.sh /usr/local/bin'. 
-. Nun ändern Sie die Rechte für die Datei damit jeder Benutzer das Programm verwenden kann.
-'chmod 0755 /usr/local/bin/ccollect.sh'
-. Erstellen Sie das Konfigurationsverzeichnis für ccollect. 'mkdir /etc/ccollect/'
-. Starten sie nun zum Testen das Programm ccollect mit dem Befehl `ccollect.sh` in der Konsole.
+. Laden Sie sich die neuste Version von ccollect herunter.
+  Diese finden Sie unter: 'http://linux.schottelius.org/ccollect'
+. Wechseln Sie in der Konsole mit "cd 'Pfad" in das Verzeichniss,
+  indem sich das ccollect Archiv befindet. 
+  Entpacken Sie das Archiv mit "tar xvfj ccollect-$version.tar.bz2".
+  Am Besten ist es, wenn Sie jetzt in das Verzeichniss mit den
+  entpackten Daten wechseln: "cd 'pfad/'ccollect-'version'.
+. Danach kopieren Sie die Datei 'ccollect.sh' aus dem entpackten Archiv nach
+  /usr/local/bin. Das geht mit dem Befehl "cp ccollect.sh /usr/local/bin". 
+. Nun ändern Sie die Rechte für die Datei damit jeder Benutzer das
+  Programm verwenden kann:  "chmod 0755 /usr/local/bin/ccollect.sh"
+. Erstellen Sie nun das Konfigurationsverzeichnis für ccollect:
+  "mkdir /etc/ccollect/"
+. Starten sie nun zum Testen das Programm ccollect mit dem Befehl
+  `ccollect.sh` in der Konsole.
+
 
 Konfiguration
 -------------
