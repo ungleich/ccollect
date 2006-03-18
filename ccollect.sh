@@ -14,8 +14,8 @@ CPREEXEC="$CDEFAULTS/pre_exec"
 CPOSTEXEC="$CDEFAULTS/post_exec"
 
 TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
-VERSION=0.3.3
-RELEASE="2006-02-24"
+VERSION=0.4
+RELEASE="2006-XX-XX"
 HALF_VERSION="ccollect $VERSION"
 FULL_VERSION="ccollect $VERSION ($RELEASE)"
 
@@ -154,7 +154,7 @@ fi
 #
 
 D_FILE_INTERVALL="$CDEFAULTS/intervalls/$INTERVALL"
-D_INTERVALL=$(cat $D_FILE_INTERVALL 2>/dev/null)
+D_INTERVALL=$(cat "$D_FILE_INTERVALL" 2>/dev/null)
 
 #
 # Look for pre-exec command (general)
@@ -163,6 +163,11 @@ if [ -x "$CPREEXEC" ]; then
    echo "Executing $CPREEXEC ..."
    "$CPREEXEC"
    echo "Finished ${CPREEXEC}."
+
+   if [ $? -ne 0 ]; then
+      echo "$CPREEXEC failed, aborting backup."
+      exit 1
+   fi
 fi
 
 #
