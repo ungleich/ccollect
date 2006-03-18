@@ -591,3 +591,59 @@ du (GNU coreutils) 5.93
 
 In the second report (without -l) the sizes include the space the inodes of
 the hardlinks allocate.
+
+
+A collection of backups on the backup server
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+All the data of my important hosts is backuped to eiche into
+/mnt/schwarzesloch/backup:
+
+-------------------------------------------------------------------------
+[9:24] eiche:backup# ls *
+creme:
+woechentlich.2006-01-26-22:22.4153   woechentlich.2006-02-12-11:48.2461
+woechentlich.2006-01-26-22:23.4180   woechentlich.2006-02-18-23:00.7898
+woechentlich.2006-02-05-02:43.14281  woechentlich.2006-02-25-23:00.13480
+woechentlich.2006-02-06-00:24.15509  woechentlich.2006-03-04-23:00.25439
+
+hydrogenium:
+durcheinander.2006-01-27-11:16.6391   durcheinander.2006-02-13-01:07.2895
+durcheinander.2006-01-30-19:29.9505   durcheinander.2006-02-17-08:20.6707
+durcheinander.2006-01-30-22:27.9623   durcheinander.2006-02-24-16:24.12461
+durcheinander.2006-02-03-09:52.12885  durcheinander.2006-03-03-19:17.18075
+durcheinander.2006-02-05-23:00.15068  durcheinander.2006-03-17-22:41.5007
+
+scice:
+woechentlich.2006-02-04-10:32.13766  woechentlich.2006-02-16-23:00.6185
+woechentlich.2006-02-05-23:02.15093  woechentlich.2006-02-23-23:00.11783
+woechentlich.2006-02-06-08:22.15994  woechentlich.2006-03-02-23:00.17346
+woechentlich.2006-02-06-19:40.16321  woechentlich.2006-03-09-23:00.29317
+woechentlich.2006-02-12-11:51.2514   woechentlich.2006-03-16-23:00.4218
+-------------------------------------------------------------------------
+
+And this incremental backup and the archive are copied to an external
+usb harddisk:
+
+-------------------------------------------------------------------------
+[9:23] eiche:backup# df -h
+Filesystem            Size  Used Avail Use% Mounted on
+rootfs                 14G  8.2G  4.9G  63% /
+/dev/root              14G  8.2G  4.9G  63% /
+/dev/root              14G  8.2G  4.9G  63% /dev/.static/dev
+tmpfs                  10M  444K  9.6M   5% /dev
+/dev/hdh               29G  3.7M   29G   1% /mnt/datenklo
+tmpfs                 110M  4.0K  110M   1% /dev/shm
+/dev/mapper/nirvana   112G   90G   23G  81% /mnt/datennirvana
+/dev/mapper/schwarzes-loch
+                      230G  144G   86G  63% /mnt/schwarzesloch
+/dev/mapper/archiv     38G   20G   19G  52% /mnt/archiv
+/dev/mapper/usb-backup
+                      280G   36M  280G   1% /mnt/usb/backup
+[9:24] eiche:backup# cat ~/bin/sync-to-usb       
+DDIR=/mnt/usb/backup
+
+rsync -av --delete /mnt/schwarzesloch/ "$DDIR/schwarzesloch/"
+
+rsync -av --delete /mnt/archiv/ "$DDIR/archiv/"
+-------------------------------------------------------------------------
