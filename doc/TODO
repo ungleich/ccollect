@@ -1,3 +1,7 @@
+- Test pax
+   http://www.opengroup.org/onlinepubs/009695399/utilities/pax.html
+   Perhaps replace cp -al?
+
 - update documentation:
    - german doc?
    - exit pre/post exec -> error codes (after implementation!) (in 0.4)
