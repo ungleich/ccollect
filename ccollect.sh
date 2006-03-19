@@ -280,7 +280,7 @@ while [ "$i" -lt "$no_shares" ]; do
    #
    if [ -x "$c_pre_exec" ]; then
       echo "Executing $c_pre_exec ..."
-      $c_pre_exec
+      "$c_pre_exec"
       echo "Finished ${c_pre_exec}."
    fi
    
