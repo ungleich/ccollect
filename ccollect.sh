@@ -299,14 +299,14 @@ while [ "$i" -lt "$no_shares" ]; do
       RSYNC_EXTRA="$(cat "$c_rsync_extra")"
    fi
    
-   # verbosity for rsync
-   if [ -f "$c_verbose" ]; then
-      VERBOSE="-v"
-   fi
-   
    # Output a summary
    if [ -f "$c_summary" ]; then
       SUMMARY="--stats"
+   fi
+   
+   # verbosity for rsync
+   if [ -f "$c_verbose" ]; then
+      VERBOSE="-v"
    fi
    
    # MORE verbosity, includes standard verbosity
@@ -349,13 +349,16 @@ while [ "$i" -lt "$no_shares" ]; do
    # give some info
    echo "Beginning to backup, this may take some time..."
 
+   echo "Creating $destination_dir ..."
+   mkdir $VVERBOSE "$destination_dir"
+
    # only copy if a directory exists
    if [ "$last_dir" ]; then
       echo "$(date) Hard linking..."
-      cp -al $VVERBOSE "$last_dir" "$destination_dir"
-   else
-      echo "Creating $destination_dir"
-      mkdir $VVERBOSE "$destination_dir"
+      cd "$last_dir"
+      pax -r -w -l $VVERBOSE .  "../$destination_dir"
+      # old, gnu cp specific
+      # cp -al $VVERBOSE "$last_dir" "$destination_dir"
    fi
 
    if [ $? -ne 0 ]; then
