@@ -282,6 +282,11 @@ while [ "$i" -lt "$no_shares" ]; do
       echo "Executing $c_pre_exec ..."
       "$c_pre_exec"
       echo "Finished ${c_pre_exec}."
+
+      if [ $? -ne 0 ]; then
+         echo "$c_pre_exec failed, aborting backup."
+         exit 1
+      fi
    fi
    
    # exclude
