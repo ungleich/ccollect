@@ -391,6 +391,10 @@ while [ "$i" -lt "$no_shares" ]; do
       echo "$(date) Executing $c_post_exec ..."
       "$c_post_exec"
       echo "$(date) Finished ${c_post_exec}."
+
+      if [ $? -ne 0 ]; then
+         echo "$c_post_exec failed."
+      fi
    fi
 
    end_s=$(date +%s)
@@ -421,6 +425,10 @@ if [ -x "$CPOSTEXEC" ]; then
    echo "Executing $CPOSTEXEC ..."
    "$CPOSTEXEC"
    echo "Finished ${CPOSTEXEC}."
+   
+   if [ $? -ne 0 ]; then
+      echo "$CPOSTEXEC failed."
+   fi
 fi
 
 rm -f "$TMP"
