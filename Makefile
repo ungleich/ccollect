@@ -34,7 +34,7 @@ install-script:
 	$(INSTALL) -D -m 0755 -s $(CCOLLECT) $(destination)
 
 documentation:
-	@echo "Generating HTML-documentation (en de) ..."
+	@echo "Generating HTML-documentation (de en) ..."
 	@asciidoc -n -o doc/ccollect.html  doc/ccollect.text
 	@asciidoc -n -o doc/ccollect-DE.html  doc/ccollect-DE.text
 

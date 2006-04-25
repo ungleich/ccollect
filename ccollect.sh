@@ -304,7 +304,7 @@ while [ "$i" -lt "$no_shares" ]; do
       SUMMARY="--stats"
    fi
    
-   # verbosity for rsync
+   # Verbosity for rsync
    if [ -f "$c_verbose" ]; then
       VERBOSE="-v"
    fi
@@ -341,7 +341,7 @@ while [ "$i" -lt "$no_shares" ]; do
    # clone the old directory with hardlinks
    #
 
-   destination_date=$(date +%Y-%m-%d-%H:%M)
+   destination_date=$(date +%Y-%m-%d-%H%M)
    destination_dir="$c_dest/${INTERVALL}.${destination_date}.$$"
    
    last_dir=$(ls -d "$c_dest/${INTERVALL}."?* 2>/dev/null | sort -n | tail -n 1)

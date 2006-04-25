@@ -33,6 +33,22 @@ machine, he/she will not be able to login to the backup machine.
 All other backups are still secure.
 
 
+Incompatibilities
+~~~~~~~~~~~~~~~~~
+
+
+Versions < 0.4 and 0.4
+^^^^^^^^^^^^^^^^^^^^^^
+
+Since `ccollect` 0.4 there are several incompatibilities with earlier
+versions:
+
+.List of incompatibilities 
+- `pax` (Posix) is now required, `cp -al` (GNU specific) is removed
+- "interval" was written with two 'l' (ell), which is wrong in English
+- Changed the name of backup directories, removed the colon in the interval
+
+
 Requirements
 ------------
 
@@ -49,7 +65,7 @@ Using ccollect
 ~~~~~~~~~~~~~~
 .Running ccollect requires the following tools installed:
    - `bc`
-   - `cp` with support for hard links ('cp -al')
+   - `pax` *NEW* (since ccollect 0.4, replaces previously used `cp -al`)
    - `date`
    - `rsync`
    - `ssh` (if you want to use rsync over ssh, which is recommened for security)

@@ -1,3 +1,8 @@
+0.3.3 to 0.4:
+   * `pax` (Posix) is now required, `cp -al` (GNU specific) is removed
+   * "interval" was written with two 'l' (ell), which is wrong in English
+   * Changed the name of backup directories, removed the colon in the interval
+
 0.3.2 to 0.3.3:
    * Fix a small bug, which suppressed information when rsync exits non-zero
 
