@@ -356,7 +356,7 @@ while [ "$i" -lt "$no_shares" ]; do
    if [ "$last_dir" ]; then
       echo "$(date) Hard linking..."
       cd "$last_dir"
-      pax -r -w -l $VVERBOSE .  "../$destination_dir"
+      pax -rwl -p e $VVERBOSE .  "../$destination_dir"
       # old, gnu cp specific
       # cp -al $VVERBOSE "$last_dir" "$destination_dir"
    fi
