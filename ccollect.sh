@@ -41,7 +41,7 @@ add_name()
 #
 usage()
 {
-   echo "$(basename $0): <intervall name> [args] <sources to backup>"
+   echo "$(basename $0): <interval name> [args] <sources to backup>"
    echo ""
    echo "   ccollect creates (pseudo) incremental backups"
    echo ""
@@ -58,7 +58,7 @@ usage()
 }
 
 #
-# need at least intervall and one source or --all
+# need at least interval and one source or --all
 #
 if [ $# -lt 2 ]; then
    usage
@@ -76,7 +76,7 @@ fi
 #
 # Filter arguments
 #
-INTERVALL=$1; shift
+INTERVAL=$1; shift
 i=1
 no_shares=0
 
@@ -146,15 +146,15 @@ fi
 if [ "$no_shares" -lt 1 ]; then
    usage   
 else
-   echo "==> $HALF_VERSION: Beginning backup using intervall $INTERVALL <=="
+   echo "==> $HALF_VERSION: Beginning backup using interval $INTERVAL <=="
 fi
 
 #
 # check default configuration
 #
 
-D_FILE_INTERVALL="$CDEFAULTS/intervalls/$INTERVALL"
-D_INTERVALL=$(cat "$D_FILE_INTERVALL" 2>/dev/null)
+D_FILE_INTERVAL="$CDEFAULTS/intervals/$INTERVAL"
+D_INTERVAL=$(cat "$D_FILE_INTERVAL" 2>/dev/null)
 
 #
 # Look for pre-exec command (general)
@@ -188,7 +188,7 @@ while [ "$i" -lt "$no_shares" ]; do
    # start ourself, if we want parallel execution
    #
    if [ "$PARALLEL" ]; then
-      "$0" "$INTERVALL" "$name" &
+      "$0" "$INTERVAL" "$name" &
       continue
    fi
 
@@ -234,15 +234,15 @@ while [ "$i" -lt "$no_shares" ]; do
    fi
 
    #
-   # intervall definition: First try source specific, fallback to default
+   # interval definition: First try source specific, fallback to default
    #
-   c_intervall="$(cat "$backup/intervalls/$INTERVALL" 2>/dev/null)"
+   c_interval="$(cat "$backup/intervals/$INTERVAL" 2>/dev/null)"
 
-   if [ -z "$c_intervall" ]; then
-      c_intervall=$D_INTERVALL
+   if [ -z "$c_interval" ]; then
+      c_interval=$D_INTERVAL
 
-      if [ -z "$c_intervall" ]; then
-         echo "Default and source specific intervall missing. Skipping."
+      if [ -z "$c_interval" ]; then
+         echo "Default and source specific interval missing. Skipping."
          exit 1
       fi
    fi
@@ -319,17 +319,17 @@ while [ "$i" -lt "$no_shares" ]; do
    # check if maximum number of backups is reached, if so remove
    #
  
-   # the created directories are named $INTERVALL.$DA
-   count=$(ls -d "$c_dest/${INTERVALL}."?*  2>/dev/null | wc -l)
+   # the created directories are named $INTERVAL.$DA
+   count=$(ls -d "$c_dest/${INTERVAL}."?*  2>/dev/null | wc -l)
    echo -n "Currently $count backup(s) exist(s),"
-   echo " total keeping $c_intervall backup(s)."
+   echo " total keeping $c_interval backup(s)."
  
-   if [ "$count" -ge "$c_intervall" ]; then
-      substract=$(echo $c_intervall - 1 | bc)
+   if [ "$count" -ge "$c_interval" ]; then
+      substract=$(echo $c_interval - 1 | bc)
       remove=$(echo $count - $substract | bc)
       echo "Removing $remove backup(s)..."
 
-      ls -d "$c_dest/${INTERVALL}."?* | sort -n | head -n $remove > "$TMP"
+      ls -d "$c_dest/${INTERVAL}."?* | sort -n | head -n $remove > "$TMP"
       while read to_remove; do
          dir="$to_remove"
          echo "Removing $dir ..."
@@ -342,9 +342,9 @@ while [ "$i" -lt "$no_shares" ]; do
    #
 
    destination_date=$(date +%Y-%m-%d-%H%M)
-   destination_dir="$c_dest/${INTERVALL}.${destination_date}.$$"
+   destination_dir="$c_dest/${INTERVAL}.${destination_date}.$$"
  
-   last_dir=$(ls -d "$c_dest/${INTERVALL}."?* 2>/dev/null | sort -n | tail -n 1)
+   last_dir=$(ls -d "$c_dest/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)
  
    # give some info
    echo "Beginning to backup, this may take some time..."

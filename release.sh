@@ -1,3 +1,8 @@
+#!/bin/sh
+# Nico Schottelius
+# Standard release script for dummies like me
+#
+
 if [ $# -ne 1 ]; then
    echo "$0: ccollect dir"
    exit 23
