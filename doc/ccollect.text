@@ -95,7 +95,7 @@ to backup (daily, weekly, yearly; you can specify the names yourself, see below)
 The intervall is used to specify how many backups to keep.
 
 There are also some self explaining parameters you can pass to ccollect, simply use
-"ccollect.sh --help" for info.
+`ccollect.sh --help` for info.
 
 
 General configuration
@@ -168,14 +168,14 @@ Each source has at least the following files:
 Additionally a source may have the following files:
 
    - `verbose`       whether to be verbose (passes -v to `rsync`)
-   - `very_verbose`  be very verbose (-v also for `mkdir`, `cp`, `rm`)
+   - `very_verbose`  be very verbose (-v also for `mkdir`, `pax`, `rm`)
    - `summary`       create a transfer summary when `rsync` finished
 
    - `exclude`       exclude list for `rsync`. newline ('\n') seperated list.
    - `rsync_options` extra options to pass to `rsync`
 
-   - `pre_exec`      program to execute before backuping this source
-   - `post_exec`     program to execute after backuping this source
+   - `pre_exec`      program to execute before backuping *this* source
+   - `post_exec`     program to execute after backuping *this* source
 
 
 Example:
@@ -228,7 +228,7 @@ Detailled description of "very_verbose"
 `very_verbose` tells `ccollect` that it should log very verbose.
 
 If this file exists in the source specification *-v* will be passed to
-`rsync`, `cp`, `rm` and `mkdir`.
+`rsync`, `pax`, `rm` and `mkdir`.
 
 
 Example:
