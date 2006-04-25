@@ -2,13 +2,15 @@
    * `pax` (Posix) is now required, `cp -al` (GNU specific) is removed
    * "interval" was written with two 'l' (ell), which is wrong in English
    * Changed the name of backup directories, removed the colon in the interval
+   * ccollect will now exit, when preexec returns non-zero
+   * ccollect now reports when postexec returns non-zero
 
 0.3.2 to 0.3.3:
    * Fix a small bug, which suppressed information when rsync exits non-zero
 
 0.3.1 to 0.3.2:
    * ccollect now prints the start time, end time and duration of the backup
-   
+
 0.3 to 0.3.1:
    * added support for printing a summary
    * some cosmetic changes

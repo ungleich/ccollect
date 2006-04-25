@@ -274,7 +274,7 @@ while [ "$i" -lt "$no_shares" ]; do
       echo "Destination $c_dest does not link to a directory. Skipping"
       exit 1
    fi
-   
+ 
    #
    # pre_exec
    #
@@ -288,42 +288,42 @@ while [ "$i" -lt "$no_shares" ]; do
          exit 1
       fi
    fi
-   
+
    # exclude
    if [ -f "$c_exclude" ]; then
       EXCLUDE="--exclude-from=$c_exclude"
    fi
-   
+ 
    # extra options for rsync
    if [ -f "$c_rsync_extra" ]; then
       RSYNC_EXTRA="$(cat "$c_rsync_extra")"
    fi
-   
+ 
    # Output a summary
    if [ -f "$c_summary" ]; then
       SUMMARY="--stats"
    fi
-   
+ 
    # Verbosity for rsync
    if [ -f "$c_verbose" ]; then
       VERBOSE="-v"
    fi
-   
+ 
    # MORE verbosity, includes standard verbosity
    if [ -f "$c_vverbose" ]; then
       VERBOSE="-v"
       VVERBOSE="-v"
    fi
-   
+ 
    #
    # check if maximum number of backups is reached, if so remove
    #
-   
+ 
    # the created directories are named $INTERVALL.$DA
    count=$(ls -d "$c_dest/${INTERVALL}."?*  2>/dev/null | wc -l)
    echo -n "Currently $count backup(s) exist(s),"
    echo " total keeping $c_intervall backup(s)."
-   
+ 
    if [ "$count" -ge "$c_intervall" ]; then
       substract=$(echo $c_intervall - 1 | bc)
       remove=$(echo $count - $substract | bc)
@@ -336,16 +336,16 @@ while [ "$i" -lt "$no_shares" ]; do
          rm $VVERBOSE -rf "$dir"
       done < "$TMP"
    fi
-   
+ 
    #
    # clone the old directory with hardlinks
    #
 
    destination_date=$(date +%Y-%m-%d-%H%M)
    destination_dir="$c_dest/${INTERVALL}.${destination_date}.$$"
-   
+ 
    last_dir=$(ls -d "$c_dest/${INTERVALL}."?* 2>/dev/null | sort -n | tail -n 1)
-   
+ 
    # give some info
    echo "Beginning to backup, this may take some time..."
 
@@ -371,7 +371,7 @@ while [ "$i" -lt "$no_shares" ]; do
    # the rsync part
    # options partly stolen from rsnapshot
    #
-   
+ 
    echo "$(date) Transferring files..."
 
    rsync -a $VERBOSE $RSYNC_EXTRA $EXCLUDE $SUMMARY \
@@ -425,7 +425,7 @@ if [ -x "$CPOSTEXEC" ]; then
    echo "Executing $CPOSTEXEC ..."
    "$CPOSTEXEC"
    echo "Finished ${CPOSTEXEC}."
-   
+ 
    if [ $? -ne 0 ]; then
       echo "$CPOSTEXEC failed."
    fi
