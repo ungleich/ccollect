@@ -60,8 +60,8 @@ noch ein paar weitere Verzeichnisse:
 
 - "/etc/ccollect/defaults" mit:
   'mkdir /etc/ccollect/defaults'
-- "/etc/ccollect/defaults/intervalls" mit:
-  'mkdir /etc/ccollect/defaults/intervalls'
+- "/etc/ccollect/defaults/intervals" mit:
+  'mkdir /etc/ccollect/defaults/intervals'
 - "/etc/ccollect/sources" mit:
   'mkdir /etc/ccollect/sources'
 
@@ -75,11 +75,11 @@ Der Name der Datei, in der der Wert steht, ist zugleich auch der
 Name des Intervalls.
 
 --------------------------------------------------------------
-julian@flumy:/etc/ccollect/defaults/intervalls$ ls
+julian@flumy:/etc/ccollect/defaults/intervals$ ls
 daily
-julian@flumy:/etc/ccollect/defaults/intervalls$ cat daily
+julian@flumy:/etc/ccollect/defaults/intervals$ cat daily
 7
-julian@flumy:/etc/ccollect/defaults/intervalls$ 
+julian@flumy:/etc/ccollect/defaults/intervals$ 
 -------------------------------------------------------------- 
 
 
@@ -87,7 +87,7 @@ Intervall erstellen
 ^^^^^^^^^^^^^^^^^^^^ 
 Sie erstellen einen Intervall wie folgt:
 
-. Wechseln Sie in das Intervall-Verzeichnis: 'cd /etc/ccollect/defaults/intervalls'.
+. Wechseln Sie in das Intervall-Verzeichnis: 'cd /etc/ccollect/defaults/intervals'.
 . Erstellen Sie einen neuen Intervall mit dem Befehl
   "echo 'wert' > 'Intervall-Name'"
 

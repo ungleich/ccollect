@@ -89,10 +89,10 @@ Runtime options
 the directory specified by the variable '$CCOLLECT_CONF'
 (use 'CCOLLECT_CONF=/your/config/dir ccollect.sh' on the shell).
 
-When you start `ccollect`, you have either to specify which intervall
+When you start `ccollect`, you have either to specify which interval
 to backup (daily, weekly, yearly; you can specify the names yourself, see below).
 
-The intervall is used to specify how many backups to keep.
+The interval is used to specify how many backups to keep.
 
 There are also some self explaining parameters you can pass to ccollect, simply use
 `ccollect.sh --help` for info.
@@ -109,24 +109,24 @@ All configuration entries are plain-text (use UTF-8 if you use
 non ASCII characters) files.
 
 
-Intervall definition
+Interval definition
 ^^^^^^^^^^^^^^^^^^^^
-The intervall definition can be found below
-'$CCOLLECT_CONF/defaults/intervalls/' or '/etc/ccollect/defaults/intervalls'. 
-Every file below this directory specifies an intervall. The name of the file is the
-name of the intervall: `intervalls/'<intervall name>'`.
+The interval definition can be found below
+'$CCOLLECT_CONF/defaults/intervals/' or '/etc/ccollect/defaults/intervals'. 
+Every file below this directory specifies an interval. The name of the file is the
+name of the interval: `intervals/'<interval name>'`.
 
 The content of this file should be a single line containing a number.
-This number defines how many versions of this intervall to keep.
+This number defines how many versions of this interval to keep.
 
 Example:
 -------------------------------------------------------------------------
-   [10:23] zaphodbeeblebrox:ccollect-0.2% ls -l conf/defaults/intervalls/
+   [10:23] zaphodbeeblebrox:ccollect-0.2% ls -l conf/defaults/intervals/
    insgesamt 12
    -rw-r--r--  1 nico users 3 2005-12-08 10:24 daily
    -rw-r--r--  1 nico users 3 2005-12-08 11:36 monthly
    -rw-r--r--  1 nico users 2 2005-12-08 11:36 weekly
-   [10:23] zaphodbeeblebrox:ccollect-0.2% cat conf/defaults/intervalls/*
+   [10:23] zaphodbeeblebrox:ccollect-0.2% cat conf/defaults/intervals/*
    28
    12
    4
@@ -184,16 +184,16 @@ Example:
    insgesamt 12
    lrwxrwxrwx  1 nico users   20 2005-11-17 16:44 destination -> /home/nico/backupdir
    -rw-r--r--  1 nico users   62 2005-12-07 17:43 exclude
-   drwxr-xr-x  2 nico users 4096 2005-12-07 17:38 intervalls
+   drwxr-xr-x  2 nico users 4096 2005-12-07 17:38 intervals
    -rw-r--r--  1 nico users   15 2005-11-17 16:44 source
    [10:47] zaphodbeeblebrox:ccollect-0.2% cat conf/sources/testsource2/exclude 
    openvpn-2.0.1.tar.gz
    nicht_reinnehmen
    etwas mit leerzeichenli
-   [10:47] zaphodbeeblebrox:ccollect-0.2% ls -l  conf/sources/testsource2/intervalls
+   [10:47] zaphodbeeblebrox:ccollect-0.2% ls -l  conf/sources/testsource2/intervals
    insgesamt 4
    -rw-r--r--  1 nico users 2 2005-12-07 17:38 daily
-   [10:48] zaphodbeeblebrox:ccollect-0.2% cat conf/sources/testsource2/intervalls/daily 
+   [10:48] zaphodbeeblebrox:ccollect-0.2% cat conf/sources/testsource2/intervals/daily 
    5
    [10:48] zaphodbeeblebrox:ccollect-0.2% cat conf/sources/testsource2/source 
    /home/nico/vpn
@@ -246,7 +246,7 @@ If you create the file `summary` below the source definition,
 -------------------------------------------------------------------------------
 backup:~# touch /etc/ccollect/sources/root/summary
 backup:~# ccollect.sh werktags root
-==> ccollect.sh: Beginning backup using intervall werktags <==
+==> ccollect.sh: Beginning backup using interval werktags <==
 [root] Beginning to backup this source ...
 [root] Currently 3 backup(s) exist, total keeping 50 backup(s).
 [root] Beginning to backup, this may take some time...
@@ -307,20 +307,20 @@ your data, if `destination` is a directory. But do you really want to have
 a backup below /etc?
 
 
-Detailled description of "intervalls/"
+Detailled description of "intervals/"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-When you create a subdirectory `intervalls/` within your source configuration
-directory, you can specify individiual intervalls for this specific source.
-Each file below this directory describes an intervall.
+When you create a subdirectory `intervals/` within your source configuration
+directory, you can specify individiual intervals for this specific source.
+Each file below this directory describes an interval.
 
 
 Example:
 --------------------------------------------------------------------------------
-   [11:37] zaphodbeeblebrox:ccollect-0.2% ls -l conf/sources/testsource2/intervalls/      
+   [11:37] zaphodbeeblebrox:ccollect-0.2% ls -l conf/sources/testsource2/intervals/      
    insgesamt 8
    -rw-r--r--  1 nico users 2 2005-12-07 17:38 daily
    -rw-r--r--  1 nico users 3 2005-12-14 11:33 yearly
-   [11:37] zaphodbeeblebrox:ccollect-0.2% cat  conf/sources/testsource2/intervalls/*
+   [11:37] zaphodbeeblebrox:ccollect-0.2% cat  conf/sources/testsource2/intervals/*
    5
    20
 --------------------------------------------------------------------------------
@@ -410,7 +410,7 @@ Re-using already created rsync-backups
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 If you used `rsync` directly before you use `ccollect`, you can
 use this old backup as initial backup for `ccollect`: You
-simply move it into a subdirectory named "'intervall'.0".
+simply move it into a subdirectory named "'interval'.0".
 
 
 Example:
@@ -434,7 +434,7 @@ Now you could use /home/backup/web1 as the `destination` for the backup.
 Do *not* name the first backup something like "daily.initial", but use
 the "*0*" (or some very low number, at least lower than the current year)
 as extension. `ccollect` uses `sort` to find the latest backup. `ccollect`
-itself uses 'intervall.YEAR-MONTH-DAY-HOUR:MINUTE.PID'. This notation will
+itself uses 'interval.YEAR-MONTH-DAY-HOUR:MINUTE.PID'. This notation will
 *always* be before "daily.initial", as numbers are earlier in the list
 which is produced by `sort`. So, if you have a directory named "daily.initial",
 `ccollect` will always diff against this backup and transfer and delete
@@ -493,9 +493,9 @@ A backup host configuration from scratch
 
 --------------------------------------------------------------------------------
 srwali01:~# mkdir /etc/ccollect
-srwali01:~# mkdir -p /etc/ccollect/defaults/intervalls/
-srwali01:~# echo 28 > /etc/ccollect/defaults/intervalls/taeglich
-srwali01:~# echo 52 > /etc/ccollect/defaults/intervalls/woechentlich
+srwali01:~# mkdir -p /etc/ccollect/defaults/intervals/
+srwali01:~# echo 28 > /etc/ccollect/defaults/intervals/taeglich
+srwali01:~# echo 52 > /etc/ccollect/defaults/intervals/woechentlich
 srwali01:~# cd /etc/ccollect/
 srwali01:/etc/ccollect# mkdir sources
 srwali01:/etc/ccollect# cd sources/
@@ -511,7 +511,7 @@ srwali01:/etc/ccollect/sources/local-root# cat > exclude << EOF
 srwali01:/etc/ccollect/sources/local-root# ln -s /mnt/hdbackup/local-root destination
 srwali01:/etc/ccollect/sources/local-root# mkdir /mnt/hdbackup/local-root
 srwali01:/etc/ccollect/sources/local-root# ccollect.sh taeglich local-root
-/o> ccollect.sh: Beginning backup using intervall taeglich
+/o> ccollect.sh: Beginning backup using interval taeglich
 /=> Beginning to backup "local-root" ...
 |-> 0 backup(s) already exist, keeping 28 backup(s).
 --------------------------------------------------------------------------------
