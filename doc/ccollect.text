@@ -1,7 +1,7 @@
 ccollect - Installing, Configuring and Using
 ============================================
 Nico Schottelius <nico-linux-ccollect__@__schottelius.org>
-0.3.3, for ccollect 0.3.2-0.3.3, Initial Version from 2006-01-13
+0.4.0, for ccollect 0.4, Initial Version from 2006-01-13
 :Author Initials: NS
 
 (pseudo) incremental backup
@@ -50,6 +50,13 @@ versions:
 - ccollect will now exit, when preexec returns non-zero
 - ccollect now reports when postexec returns non-zero
 
+You can convert your old configuration directory using
+`config-pre-0.4-to-0.4.sh`, which can be found in the *tools/*
+subdirectory:
+
+--------------------------------------------------------------------------------
+[10:05] hydrogenium:ccollect-0.4# ./tools/config-pre-0.4-to-0.4.sh /etc/ccollect
+--------------------------------------------------------------------------------
 
 
 Requirements

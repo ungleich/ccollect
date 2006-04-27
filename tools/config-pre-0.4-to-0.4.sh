@@ -11,8 +11,20 @@ if [ $# -ne 1 ]; then
    exit 23
 fi
 
+tmp=$(mktemp)
+tmp2=$(mktemp)
 script=$(echo $0 | sed 's/\.sh/.sub.sh/')
 
-find "$1" -type d -name intervalls -exec "$script" {} \;
+find "$1" -type d -name intervalls > "$tmp"
 
+#
+# reverse found data, so deepest directories are renamed first
+#
+tac "$tmp" > "$tmp2"
 
+while read intervals
+   do
+   "$script" "$intervals"
+done < "$tmp2"
+
+rm -f "$tmp" "$tmp2"

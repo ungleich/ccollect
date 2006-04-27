@@ -6,8 +6,11 @@
 master=$(echo $0 | sed 's/\.sub//')
 
 if [ $# -ne 1 ]; then
-   echo "$0: DO NOT CALL ME DIRECTLY"
-   echo "$master calls me for moving"
+   echo "$0:"
+   echo ""
+   echo "   DO NOT CALL ME DIRECTLY"
+   echo ""
+   echo "Use $master, please."
    exit 23
 fi
 
