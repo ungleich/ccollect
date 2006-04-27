@@ -1,0 +1,24 @@
+The scripts are only for 'standard' configurations.
+
+If you've multiple directories named 'intervalls', the
+scripts will try to replace _all_ instances of intervalls with
+"intervals".
+
+This will fail:
+
+   intervalls/defaults/intervalls/ exists before.
+
+   Then we'll replace the first time:
+
+   intervals/defaults/intervalls/ exists now.
+
+   Then find will fail, as the first directory disappeared.
+
+Also, if you have a source named 'intervalls'
+(why so ever you would want to have something like that) and
+a 'intervalls' directory below it, it will rename your source.
+
+Yes this is a bug.
+
+No, I do not care about it, this is just a dumb helper script which
+should be used once.
