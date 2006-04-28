@@ -10,7 +10,7 @@ using hardlinks and `rsync`
 
 Introduction
 ------------
-ccollect is a backup utitily written in the sh-scripting language.
+ccollect is a backup utility written in the sh-scripting language.
 It does not depend on a specific shell, only `/bin/sh` needs to be
 bourne shell compatibel (like 'dash', 'ksh', 'zsh', 'bash', ...).
 
