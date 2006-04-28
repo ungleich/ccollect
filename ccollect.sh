@@ -405,7 +405,7 @@ while [ "$i" -lt "$no_shares" ]; do
    minutes=$(echo $seconds / 60 | bc)
    seconds=$(echo "$seconds - ($minutes * 60)" | bc)
 
-   echo "Backup lasted: ${hours}:$minutes:$seconds (h:m:s)"
+   echo "Backup lasted: ${hours}:${minutes}:${seconds} (h:m:s)"
 
 ) | add_name
 done
@@ -414,7 +414,7 @@ done
 # Be a good parent and wait for our children, if they are running wild parallel
 #
 if [ "$PARALLEL" ]; then
-   echo "Waiting for child jobs to complete..."
+   echo "$(date) Waiting for child jobs to complete..."
    wait
 fi
 
@@ -422,9 +422,9 @@ fi
 # Look for post-exec command (general)
 #
 if [ -x "$CPOSTEXEC" ]; then
-   echo "Executing $CPOSTEXEC ..."
+   echo "$(date) Executing $CPOSTEXEC ..."
    "$CPOSTEXEC"
-   echo "Finished ${CPOSTEXEC}."
+   echo "$(date) Finished ${CPOSTEXEC}."
  
    if [ $? -ne 0 ]; then
       echo "$CPOSTEXEC failed."
