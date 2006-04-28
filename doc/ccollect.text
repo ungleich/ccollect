@@ -492,6 +492,50 @@ The most common error is to not give your script the correct
 permissions. Try `chmod 0755 /etc/ccollect/sources/'yoursource'/*_exec``.
 
 
+Why does the backup job fail, when part of the source is a link?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When a part of your path you specified in the source is a
+(symbolic, hard links are not possible for directories) link,
+the backup *must* fail.
+
+First of all, let us have a look at how it looks like:
+
+-------------------------------------------------------------------------------
+==> ccollect 0.4: Beginning backup using interval taeglich <==
+[testsource] Sa Apr 29 00:01:55 CEST 2006 Beginning to backup
+[testsource] Currently 0 backup(s) exist(s), total keeping 10 backup(s).
+[testsource] Beginning to backup, this may take some time...
+[testsource] Creating /etc/ccollect/sources/testsource/destination/taeglich.2006-04-29-0001.3874 ...
+[testsource] Sa Apr 29 00:01:55 CEST 2006 Transferring files...
+[testsource] rsync: recv_generator: mkdir "/etc/ccollect/sources/testsource/destination/taeglich.2006-04-29-0001.3874/home/user/nico/projekte/ccollect" failed: No such file or directory (2)
+[testsource] rsync: stat "/etc/ccollect/sources/testsource/destination/taeglich.2006-04-29-0001.3874/home/user/nico/projekte/ccollect" failed: No such file or directory (2)
+[...]
+-------------------------------------------------------------------------------
+
+So what is the problem? It is very obvious, when you have a deeper look
+into it:
+
+-------------------------------------------------------------------------------
+% cat /etc/ccollect/sources/testsource/source
+/home/user/nico/projekte/ccollect/ccollect-0.4
+% ls -l /home/user/nico/projekte
+lrwxrwxrwx 1 nico nico 29 2005-12-02 23:28 /home/user/nico/projekte -> oeffentlich/computer/projekte
+% ls -l /etc/ccollect/sources/testsource/destination/taeglich.2006-04-29-0001.3874/home/user/nico
+lrwxrwxrwx 1 nico nico 29 2006-04-29 00:01 projekte -> oeffentlich/computer/projekte
+-------------------------------------------------------------------------------
+
+`rsync` creates the directory structure until it creates the symbolic link.
+This link now links to something not reachable (dead link). So it is
+impossible to create subdirectories below the broken link.
+
+So, the conclusion is you cannot use paths with a linked part.
+
+*BUT* you can backup directories containing symbolic links
+(in this case you could backup /home/user/nico, which contains
+/home/user/nico/projekte and oeffentlich/computer/projekte).
+
+
 Examples
 --------
 
