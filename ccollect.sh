@@ -51,7 +51,7 @@ usage()
    echo "   -v, --verbose:       Be very verbose (uses set -x)."
    echo ""
    echo "   This is version $VERSION, released on ${RELEASE}"
-   echo "   (the first version was written  on 2005-12-05 by Nico Schottelius)."
+   echo "   (the first version was written on 2005-12-05 by Nico Schottelius)."
    echo ""
    echo "   Retrieve latest ccollect at http://linux.schottelius.org/ccollect/"
    exit 0
@@ -356,7 +356,7 @@ while [ "$i" -lt "$no_shares" ]; do
    if [ "$last_dir" ]; then
       echo "$(date) Hard linking..."
       cd "$last_dir"
-      pax -rwl -p e $VVERBOSE .  "../$destination_dir"
+      pax -rwl -p e $VVERBOSE .  "$destination_dir"
       # old, gnu cp specific
       # cp -al $VVERBOSE "$last_dir" "$destination_dir"
    fi

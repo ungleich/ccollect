@@ -214,7 +214,7 @@ Detailled description of "source"
 For instance 'backup_user@foreign_host:/home/server/video'.
 To use the `rsync` protocol without the `ssh`-tunnel, use
 'rsync::USER@HOST/SRC'. For more information have a look at the manpage
-of `rsync`,`rsync`(1).
+of `rsync`(1).
  
 
 Detailled description of "verbose"
