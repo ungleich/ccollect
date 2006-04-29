@@ -15,7 +15,7 @@ CPOSTEXEC="$CDEFAULTS/post_exec"
 
 TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
 VERSION=0.4
-RELEASE="2006-XX-XX"
+RELEASE="2006-04-29"
 HALF_VERSION="ccollect $VERSION"
 FULL_VERSION="ccollect $VERSION ($RELEASE)"
 
@@ -78,14 +78,14 @@ fi
 #
 INTERVAL=$1; shift
 i=1
-no_shares=0
+no_sources=0
 
 while [ $i -le $# ]; do
    eval arg=\$$i
    
    if [ "$NO_MORE_ARGS" = 1 ]; then
-        eval share_${no_shares}=\"$arg\"
-        no_shares=$(($no_shares+1))
+        eval source_${no_sources}=\"$arg\"
+        no_sources=$(($no_sources+1))
    else
       case $arg in
          -a|--all)
@@ -104,8 +104,8 @@ while [ $i -le $# ]; do
             NO_MORE_ARGS=1
             ;;
          *)
-            eval share_${no_shares}=\"$arg\"
-            no_shares=$(($no_shares+1))
+            eval source_${no_sources}=\"$arg\"
+            no_sources=$(($no_sources+1))
             ;;
       esac
    fi
@@ -125,7 +125,7 @@ fi
 #
 if [ "$ALL" = 1 ]; then
    # reset everything specified before
-   no_shares=0
+   no_sources=0
    
    #
    # get entries from sources
@@ -135,15 +135,15 @@ if [ "$ALL" = 1 ]; then
    ls > "$TMP"
    
    while read tmp; do
-      eval share_${no_shares}=\"$tmp\"
-      no_shares=$(($no_shares+1))
+      eval source_${no_sources}=\"$tmp\"
+      no_sources=$(($no_sources+1))
    done < "$TMP"
 fi
 
 #
 # Need at least ONE source to backup
 #
-if [ "$no_shares" -lt 1 ]; then
+if [ "$no_sources" -lt 1 ]; then
    usage   
 else
    echo "==> $HALF_VERSION: Beginning backup using interval $INTERVAL <=="
@@ -174,12 +174,12 @@ fi
 # Let's do the backup
 #
 i=0
-while [ "$i" -lt "$no_shares" ]; do
+while [ "$i" -lt "$no_sources" ]; do
 
    #
-   # Get current share
+   # Get current source
    #
-   eval name=\$share_${i}
+   eval name=\$source_${i}
    i=$(($i+1))
 
    export name
