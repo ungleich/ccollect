@@ -14,10 +14,11 @@ CPREEXEC="$CDEFAULTS/pre_exec"
 CPOSTEXEC="$CDEFAULTS/post_exec"
 
 TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
-VERSION=0.4
-RELEASE="2006-04-29"
+VERSION=0.4.1
+RELEASE="2006-XX-XX"
 HALF_VERSION="ccollect $VERSION"
 FULL_VERSION="ccollect $VERSION ($RELEASE)"
+CDATE="date +%Y-%m-%d-%H%M"
 
 #
 # unset parallel execution
@@ -216,7 +217,7 @@ while [ "$i" -lt "$no_sources" ]; do
    c_pre_exec="$backup/pre_exec"
    c_post_exec="$backup/post_exec"
 
-   begin=$(date)
+   begin=$($CDATE)
    begin_s=$(date +%s)
 
    echo "$begin Beginning to backup"
@@ -341,7 +342,7 @@ while [ "$i" -lt "$no_sources" ]; do
    # clone the old directory with hardlinks
    #
 
-   destination_date=$(date +%Y-%m-%d-%H%M)
+   destination_date=$($CDATE)
    destination_dir="$c_dest/${INTERVAL}.${destination_date}.$$"
  
    last_dir=$(ls -d "$c_dest/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)
@@ -354,7 +355,7 @@ while [ "$i" -lt "$no_sources" ]; do
 
    # only copy if a directory exists
    if [ "$last_dir" ]; then
-      echo "$(date) Hard linking..."
+      echo "$($CDATE) Hard linking..."
       cd "$last_dir"
       pax -rwl -p e $VVERBOSE .  "$destination_dir"
       # old, gnu cp specific
@@ -362,7 +363,7 @@ while [ "$i" -lt "$no_sources" ]; do
    fi
 
    if [ $? -ne 0 ]; then
-      echo -n "$(date) Creating/cloning backup directory failed."
+      echo -n "$($CDATE) Creating/cloning backup directory failed."
       echo " Skipping backup."
       exit 1
    fi
@@ -372,7 +373,7 @@ while [ "$i" -lt "$no_sources" ]; do
    # options partly stolen from rsnapshot
    #
  
-   echo "$(date) Transferring files..."
+   echo "$($CDATE) Transferring files..."
 
    rsync -a $VERBOSE $RSYNC_EXTRA $EXCLUDE $SUMMARY \
       --delete --numeric-ids --relative --delete-excluded \
@@ -382,15 +383,15 @@ while [ "$i" -lt "$no_sources" ]; do
       echo "rsync reported an error. The backup may be broken (see rsync errors)"
    fi
 
-   echo "$(date) Finished backup"
+   echo "$($CDATE) Finished backup"
 
    #
    # post_exec
    #
    if [ -x "$c_post_exec" ]; then
-      echo "$(date) Executing $c_post_exec ..."
+      echo "$($CDATE) Executing $c_post_exec ..."
       "$c_post_exec"
-      echo "$(date) Finished ${c_post_exec}."
+      echo "$($CDATE) Finished ${c_post_exec}."
 
       if [ $? -ne 0 ]; then
          echo "$c_post_exec failed."
@@ -414,7 +415,7 @@ done
 # Be a good parent and wait for our children, if they are running wild parallel
 #
 if [ "$PARALLEL" ]; then
-   echo "$(date) Waiting for child jobs to complete..."
+   echo "$($CDATE) Waiting for child jobs to complete..."
    wait
 fi
 
@@ -422,9 +423,9 @@ fi
 # Look for post-exec command (general)
 #
 if [ -x "$CPOSTEXEC" ]; then
-   echo "$(date) Executing $CPOSTEXEC ..."
+   echo "$($CDATE) Executing $CPOSTEXEC ..."
    "$CPOSTEXEC"
-   echo "$(date) Finished ${CPOSTEXEC}."
+   echo "$($CDATE) Finished ${CPOSTEXEC}."
  
    if [ $? -ne 0 ]; then
       echo "$CPOSTEXEC failed."
