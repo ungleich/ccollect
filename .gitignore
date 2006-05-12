@@ -1,3 +1,5 @@
 conf/sources/*/destination/*
 doc/old
 doc/*.html
+doc/*.docbook
+doc/*.texi

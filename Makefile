@@ -22,6 +22,11 @@ dir=www/org/schottelius/linux/ccollect
 docdir=$(dir)/doc
 
 #
+# Asciidoc will be used to generate other formats later
+#
+DOCS     = doc/ccollect.text doc/ccollect-DE.text
+
+#
 # End user targets
 #
 all:
@@ -35,10 +40,6 @@ install-link: install-script
 install-script:
 	$(INSTALL) -D -m 0755 -s $(CCOLLECT) $(destination)
 
-documentation: doc/ccollect.html doc/ccollect-DE.html
-	@echo "Generated documentation"
-#	@asciidoc -n -o doc/ccollect.html  doc/ccollect.text
-#	@asciidoc -n -o doc/ccollect-DE.html  doc/ccollect-DE.text
 
 %.html: %.text
 	${ASCIIDOC} -n -o $@ $<
@@ -63,3 +64,30 @@ publish-doc: documentation
 	@echo "Transferring files to $(host)"
 	@chmod a+r doc/*.html doc/*.text
 	@scp doc/*.text doc/*.html $(host):$(docdir)
+
+#
+# Doku
+#
+HTMLDOCS = $(DOCS:.text=.html)
+
+TEXIDOCS = $(DOCS:.text=.texi)
+
+DOCBDOCS = $(DOCS:.text=.docbook)
+
+html: ${HTMLDOCS}
+
+info: ${TEXIDOCS}
+
+documentation: html info
+
+#
+# Distribution
+#
+allclean:
+	#rm -f doc/*.docbook doc/*.html doc/*.texi
+	rm -f $(TEXIDOCS) $(HTMLDOCS)
+
+distclean:
+	rm -f $(DOCBDOCS)
+
+dist: distclean documentation
