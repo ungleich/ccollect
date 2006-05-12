@@ -25,7 +25,7 @@ FULL_VERSION="ccollect $VERSION ($RELEASE)"
 # DDATE: how the user should see it in our output
 #
 CDATE="date +%Y-%m-%d-%H%M"
-DDATE='date "+%Y-%m-%d %H:%M:%S"'
+DDATE="date"
 
 #
 # unset parallel execution

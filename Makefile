@@ -6,6 +6,8 @@
 INSTALL=install
 CCOLLECT=ccollect.sh
 LN=ln -sf
+ASCIIDOC=asciidoc
+DOCBOOKTOTEXI=docbook2x-texi
 
 prefix=/usr/packages/ccollect-git
 bindir=$(prefix)/bin
@@ -33,10 +35,19 @@ install-link: install-script
 install-script:
 	$(INSTALL) -D -m 0755 -s $(CCOLLECT) $(destination)
 
-documentation:
-	@echo "Generating HTML-documentation (de en) ..."
-	@asciidoc -n -o doc/ccollect.html  doc/ccollect.text
-	@asciidoc -n -o doc/ccollect-DE.html  doc/ccollect-DE.text
+documentation: doc/ccollect.html doc/ccollect-DE.html
+	@echo "Generated documentation"
+#	@asciidoc -n -o doc/ccollect.html  doc/ccollect.text
+#	@asciidoc -n -o doc/ccollect-DE.html  doc/ccollect-DE.text
+
+%.html: %.text
+	${ASCIIDOC} -n -o $@ $<
+
+%.docbook: %.text
+	${ASCIIDOC} -n -b docbook -o $@ $<
+
+%.texi: %.docbook
+	${DOCBOOKTOTEXI} --to-stdout $< > $@
 
 #
 # Developer targets
