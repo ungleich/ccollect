@@ -8,6 +8,7 @@ CCOLLECT=ccollect.sh
 LN=ln -sf
 ASCIIDOC=asciidoc
 DOCBOOKTOTEXI=docbook2x-texi
+DOCBOOKTOMAN=docbook2x-man
 
 prefix=/usr/packages/ccollect-git
 bindir=$(prefix)/bin
@@ -50,6 +51,9 @@ install-script:
 %.texi: %.docbook
 	${DOCBOOKTOTEXI} --to-stdout $< > $@
 
+%.man: %.docbook
+	${DOCBOOKTOMAN} --to-stdout $< > $@
+
 #
 # Developer targets
 #
@@ -72,7 +76,10 @@ HTMLDOCS = $(DOCS:.text=.html)
 
 TEXIDOCS = $(DOCS:.text=.texi)
 
+MANPDOCS = $(DOCS:.text=.man)
+
 DOCBDOCS = $(DOCS:.text=.docbook)
+
 
 html: ${HTMLDOCS}
 
