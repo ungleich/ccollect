@@ -7,12 +7,6 @@ ccollect backups data from local or remote hosts to your local harddisk.
 
 You can retriev the latest version of ccollect at [0].
 
-doc/ccollect.text          Manual in text format
-doc/ccollect.html          Manual in xhtml (generated)
-
-doc/ccollect-DE.text       german Manual in text format (externally maintained)
-doc/ccollect-DE.html       german Manual in xhtml (generated)
-
 ccollect was inspired by rsnapshot [1], which has some problems:
    - configuration parameters has to be TAB seperated
    - you can not specify per source exclude lists
@@ -21,6 +15,18 @@ ccollect was inspired by rsnapshot [1], which has some problems:
    - I didn't like the configuration at all, so I used the cconfig style [2].
 
 
+Included documentation:
+
+doc/ccollect.text          Manual in text format
+doc/ccollect.html          Manual in xhtml (generated)
+
+doc/ccollect-DE.text       German manual in text format (externally maintained)
+doc/ccollect-DE.html       German manual in xhtml (generated)
+
+doc/man/ccollect.text      Manpage in text format
+doc/man/ccollect.man       Manpage in manpage format (generated)
+
+--------------------------------------------------------------------------------
 [0]: ccollect:    http://linux.schottelius.org/ccollect/
 [1]: rsnapshot:   http://www.rsnapshot.org/
 [2]: cconfig:     http://nico.schotteli.us/papers/linux/cconfig/
