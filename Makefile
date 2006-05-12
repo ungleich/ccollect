@@ -25,7 +25,8 @@ docdir=$(dir)/doc
 #
 # Asciidoc will be used to generate other formats later
 #
-DOCS     = doc/ccollect.text doc/ccollect-DE.text
+MANDOCS  = doc/man/ccollect.text
+DOCS     = $(MANDOCS) doc/ccollect.text doc/ccollect-DE.text
 
 #
 # End user targets
@@ -51,7 +52,10 @@ install-script:
 %.texi: %.docbook
 	${DOCBOOKTOTEXI} --to-stdout $< > $@
 
-%.man: %.docbook
+%.mandocbook: %.text
+	${ASCIIDOC} -b docbook -d manpage -o $@ $<
+
+%.man: %.mandocbook
 	${DOCBOOKTOMAN} --to-stdout $< > $@
 
 #
@@ -76,23 +80,24 @@ HTMLDOCS = $(DOCS:.text=.html)
 
 TEXIDOCS = $(DOCS:.text=.texi)
 
-MANPDOCS = $(DOCS:.text=.man)
+MANPDOCS = $(MANDOCS:.text=.man)
 
 DOCBDOCS = $(DOCS:.text=.docbook)
 
 
-html: ${HTMLDOCS}
+html: $(HTMLDOCS)
 
-info: ${TEXIDOCS}
+info: $(TEXIDOCS)
 
-documentation: html info
+man: $(MANPDOCS) 
+
+documentation: html info man
 
 #
 # Distribution
 #
 allclean:
-	#rm -f doc/*.docbook doc/*.html doc/*.texi
-	rm -f $(TEXIDOCS) $(HTMLDOCS)
+	rm -f $(TEXIDOCS) $(HTMLDOCS) $(MANPDOCS) $(DOCBDOCS)
 
 distclean:
 	rm -f $(DOCBDOCS)
