@@ -1,3 +1,4 @@
+- add --version, -V
 - Test pax
    http://www.opengroup.org/onlinepubs/009695399/utilities/pax.html
    Perhaps replace cp -al?
