@@ -328,7 +328,7 @@ while [ "$i" -lt "$no_sources" ]; do
    #
  
    # the created directories are named $INTERVAL.$DA
-   count=$(ls -d "$c_dest/${INTERVAL}."?*  2>/dev/null | wc -l)
+   count=$(ls -d "$c_dest/${INTERVAL}."?*  2>/dev/null | wc -l | sed 's/^ *//g')
    echo -n "Currently $count backup(s) exist(s),"
    echo " total keeping $c_interval backup(s)."
  
