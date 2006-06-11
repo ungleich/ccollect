@@ -40,7 +40,7 @@ install-link: install-script
 	$(LN) $(destination) $(path_destination)
 
 install-script:
-	$(INSTALL) -D -m 0755 -s $(CCOLLECT) $(destination)
+	$(INSTALL) -D -m 0755 $(CCOLLECT) $(destination)
 
 
 %.html: %.text
