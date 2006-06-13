@@ -4,6 +4,7 @@
    * added a manpage (English)
    * fixed problem with 'make install' (strip was used)
    * fixed possible problem with pre_exec beeing executed to late
+   * fixed small bug in sed expression: using 'source/' made it fail
 
 0.3.3 to 0.4:
    * `pax` (Posix) is now required, `cp -al` (GNU specific) is removed
