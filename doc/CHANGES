@@ -1,6 +1,7 @@
 0.4 to 0.4.1:
    * updated documentation
    * created new document formats: Texinfo and manpage
+   * fixed problem with 'make install' (strip was used)
 
 0.3.3 to 0.4:
    * `pax` (Posix) is now required, `cp -al` (GNU specific) is removed

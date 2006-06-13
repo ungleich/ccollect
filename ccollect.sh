@@ -227,6 +227,15 @@ while [ "$i" -lt "$no_sources" ]; do
    begin=$($DDATE)
    begin_s=$(date +%s)
 
+   #
+   # unset possible options
+   #
+   EXCLUDE=""
+   RSYNC_EXTRA=""
+   SUMMARY=""
+   VERBOSE=""
+   VVERBOSE=""
+
    echo "$begin Beginning to backup"
 
    #
@@ -236,9 +245,28 @@ while [ "$i" -lt "$no_sources" ]; do
       echo "Source does not exist."
       exit 1
    fi
+ 
+   #
+   # configuration _must_ be a directory
+   #
    if [ ! -d "$backup" ]; then
       echo "\"$name\" is not a cconfig-directory. Skipping."
       exit 1
+   fi
+
+   #
+   # first execute pre_exec, which may generate destination or other
+   # parameters
+   #
+   if [ -x "$c_pre_exec" ]; then
+      echo "Executing $c_pre_exec ..."
+      "$c_pre_exec"
+      echo "Finished ${c_pre_exec}."
+
+      if [ $? -ne 0 ]; then
+         echo "$c_pre_exec failed, aborting backup."
+         exit 1
+      fi
    fi
 
    #
@@ -256,16 +284,7 @@ while [ "$i" -lt "$no_sources" ]; do
    fi
 
    #
-   # unset possible options
-   #
-   EXCLUDE=""
-   RSYNC_EXTRA=""
-   SUMMARY=""
-   VERBOSE=""
-   VVERBOSE=""
-
-   #
-   # next configuration checks
+   # Source checks
    #
    if [ ! -f "$c_source" ]; then
       echo "Source description $c_source is not a file. Skipping."
@@ -278,46 +297,45 @@ while [ "$i" -lt "$no_sources" ]; do
       fi
    fi
 
+   #
+   # destination _must_ be a directory
+   #
    if [ ! -d "$c_dest" ]; then
       echo "Destination $c_dest does not link to a directory. Skipping"
       exit 1
    fi
- 
-   #
-   # pre_exec
-   #
-   if [ -x "$c_pre_exec" ]; then
-      echo "Executing $c_pre_exec ..."
-      "$c_pre_exec"
-      echo "Finished ${c_pre_exec}."
 
-      if [ $? -ne 0 ]; then
-         echo "$c_pre_exec failed, aborting backup."
-         exit 1
-      fi
-   fi
-
-   # exclude
+   #
+   # exclude list
+   #
    if [ -f "$c_exclude" ]; then
       EXCLUDE="--exclude-from=$c_exclude"
    fi
- 
+   
+   #
    # extra options for rsync
+   #
    if [ -f "$c_rsync_extra" ]; then
       RSYNC_EXTRA="$(cat "$c_rsync_extra")"
    fi
  
+   #
    # Output a summary
+   #
    if [ -f "$c_summary" ]; then
       SUMMARY="--stats"
    fi
- 
+   
+   #
    # Verbosity for rsync
+   #
    if [ -f "$c_verbose" ]; then
       VERBOSE="-v"
    fi
  
+   #
    # MORE verbosity, includes standard verbosity
+   #
    if [ -f "$c_vverbose" ]; then
       VERBOSE="-v"
       VVERBOSE="-v"
@@ -327,7 +345,7 @@ while [ "$i" -lt "$no_sources" ]; do
    # check if maximum number of backups is reached, if so remove
    #
  
-   # the created directories are named $INTERVAL.$DA
+   # the created directories are named $INTERVAL-$DATE-$TIME.$PID
    count=$(ls -d "$c_dest/${INTERVAL}."?*  2>/dev/null | wc -l | sed 's/^ *//g')
    echo -n "Currently $count backup(s) exist(s),"
    echo " total keeping $c_interval backup(s)."
