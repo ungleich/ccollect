@@ -1,52 +1,12 @@
 - add --version, -V
-- Test pax
-   http://www.opengroup.org/onlinepubs/009695399/utilities/pax.html
-   Perhaps replace cp -al?
-   
-   --> WRITE DOCU / update to use pax
 
 - update documentation:
    - german doc?
    - exit pre/post exec -> error codes (after implementation!) (in 0.4)
    - write about fast changing fs
-   - write about CHANGED BEHAVIOUR of PRE/POST-EXEC
-   - write about PAX!
-- write mkccollectconfig
+- write mkccollectconfig (for 0.5!)
    o create source configuration
    o another script for changing defaults
       x intervalls
       x pre-/post exec
    o (X)dialog based
-
-- implement pre- and post-exec commands
-   o what to do with return values?
-   -> Check them, abort on error
-
-- Documentation
-   - write/generate a manpage
-
-
-DONE
-- implement verbosity
-   o per source (-v to rsync)
-   o general, very verbose (set -x)
-- implement parallel execution
-- implement general log
-- implement source specific log (canceled)
-- the name prefix is currently somehow inconsistent
-- Documentation
-   - rsync_options, example paswd
-   - write a simple manual
-   - Hints section
-   - add note to --exclude=/proc/ vs. --exclude=/proc/*
-   - rsync_options \n seperated
-- implement pre- and post-exec commands
-   o For the general backup process
-   o source specific
-testen, ob : im dateinamen..., wenn ja, raus damit!
-
-Aenderungen aufschreiben
-
-pax einpflegen
-
-
