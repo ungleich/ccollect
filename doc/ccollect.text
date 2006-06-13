@@ -1,7 +1,7 @@
 ccollect - Installing, Configuring and Using
 ============================================
 Nico Schottelius <nico-linux-ccollect__@__schottelius.org>
-0.4.0, for ccollect 0.4, Initial Version from 2006-01-13
+0.4.1, for ccollect 0.4-0.4.1, Initial Version from 2006-01-13
 :Author Initials: NS
 
 (pseudo) incremental backup
@@ -12,23 +12,36 @@ Introduction
 ------------
 ccollect is a backup utility written in the sh-scripting language.
 It does not depend on a specific shell, only `/bin/sh` needs to be
-bourne shell compatibel (like 'dash', 'ksh', 'zsh', 'bash', ...).
+bourne shell compatible (like 'dash', 'ksh', 'zsh', 'bash', ...).
 
 
-Why you can only backup TO localhost
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Why you cannot backup TO remote hosts (but FROM them!)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 While thinking about the design of ccollect, I thought about enabling
 backup to *remote* hosts. Though this sounds like a nice feature
 ('Backup my notebook to the server now.'), it is in my opinion a
-bad idea to backup to a remote host, because you have to open
-security at your backup host. Think of the following situation: You backup
-your farm of webservers *to* a backup host somewhere else. One of
-your webservers gets compromised, then your backup server will be compromised,
-too. Think of it the other way round: The backup server (now behind a
+bad idea to backup to a remote host.
+
+Reason
+^^^^^^
+To backup *TO* a remote host, you have to open security on it.
+
+Think of the following situation: You backup your farm of webservers *TO*
+a backup host somewhere else.
+Now, one of your webservers, which has access to your backup host, gets
+compromised.
+
+Then your backup server will be compromised, too.
+
+And all data from the other webservers are also know to the attacker. 
+
+Doing it the secure way
+^^^^^^^^^^^^^^^^^^^^^^^
+Think of it the other way round: The backup server (now behind a
 firewall using NAT and strong firewall rules) connects to the
 webservers and pulls the data *from* them. If someone gets access to one
 of the webservers, the person will perhaps not even see your machine. If
-he/she sees that there are connections from a host to the compromised
+the attacker sees that there are connections from a host to the compromised
 machine, he/she will not be able to login to the backup machine.
 All other backups are still secure.
 
@@ -65,6 +78,7 @@ Installing ccollect
 ~~~~~~~~~~~~~~~~~~~
 For the installation, you need at least
 
+  - the latest ccollect package (http://unix.schottelius.org/ccollect/)
   - either `cp` and `chmod` or `install`
   - for more comfort: `make`
   - for rebuilding the generated documentation: additionally `asciidoc`
