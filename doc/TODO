@@ -1,4 +1,5 @@
 - add --version, -V
+- do we want rsync -H by default?
 
 - update documentation:
    - german doc?
