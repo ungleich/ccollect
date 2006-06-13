@@ -1,6 +1,7 @@
 0.4 to 0.4.1:
    * updated documentation
-   * created new document formats: Texinfo and manpage
+   * added Texinfo documentation
+   * added a manpage (English)
    * fixed problem with 'make install' (strip was used)
    * fixed possible problem with pre_exec beeing executed to late
 

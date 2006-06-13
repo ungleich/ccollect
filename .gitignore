@@ -3,3 +3,6 @@ doc/old
 doc/*.html
 doc/*.docbook
 doc/*.texi
+doc/man/*.html
+doc/man/*.texi
+doc/man/*.man

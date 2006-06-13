@@ -41,7 +41,7 @@ trap "rm -f \"$TMP\"" 1 2 15
 
 add_name()
 {
-   sed "s/^/\[$name\] /"
+   sed "s:^:\[$name\] :"
 }
 
 #

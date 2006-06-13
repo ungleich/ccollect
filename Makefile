@@ -71,7 +71,8 @@ push-work:
 publish-doc: documentation
 	@echo "Transferring files to $(host)"
 	@chmod a+r doc/*.html doc/*.text
-	@scp doc/*.text doc/*.html $(host):$(docdir)
+	@scp doc/*.text doc/*.html doc/*.texi doc/man/*.man $(host):$(docdir)
+	@ssh $(host) "cd $(docdir); chmod a+r *"
 
 #
 # Doku
