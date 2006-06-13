@@ -129,6 +129,20 @@ if [ "$VERBOSE" = 1 ]; then
 fi
 
 #
+# Look for pre-exec command (general)
+#
+if [ -x "$CPREEXEC" ]; then
+   echo "Executing $CPREEXEC ..."
+   "$CPREEXEC"
+   echo "Finished ${CPREEXEC}."
+
+   if [ $? -ne 0 ]; then
+      echo "$CPREEXEC failed, aborting backup."
+      exit 1
+   fi
+fi
+
+#
 # Look, if we should take ALL sources
 #
 if [ "$ALL" = 1 ]; then
@@ -163,20 +177,6 @@ fi
 
 D_FILE_INTERVAL="$CDEFAULTS/intervals/$INTERVAL"
 D_INTERVAL=$(cat "$D_FILE_INTERVAL" 2>/dev/null)
-
-#
-# Look for pre-exec command (general)
-#
-if [ -x "$CPREEXEC" ]; then
-   echo "Executing $CPREEXEC ..."
-   "$CPREEXEC"
-   echo "Finished ${CPREEXEC}."
-
-   if [ $? -ne 0 ]; then
-      echo "$CPREEXEC failed, aborting backup."
-      exit 1
-   fi
-fi
 
 #
 # Let's do the backup
