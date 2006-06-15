@@ -32,7 +32,12 @@ DOCS     = $(MANDOCS) doc/ccollect.text doc/ccollect-DE.text
 # End user targets
 #
 all:
-	@echo "Nothing to make, make install."
+	@echo "----------- ccollect make targets --------------"
+	@echo "documentation:    generate HTMl, Texinfo and manpage"
+	@echo "html:             only generate HTML"
+	@echo "info:             only generate Texinfo"
+	@echo "man:              only generate manpage(s)"
+	@echo "install:          install ccollect to $(prefix)"
 
 install: install-script install-link
 
@@ -103,4 +108,7 @@ allclean:
 distclean:
 	rm -f $(DOCBDOCS)
 
+#
+# Be nice with the users and generate documentation for them
+#
 dist: distclean documentation
