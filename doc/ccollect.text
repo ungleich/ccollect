@@ -109,8 +109,9 @@ Runtime options
 the directory specified by the variable '$CCOLLECT_CONF'
 (use 'CCOLLECT_CONF=/your/config/dir ccollect.sh' on the shell).
 
-When you start `ccollect`, you have either to specify which interval
-to backup (daily, weekly, yearly; you can specify the names yourself, see below).
+When you start `ccollect`, you have to specify which interval
+to use for backup (daily, weekly, yearly; you can specify the names yourself,
+see below) and which sources to backup or -a (to backup all source).
 
 The interval is used to specify how many backups to keep.
 
@@ -454,7 +455,7 @@ Now you could use /home/backup/web1 as the `destination` for the backup.
 Do *not* name the first backup something like "daily.initial", but use
 the "*0*" (or some very low number, at least lower than the current year)
 as extension. `ccollect` uses `sort` to find the latest backup. `ccollect`
-itself uses 'interval.YEAR-MONTH-DAY-HOUR:MINUTE.PID'. This notation will
+itself uses 'interval.YEAR-MONTH-DAY-HOURMINUTE.PID'. This notation will
 *always* be before "daily.initial", as numbers are earlier in the list
 which is produced by `sort`. So, if you have a directory named "daily.initial",
 `ccollect` will always diff against this backup and transfer and delete
@@ -479,8 +480,7 @@ F.A.Q.
 What happens, if one backup is broken or empty?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Let us assume, that one backup failed (connection broke or the source
-hard disk had some failures). So we've one backup in our history,
-which is incomplete.
+hard disk had some failures). So we've an incomplete backup in our history.
 
 The next time you use `ccollect`, it will transfer the missing files.
 This leads to
@@ -507,7 +507,6 @@ permissions. Try `chmod 0755 /etc/ccollect/sources/'yoursource'/*_exec``.
 
 Why does the backup job fail, when part of the source is a link?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 When a part of your path you specified in the source is a
 (symbolic, hard links are not possible for directories) link,
 the backup *must* fail.

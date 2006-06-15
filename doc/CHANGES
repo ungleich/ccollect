@@ -1,5 +1,5 @@
 0.4 to 0.4.1:
-   * updated documentation
+   * updated documentation, fixed some English related problems
    * added Texinfo documentation
    * added a manpage (English)
    * fixed problem with 'make install' (strip was used)
