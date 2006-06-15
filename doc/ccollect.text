@@ -15,34 +15,34 @@ It does not depend on a specific shell, only `/bin/sh` needs to be
 bourne shell compatible (like 'dash', 'ksh', 'zsh', 'bash', ...).
 
 
-Why you cannot backup TO remote hosts (but FROM them!)
+Why you can only backup from remote hosts, not to them
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-While thinking about the design of ccollect, I thought about enabling
+While considering the design of ccollect, I thought about enabling
 backup to *remote* hosts. Though this sounds like a nice feature
-('Backup my notebook to the server now.'), it is in my opinion a
+('Backup my notebook to the server now.'), in my opinion it is a
 bad idea to backup to a remote host.
 
 Reason
 ^^^^^^
-To backup *TO* a remote host, you have to open security on it.
+If you want to backup *TO* a remote host, you have to loosen security on it.
 
-Think of the following situation: You backup your farm of webservers *TO*
+Imagine the following situation: You backup your farm of webservers *TO*
 a backup host somewhere else.
-Now, one of your webservers, which has access to your backup host, gets
+Now one of your webservers which has access to your backup host gets
 compromised.
 
-Then your backup server will be compromised, too.
+Your backup server will be compromised, too.
 
-And all data from the other webservers are also know to the attacker. 
+And the attacker will have access to all data on the other webservers.
 
-Doing it the secure way
-^^^^^^^^^^^^^^^^^^^^^^^
+Doing it securely
+^^^^^^^^^^^^^^^^^
 Think of it the other way round: The backup server (now behind a
 firewall using NAT and strong firewall rules) connects to the
 webservers and pulls the data *from* them. If someone gets access to one
-of the webservers, the person will perhaps not even see your machine. If
-the attacker sees that there are connections from a host to the compromised
-machine, he/she will not be able to login to the backup machine.
+of the webservers, this person will perhaps not even see your machine. If
+the attacker does see connections from a host to the compromised
+machine, he/she will not be able to log in on the backup machine.
 All other backups are still secure.
 
 
@@ -59,7 +59,7 @@ versions:
 - `pax` (Posix) is now required, `cp -al` (GNU specific) is removed
 - "interval" was written with two 'l' (ell), which is wrong in English
 - Changed the name of backup directories, removed the colon in the interval
-- ccollect will now exit, when preexec returns non-zero
+- ccollect will now exit when preexec returns non-zero
 - ccollect now reports when postexec returns non-zero
 
 You can convert your old configuration directory using
@@ -76,7 +76,7 @@ Requirements
 
 Installing ccollect
 ~~~~~~~~~~~~~~~~~~~
-For the installation, you need at least
+For the installation you need at least
 
   - the latest ccollect package (http://unix.schottelius.org/ccollect/)
   - either `cp` and `chmod` or `install`
@@ -86,7 +86,7 @@ For the installation, you need at least
 
 Using ccollect
 ~~~~~~~~~~~~~~
-.Running ccollect requires the following tools installed:
+.Running ccollect requires the following tools to be installed:
    - `bc`
    - `pax` *NEW* (since ccollect 0.4, replaces previously used `cp -al`)
    - `date`
@@ -107,38 +107,35 @@ Runtime options
 ~~~~~~~~~~~~~~~
 `ccollect` looks for its configuration in '/etc/ccollect' or, if set, in
 the directory specified by the variable '$CCOLLECT_CONF'
-(use 'CCOLLECT_CONF=/your/config/dir ccollect.sh' on the shell).
+(set 'CCOLLECT_CONF=/your/config/dir ccollect.sh' on the shell).
 
-When you start `ccollect`, you have to specify which interval
-to use for backup (daily, weekly, yearly; you can specify the names yourself,
-see below) and which sources to backup or -a (to backup all source).
+When you start `ccollect`, you have to specify in which interval
+to backup (daily, weekly, yearly; you can specify the names yourself, see below) and which sources to backup (or -a to backup all sources).
 
-The interval is used to specify how many backups to keep.
+The interval specifies how many backups are kept.
 
-There are also some self explaining parameters you can pass to ccollect, simply use
+There are also some self-explanatory parameters you can pass to ccollect, simply use
 `ccollect.sh --help` for info.
 
 
 General configuration
 ~~~~~~~~~~~~~~~~~~~~~
-The general configuration can be found below $CCOLLECT_CONF/defaults or
-/etc/ccollect/defaults. All options specified here are generally valid for
-all source definitions. Though the values can be overwritten in the source
+The general configuration can be found in $CCOLLECT_CONF/defaults or
+/etc/ccollect/defaults. All options specified there are generally valid for
+all source definitions, although the values can be overwritten in the source
 configuration.
 
-All configuration entries are plain-text (use UTF-8 if you use
-non ASCII characters) files.
+All configuration entries are plain-text files (use UTF-8 for non-ascii characters).
 
 
 Interval definition
 ^^^^^^^^^^^^^^^^^^^^
-The interval definition can be found below
+The interval definition can be found in
 '$CCOLLECT_CONF/defaults/intervals/' or '/etc/ccollect/defaults/intervals'. 
-Every file below this directory specifies an interval. The name of the file is the
-name of the interval: `intervals/'<interval name>'`.
+Each file in this directory specifies an interval. The name of the file is the same as the name of the interval: `intervals/'<interval name>'`.
 
 The content of this file should be a single line containing a number.
-This number defines how many versions of this interval to keep.
+This number defines how many versions of this interval are kept.
 
 Example:
 -------------------------------------------------------------------------
@@ -176,12 +173,12 @@ human readable format before and after the whole backup process:
 
 Source configuration
 ~~~~~~~~~~~~~~~~~~~~
-Each source configuration exists below '$CCOLLECT_CONF/sources/$name' or
+Each source configuration exists in '$CCOLLECT_CONF/sources/$name' or
 '/etc/ccollect/sources/$name'.
 
 The name you choose for the subdirectory describes the source.
 
-Each source has at least the following files:
+Each source contains at least the following files:
 
    - `source`       (a text file containing the `rsync` compatible path to backup)
    - `destination`  (a link to the directory we should backup to)
@@ -192,11 +189,11 @@ Additionally a source may have the following files:
    - `very_verbose`  be very verbose (-v also for `mkdir`, `pax`, `rm`)
    - `summary`       create a transfer summary when `rsync` finished
 
-   - `exclude`       exclude list for `rsync`. newline ('\n') seperated list.
+   - `exclude`       exclude list for `rsync`. newline ('\n') seperates list.
    - `rsync_options` extra options to pass to `rsync`
 
-   - `pre_exec`      program to execute before backuping *this* source
-   - `post_exec`     program to execute after backuping *this* source
+   - `pre_exec`      program to execute before backing up *this* source
+   - `post_exec`     program to execute after backing up *this* source
 
 
 Example:
@@ -221,8 +218,8 @@ Example:
 --------------------------------------------------------------------------------
 
 
-Detailled description of "source"
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Detailed description of "source"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 `source` describes a `rsync` compatible source (one line only).
  
 For instance 'backup_user@foreign_host:/home/server/video'.
@@ -231,22 +228,22 @@ To use the `rsync` protocol without the `ssh`-tunnel, use
 of `rsync`(1).
  
 
-Detailled description of "verbose"
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Detailed description of "verbose"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 `verbose` tells `ccollect` that the log should contain verbose messages.
 
 If this file exists in the source specification *-v* will be passed to `rsync`.
 
-
+`
 Example:
 --------------------------------------------------------------------------------
    [11:35] zaphodbeeblebrox:ccollect-0.2% touch conf/sources/testsource1/verbose
 --------------------------------------------------------------------------------
 
 
-Detailled description of "very_verbose"
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-`very_verbose` tells `ccollect` that it should log very verbose.
+Detailed description of "very_verbose"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+`very_verbose` tells `ccollect` that it should log very verbosely.
 
 If this file exists in the source specification *-v* will be passed to
 `rsync`, `pax`, `rm` and `mkdir`.
@@ -258,11 +255,11 @@ Example:
 --------------------------------------------------------------------------------
 
 
-Detailled description of "summary"
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Detailed description of "summary"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you create the file `summary` below the source definition,
-`ccollect` will present you with a nice summary at the end.
+If you create the file `summary` in the source definition,
+`ccollect` will present you a nice summary at the end.
 
 -------------------------------------------------------------------------------
 backup:~# touch /etc/ccollect/sources/root/summary
@@ -292,15 +289,14 @@ backup:~# ccollect.sh werktags root
 ==> Finished ccollect.sh <==
 -------------------------------------------------------------------------------
 
-You could also combine it with `verbose` or `very_verbose`, but they
-already print some statistics (but not all / the same as presented by
+You could also combine it with `verbose` or `very_verbose`, but these
+already print some statistics (though not all / the same as presented by
 `summary`).
 
 
-Detailled description of "exclude"
+Detailed description of "exclude"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-`exclude` specifies a list of paths to exclude. The entries are new line (\n)
-seperated.
+`exclude` specifies a list of paths to exclude. The entries are seperated by a newline (\n).
 
 Example:
 --------------------------------------------------------------------------------
@@ -312,8 +308,8 @@ Example:
 --------------------------------------------------------------------------------
 
 
-Detailled description of "destination"
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Detailed description of "destination"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 `destination` must be a link to the destination directory.
 
 
@@ -323,16 +319,16 @@ Example:
    lrwxrwxrwx  1 nico users 20 2005-11-17 16:44 conf/sources/testsource2/destination -> /home/nico/backupdir
 --------------------------------------------------------------------------------
 
-To speak truth, this is not fully correct. `ccollect` will also backup
-your data, if `destination` is a directory. But do you really want to have
-a backup below /etc?
+To tell the truth, this is not fully correct. `ccollect` will also backup
+your data if `destination` is a directory. But do you really want to have
+a backup in /etc?
 
 
-Detailled description of "intervals/"
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-When you create a subdirectory `intervals/` within your source configuration
+Detailed description of "intervals/"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+When you create the subdirectory `intervals/` in your source configuration
 directory, you can specify individiual intervals for this specific source.
-Each file below this directory describes an interval.
+Each file in this directory describes an interval.
 
 
 Example:
@@ -349,10 +345,10 @@ Example:
 
 Detailled description of "rsync_options"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-When you create the file `rsync_options` below your source configuration,
-all the parameters found in this file will be passed to rsync. This
+When you create the file `rsync_options` in your source configuration,
+all the parameters in this file will be passed to rsync. This
 way you can pass additional options to rsync. For instance you can tell rsync
-to show progress ("--progress") or which -password-file ("--password-file")
+to show progress ("--progress"), or which -password-file ("--password-file")
 to use for automatic backup over the rsync-protocol.
 
 
@@ -365,9 +361,9 @@ Example:
 
 Detailled description of "pre_exec" and "post_exec"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-When you create `pre_exec` and / or `post_exec` below your source
-configuration, `ccollect` will execute this command before,
-respective after doing the backup for *this specific* source.
+When you create `pre_exec` and / or `post_exec` in your source
+configuration, `ccollect` will execute this command before and
+respectively after doing the backup for *this specific* source.
 If you want to have pre-/post-exec before and after *all*
 backups, see above for general configuration.
 
@@ -412,11 +408,11 @@ this_is_the_rsync_password
 This hint was reported by Daniel Aubry.
 
 
-Not-excluding top-level directories
+Not excluding top-level directories
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 When you exclude "/proc" or "/mnt" from your backup, you may run into
 trouble when you restore your backup. When you use "/proc/\*" or "/mnt/\*"
-instead `ccollect` will backup empty directories.
+instead, `ccollect` will backup empty directories.
 
 [NOTE]
 ===========================================
@@ -448,14 +444,14 @@ backup:/home/backup/web1# mv * daily.0 2>/dev/null
 backup:/home/backup/web1# ls
 daily.0
 -------------------------------------------------------------------------------
-Now you could use /home/backup/web1 as the `destination` for the backup.
+Now you can use /home/backup/web1 as the `destination` for the backup.
 
 [NOTE]
 ===============================================================================
 Do *not* name the first backup something like "daily.initial", but use
-the "*0*" (or some very low number, at least lower than the current year)
+the "*0*" (or some number that is lower than the current year)
 as extension. `ccollect` uses `sort` to find the latest backup. `ccollect`
-itself uses 'interval.YEAR-MONTH-DAY-HOURMINUTE.PID'. This notation will
+itself uses 'interval.YEAR-MONTH-DAY-HOUR:MINUTE.PID'. This notation will
 *always* be before "daily.initial", as numbers are earlier in the list
 which is produced by `sort`. So, if you have a directory named "daily.initial",
 `ccollect` will always diff against this backup and transfer and delete
@@ -477,12 +473,12 @@ The only requirement is that it is executable.
 F.A.Q.
 ------
 
-What happens, if one backup is broken or empty?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Let us assume, that one backup failed (connection broke or the source
-hard disk had some failures). So we've an incomplete backup in our history.
+What happens if one backup is broken or empty?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Let us assume that one backup failed (connection broke or the source
+hard disk had some failures). Therefore we've got one incomplete backup in our history.
 
-The next time you use `ccollect`, it will transfer the missing files.
+`ccollect` will transfer the missing files the next time you use it.
 This leads to
 
    - more transferred files
@@ -495,18 +491,19 @@ No. `ccollect` passes your source definition directly to `rsync`. It
 does not try to analyze it. So it actually does not know if a source
 comes from local harddisk or from a remote server. And it does not want
 to. When you backup from the local harddisk (which is perhaps not
-even a good idea when thinking of security) add the `destination`
+even a good idea when thinking of security), add the `destination`
 to 'source/exclude'. (Daniel Aubry reported this problem)
 
 
 Why does ccollect say "Permission denied" with my pre-/postexec script?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The most common error is to not give your script the correct
+The most common error is that you have not given your script the correct
 permissions. Try `chmod 0755 /etc/ccollect/sources/'yoursource'/*_exec``.
 
 
-Why does the backup job fail, when part of the source is a link?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Why does the backup job fail when part of the source is a link?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 When a part of your path you specified in the source is a
 (symbolic, hard links are not possible for directories) link,
 the backup *must* fail.
@@ -525,8 +522,7 @@ First of all, let us have a look at how it looks like:
 [...]
 -------------------------------------------------------------------------------
 
-So what is the problem? It is very obvious, when you have a deeper look
-into it:
+So what is the problem? It is very obvious when you look deeper into it:
 
 -------------------------------------------------------------------------------
 % cat /etc/ccollect/sources/testsource/source
@@ -537,13 +533,13 @@ lrwxrwxrwx 1 nico nico 29 2005-12-02 23:28 /home/user/nico/projekte -> oeffentli
 lrwxrwxrwx 1 nico nico 29 2006-04-29 00:01 projekte -> oeffentlich/computer/projekte
 -------------------------------------------------------------------------------
 
-`rsync` creates the directory structure until it creates the symbolic link.
-This link now links to something not reachable (dead link). So it is
-impossible to create subdirectories below the broken link.
+`rsync` creates the directory structure before it creates the symbolic link.
+This link now links to something not reachable (dead link). It is
+impossible to create subdirectories under the broken link.
 
-So, the conclusion is you cannot use paths with a linked part.
+In conclusion you cannot use paths with a linked part.
 
-*BUT* you can backup directories containing symbolic links
+However, you can backup directories containing symbolic links
 (in this case you could backup /home/user/nico, which contains
 /home/user/nico/projekte and oeffentlich/computer/projekte).
 
