@@ -1,4 +1,6 @@
 - add --version, -V
+- hint: : in path  / sed / general problem
+- hint: backuping backup
 - do we want rsync -H by default?
 
 - update documentation:
