@@ -108,6 +108,10 @@ touch miniconfig/sources/testsource/summary
 # do the backup, twice
 CCOLLECT_CONF=./miniconfig ./ccollect.sh testinterval testsource
 CCOLLECT_CONF=./miniconfig ./ccollect.sh testinterval testsource
+
+# Let's see how much space we used with two backups and compare it to /bin
+du -s ~/DASI /bin
+
 --------------------------------------------------------------------------------
 
 By the way: Cut and paste of the complete section above into your
