@@ -106,8 +106,14 @@ Configuring
 Runtime options
 ~~~~~~~~~~~~~~~
 `ccollect` looks for its configuration in '/etc/ccollect' or, if set, in
-the directory specified by the variable '$CCOLLECT_CONF'
-(set 'CCOLLECT_CONF=/your/config/dir ccollect.sh' on the shell).
+the directory specified by the variable '$CCOLLECT_CONF':
+--------------------------------------------------------------------------------
+# sh-compatible (zsh, mksh, ksh, bash, ...)
+$ CCOLLECT_CONF=/your/config/dir ccollect.sh ...
+
+# csh
+$ ( setenv CCOLLECT_CONF /your/config/dir ; ccollect.sh ... )
+--------------------------------------------------------------------------------
 
 When you start `ccollect`, you have to specify in which interval
 to backup (daily, weekly, yearly; you can specify the names yourself, see below) and which sources to backup (or -a to backup all sources).
