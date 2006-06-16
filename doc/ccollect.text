@@ -1,7 +1,7 @@
 ccollect - Installing, Configuring and Using
 ============================================
 Nico Schottelius <nico-linux-ccollect__@__schottelius.org>
-0.4.1, for ccollect 0.4-0.4.1, Initial Version from 2006-01-13
+0.4.2, for ccollect 0.4-0.4.2, Initial Version from 2006-01-13
 :Author Initials: NS
 
 (pseudo) incremental backup
@@ -68,6 +68,44 @@ subdirectory:
 
 --------------------------------------------------------------------------------
 [10:05] hydrogenium:ccollect-0.4# ./tools/config-pre-0.4-to-0.4.sh /etc/ccollect
+--------------------------------------------------------------------------------
+
+
+Quick start
+-----------
+For those who do not want to read the whole long document:
+
+--------------------------------------------------------------------------------
+# get latest ccollect tarball from http://unix.schottelius.org/ccollect/
+# replace 0.4.1 with the current version
+wget http://unix.schottelius.org/ccollect/ccollect-0.4.1.tar.bz2
+
+# extract the tarball, change to the newly created directory
+tar -xvjf ccollect-0.4.1.tar.bz2
+cd ccollect-0.4.1
+
+# create mini-configuration
+# first create directory structure
+mkdir -p miniconfig/defaults/intervals
+mkdir miniconfig/sources
+
+# create a sample interval
+echo 42 > miniconfig/defaults/intervals/testinterval
+
+# create destination directory, where the backups will be kept
+mkdir ~/DASI
+
+# create sample source, which will be saved
+mkdir miniconfig/sources/testsource
+# We will save '/bin' to the directory '~/DASI'
+echo '/bin' > miniconfig/sources/testsource/source
+ln -s ~/DASI miniconfig/sources/testsource/destination
+# We want to see what happens and also a small summary at the end
+touch miniconfig/sources/testsource/verbose
+touch miniconfig/sources/testsource/summary
+
+# do the backup
+CCOLLECT_CONF=./miniconfig ./ccollect.sh testinterval testsource
 --------------------------------------------------------------------------------
 
 

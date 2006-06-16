@@ -15,7 +15,7 @@ CPOSTEXEC="$CDEFAULTS/post_exec"
 
 TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
 VERSION=0.4.2
-RELEASE="2006-XX-XX"
+RELEASE="2006-06-17"
 HALF_VERSION="ccollect $VERSION"
 FULL_VERSION="ccollect $VERSION ($RELEASE)"
 
@@ -378,13 +378,16 @@ while [ "$i" -lt "$no_sources" ]; do
    echo "Creating $destination_dir ..."
    mkdir $VVERBOSE "$destination_dir"
 
+   #
+   # make an absolute path, perhaps $CCOLLECT_CONF is relative!
+   #
+   abs_destination_dir=$(cd $destination_dir; pwd)
+
    # only copy if a directory exists
    if [ "$last_dir" ]; then
       echo "$($DDATE) Hard linking..."
       cd "$last_dir"
-      pax -rwl -p e $VVERBOSE .  "$destination_dir"
-      # old, gnu cp specific
-      # cp -al $VVERBOSE "$last_dir" "$destination_dir"
+      pax -rwl -p e $VVERBOSE .  "$abs_destination_dir"
    fi
 
    if [ $? -ne 0 ]; then
@@ -402,7 +405,7 @@ while [ "$i" -lt "$no_sources" ]; do
 
    rsync -a $VERBOSE $RSYNC_EXTRA $EXCLUDE $SUMMARY \
       --delete --numeric-ids --relative --delete-excluded \
-      "$source" "$destination_dir"
+      "$source" "$abs_destination_dir"
    
    if [ "$?" -ne 0 ]; then
       echo "rsync reported an error. The backup may be broken (see rsync errors)"
