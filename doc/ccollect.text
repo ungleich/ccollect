@@ -77,12 +77,13 @@ For those who do not want to read the whole long document:
 
 --------------------------------------------------------------------------------
 # get latest ccollect tarball from http://unix.schottelius.org/ccollect/
-# replace 0.4.1 with the current version
-wget http://unix.schottelius.org/ccollect/ccollect-0.4.1.tar.bz2
+# replace 0.4.2 with the current version
+export CCV=0.4.2
+wget http://unix.schottelius.org/ccollect/ccollect-${CCV}.tar.bz2
 
 # extract the tarball, change to the newly created directory
-tar -xvjf ccollect-0.4.1.tar.bz2
-cd ccollect-0.4.1
+tar -xvjf ccollect-${CCV}.tar.bz2
+cd ccollect-${CCV}
 
 # create mini-configuration
 # first create directory structure
@@ -104,10 +105,14 @@ ln -s ~/DASI miniconfig/sources/testsource/destination
 touch miniconfig/sources/testsource/verbose
 touch miniconfig/sources/testsource/summary
 
-# do the backup
+# do the backup, twice
+CCOLLECT_CONF=./miniconfig ./ccollect.sh testinterval testsource
 CCOLLECT_CONF=./miniconfig ./ccollect.sh testinterval testsource
 --------------------------------------------------------------------------------
 
+By the way: Cut and paste of the complete section above into your
+shell will result in downloading ccollect, creating a sample configuration
+and doing the backup two times.
 
 Requirements
 ------------
