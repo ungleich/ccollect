@@ -408,7 +408,7 @@ while [ "$i" -lt "$no_sources" ]; do
       "$source" "$abs_destination_dir"
    
    if [ "$?" -ne 0 ]; then
-      echo "rsync reported an error. The backup may be broken (see rsync errors)"
+      echo "rsync reported error $?. The backup may be broken (see rsync errors)"
    fi
 
    echo "$($DDATE) Finished backup"
