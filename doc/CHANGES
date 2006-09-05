@@ -1,3 +1,8 @@
+0.4.2 to 0.4.3:
+   * Display error code of rsync, if non-zero (for further analysis)
+   * Fix Makefile, so 'make install' works on others OS
+   * reorder $RSYNC_EXTRA, so it can be overriden by users
+
 0.4.1 to 0.4.2:
    * fixed bug when $CCOLLECT_CONF is relative
    * added Quickstart to documentation

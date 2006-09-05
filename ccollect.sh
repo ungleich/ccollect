@@ -14,8 +14,8 @@ CPREEXEC="$CDEFAULTS/pre_exec"
 CPOSTEXEC="$CDEFAULTS/post_exec"
 
 TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
-VERSION=0.4.2
-RELEASE="2006-06-17"
+VERSION=0.4.3
+RELEASE="2006-XX-XX"
 HALF_VERSION="ccollect $VERSION"
 FULL_VERSION="ccollect $VERSION ($RELEASE)"
 
@@ -403,9 +403,9 @@ while [ "$i" -lt "$no_sources" ]; do
  
    echo "$($DDATE) Transferring files..."
 
-   rsync -a $VERBOSE $RSYNC_EXTRA $EXCLUDE $SUMMARY \
-      --delete --numeric-ids --relative --delete-excluded \
-      "$source" "$abs_destination_dir"
+   rsync -a --delete --numeric-ids --relative --delete-excluded   \
+         $VERBOSE $EXCLUDE $SUMMARY $RSYNC_EXTRA                  \
+         "$source" "$abs_destination_dir"
    
    if [ "$?" -ne 0 ]; then
       echo "rsync reported error $?. The backup may be broken (see rsync errors)"
