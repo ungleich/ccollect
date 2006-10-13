@@ -114,9 +114,10 @@ du -s ~/DASI /bin
 
 --------------------------------------------------------------------------------
 
-By the way: Cut and paste of the complete section above into your
-shell will result in downloading ccollect, creating a sample configuration
-and doing the backup two times.
+Cutting and pasting the complete section above to your shell will result in
+the download of ccollect, the creation of a sample configuration and the
+execution of two backups.
+
 
 Requirements
 ------------
