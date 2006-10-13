@@ -1,0 +1,62 @@
+11:39 <~papo> was is der Unterschied zu  rsync -a --delete 
+              --link-dest=$snapshot/$lastdate /home/  $snapshot/$curdate
+--------------------------------------------------------------------------------
+09:30 < KillerFox> -F bzw. --filter
+09:30 < KillerFox> -F dir-merge .backuprules
+09:30 < KillerFox> rsync ist ein Optionenmonster
+09:31 < KillerFox> telmich: man rsync; / FILTER RULES
+09:31 < KillerFox> telmich: es ist nur ein Vorschlag, der noch nett wäre :-).
+09:32 < KillerFox> telmich: btw. mir ist noch was aufgefallen. Wenn du nur ein eine 
+                   Backupversion behalten willst, könnte man rsync etwas 
+                   effizienter nutzen.
+09:32 < KillerFox> zur Zeit ist es ja so, dass das alte Verzeichnis gekillt wird 
+                   und dann wieder neu gespiegelt
+09:32 < KillerFox> aber wenn man nur eine Backupversion besitzt könnte man einfach 
+                   rsync drüber laufen lassen.
+09:33 < KillerFox> so würde dann nur immer die differenz übertragen.
+09:34 < KillerFox> -F'dir-merge,.backuprules', das wäre die korrekte Option.
+09:34 < telmich> KillerFox: ah, du meinst im spezialfall, wenn es nur ein 
+                 verzeichnis gibt?
+09:35 < KillerFox> das würde dann pro Verzeichnis nach .backuprules suchen.
+09:35 < KillerFox> telmich: genau.
+09:35 < KillerFox> und die Regeln aus .backuprules befolgen.
+09:35 < telmich> KillerFox: ich denke, das werde ich erstmal in die tipps mit 
+                 aufnehmen, denn man kann es ja via rsync_options aendern
+09:35 < KillerFox> telmich: das stimmt.
+09:35 < KillerFox> RSYNC_EXTRA
+09:36 < KillerFox> die Syntax für .backuprules kann man dann in man rsync; /FILTER 
+                   RULES nachlesen.
+
+09:37 < KillerFox> telmich: okay.
+09:37 < KillerFox> telmich: das ist nur ein Vorschlag was mir so aufgefallen ist.
+09:38 < KillerFox> telmich: btw. der Vorschlag mit einem Verzeichnis kommt übrigens 
+                   von Frank. Ich hatte ihm gestern ccollect für die Spiegelung 
+                   seines System empfohlen (da ich wusste, dass rsync für ihn 
+                   alleine zu kompliziert ist)
+09:38 < KillerFox> telmich: er hat da irgendwie echo '1' > daily gemacht und sich 
+                   dann gewundert, wieso er immer alles neu überträgt
+09:38 < KillerFox> was bei einer angeschlossenen Platte mit USB 1.1 sehr lange 
+                   dauern kann
+09:39 < KillerFox> da wäre die differenz Ideal.
+09:40 < KillerFox> ich habe nur ccollect mit mehr als einer Version im Einsatz ;-)
+09:40 < KillerFox> darum ist mir das nie aufgefallen.
+09:40 < KillerFox> aber eigentlich logisch.
+
+--------------------------------------------------------------------------------
+ -H, --hard-links            preserve hard links
+   --> vielleicht in die doku fuer rsync_extra aufnehmen
+   --> teuer, aber platzsparend
+--------------------------------------------------------------------------------
+ -H, --hard-links            preserve hard links
+   --> fuer das klonen von den backups!! --> doku
+--------------------------------------------------------------------------------
+pax / grosse dateien
+--------------------------------------------------------------------------------
+sven / markierung
+--------------------------------------------------------------------------------
+13:20 <mad81>    rsync -a $VERBOSE $EXCLUDE $SUMMARY \
+13:20 <mad81>       --delete --numeric-ids --relative --delete-excluded 
+              $RSYNC_EXTRA \
+13:20 <mad81>       "$source" "$abs_destination_dir"
+13:21 <mad81> dann greift auch mein --no-relative
+--------------------------------------------------------------------------------
