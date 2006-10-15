@@ -87,9 +87,14 @@ For those who do not want to read the whole long document:
 
 --------------------------------------------------------------------------------
 # get latest ccollect tarball from http://unix.schottelius.org/ccollect/
-# replace 0.4.2 with the current version
+# replace 0.5 with the current version
 export CCV=0.5
-wget http://unix.schottelius.org/ccollect/ccollect-${CCV}.tar.bz2
+
+#
+# replace 'wget' with fetch on bsd
+#
+holen=wget
+"$holen" http://unix.schottelius.org/ccollect/ccollect-${CCV}.tar.bz2
 
 # extract the tarball, change to the newly created directory
 tar -xvjf ccollect-${CCV}.tar.bz2
