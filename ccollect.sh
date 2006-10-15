@@ -61,7 +61,7 @@ usage()
    echo "   This is version $VERSION, released on ${RELEASE}"
    echo "   (the first version was written on 2005-12-05 by Nico Schottelius)."
    echo ""
-   echo "   Retrieve latest ccollect at http://linux.schottelius.org/ccollect/"
+   echo "   Retrieve latest ccollect at http://unix.schottelius.org/ccollect/"
    exit 0
 }
 
