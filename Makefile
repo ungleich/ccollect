@@ -18,8 +18,8 @@ path_dir=/usr/local/bin
 path_destination=$(path_dir)/$(CCOLLECT)
 
 # where to publish
-host=creme.schottelius.org
-dir=www/org/schottelius/linux/ccollect
+host=home.schottelius.org
+dir=www/org/schottelius/unix/www/ccollect/
 docdir=$(dir)/doc
 
 #
@@ -67,10 +67,10 @@ install-script:
 # Developer targets
 #
 update:
-	@cg-update creme
+	@cg-update home
 
 push-work:
-	@cg-push creme
+	@cg-push home
 	@cg-push sygroup
 
 publish-doc: documentation
