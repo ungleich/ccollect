@@ -1,7 +1,7 @@
 ccollect - Installing, Configuring and Using
 ============================================
 Nico Schottelius <nico-linux-ccollect__@__schottelius.org>
-0.4.2, for ccollect 0.4-0.4.2, Initial Version from 2006-01-13
+0.5, for ccollect 0.4-0.5, Initial Version from 2006-01-13
 :Author Initials: NS
 
 (pseudo) incremental backup
@@ -49,6 +49,16 @@ All other backups are still secure.
 Incompatibilities
 ~~~~~~~~~~~~~~~~~
 
+Versions 0.4 and 0.5
+^^^^^^^^^^^^^^^^^^^^^
+Not a real incompatibilty, but seems to fit in this section:
+
+.0.5 does *NOT* require
+- PaX
+- bc
+
+anymore!
+
 Versions < 0.4 and 0.4
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -78,7 +88,7 @@ For those who do not want to read the whole long document:
 --------------------------------------------------------------------------------
 # get latest ccollect tarball from http://unix.schottelius.org/ccollect/
 # replace 0.4.2 with the current version
-export CCV=0.4.2
+export CCV=0.5
 wget http://unix.schottelius.org/ccollect/ccollect-${CCV}.tar.bz2
 
 # extract the tarball, change to the newly created directory
@@ -135,8 +145,6 @@ For the installation you need at least
 Using ccollect
 ~~~~~~~~~~~~~~
 .Running ccollect requires the following tools to be installed:
-   - `bc`
-   - `pax` *NEW* (since ccollect 0.4, replaces previously used `cp -al`)
    - `date`
    - `rsync`
    - `ssh` (if you want to use rsync over ssh, which is recommened for security)
@@ -240,7 +248,7 @@ Each source contains at least the following files:
 Additionally a source may have the following files:
 
    - `verbose`       whether to be verbose (passes -v to `rsync`)
-   - `very_verbose`  be very verbose (-v also for `mkdir`, `pax`, `rm`)
+   - `very_verbose`  be very verbose (-v also for `mkdir`, `rm`)
    - `summary`       create a transfer summary when `rsync` finished
 
    - `exclude`       exclude list for `rsync`. newline ('\n') seperates list.
@@ -300,7 +308,7 @@ Detailed description of "very_verbose"
 `very_verbose` tells `ccollect` that it should log very verbosely.
 
 If this file exists in the source specification *-v* will be passed to
-`rsync`, `pax`, `rm` and `mkdir`.
+`rsync`, `rm` and `mkdir`.
 
 
 Example:
@@ -755,7 +763,7 @@ woechentlich.2006-02-12-11:51.2514   woechentlich.2006-03-16-23:00.4218
 -------------------------------------------------------------------------
 
 And this incremental backup and the archive are copied to an external
-usb harddisk:
+usb harddisk (attention: you *should* really use -H to backup the backup):
 
 -------------------------------------------------------------------------
 [9:23] eiche:backup# df -h
@@ -775,7 +783,7 @@ tmpfs                 110M  4.0K  110M   1% /dev/shm
 [9:24] eiche:backup# cat ~/bin/sync-to-usb       
 DDIR=/mnt/usb/backup
 
-rsync -av --delete /mnt/schwarzesloch/ "$DDIR/schwarzesloch/"
+rsync -av -H --delete /mnt/schwarzesloch/ "$DDIR/schwarzesloch/"
 
-rsync -av --delete /mnt/archiv/ "$DDIR/archiv/"
+rsync -av -H --delete /mnt/archiv/ "$DDIR/archiv/"
 -------------------------------------------------------------------------
