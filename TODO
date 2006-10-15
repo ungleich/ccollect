@@ -1,8 +1,3 @@
-12:25 [lugs] -!- papo [~mathias@192.168.14.164]
-12:25 [lugs] -!-  ircname  : Mathias Weyland
-11:39 <~papo> was is der Unterschied zu  rsync -a --delete 
-              --link-dest=$snapshot/$lastdate /home/  $snapshot/$curdate
---------------------------------------------------------------------------------
 09:30 < KillerFox> -F bzw. --filter
 09:30 < KillerFox> -F dir-merge .backuprules
 09:30 < KillerFox> rsync ist ein Optionenmonster
@@ -43,22 +38,5 @@
 09:40 < KillerFox> ich habe nur ccollect mit mehr als einer Version im Einsatz ;-)
 09:40 < KillerFox> darum ist mir das nie aufgefallen.
 09:40 < KillerFox> aber eigentlich logisch.
-
---------------------------------------------------------------------------------
- -H, --hard-links            preserve hard links
-   --> vielleicht in die doku fuer rsync_extra aufnehmen
-   --> teuer, aber platzsparend
---------------------------------------------------------------------------------
- -H, --hard-links            preserve hard links
-   --> fuer das klonen von den backups!! --> doku
---------------------------------------------------------------------------------
-pax / grosse dateien
 --------------------------------------------------------------------------------
 sven / markierung
---------------------------------------------------------------------------------
-13:20 <mad81>    rsync -a $VERBOSE $EXCLUDE $SUMMARY \
-13:20 <mad81>       --delete --numeric-ids --relative --delete-excluded 
-              $RSYNC_EXTRA \
-13:20 <mad81>       "$source" "$abs_destination_dir"
-13:21 <mad81> dann greift auch mein --no-relative
---------------------------------------------------------------------------------
