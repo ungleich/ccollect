@@ -15,7 +15,7 @@ CPOSTEXEC="$CDEFAULTS/post_exec"
 
 TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
 VERSION=0.5
-RELEASE="2006-XX-XX"
+RELEASE="2006-10-15"
 HALF_VERSION="ccollect $VERSION"
 FULL_VERSION="ccollect $VERSION ($RELEASE)"
 
@@ -380,16 +380,13 @@ while [ "$i" -lt "$no_sources" ]; do
    # give some info
    echo "Beginning to backup, this may take some time..."
 
+   echo "Creating $destination_dir ..."
+   mkdir $VVERBOSE "$destination_dir"
+
    #
    # make an absolute path, perhaps $CCOLLECT_CONF is relative!
    #
    abs_destination_dir="$(cd $destination_dir && pwd -P)"
-
-   if [ ! "abs_destination_dir" ]; then
-      echo "Could
-
-   echo "Creating $abs_destination_dir ..."
-   mkdir $VVERBOSE "$abs_destination_dir"
 
    #
    # the rsync part
@@ -398,19 +395,28 @@ while [ "$i" -lt "$no_sources" ]; do
  
    echo "$($DDATE) Transferring files..."
 
-   set -x
-
    ouropts="-a --delete --numeric-ids --relative --delete-excluded"
    useropts="$VERBOSE $EXCLUDE $SUMMARY $RSYNC_EXTRA"
 
    # Clone from previous backup, if existing
+   set -x
    if [ "$last_dir" ]; then
-      rsync_hardlink="--link-dest=$last_dir"
+      
+      #
+      # This directory MUST be absolute, because rsync does chdir()
+      # before beginning backup!
+      #
+      abs_last_dir="$(cd "$last_dir" && pwd -P)"
+      if [ -z "$abs_last_dir" ]; then
+         echo "Changing to the backup destination failed. I skip this backup."
+         exit 1
+      fi
+
+      rsync_hardlink="--link-dest=$abs_last_dir"
       rsync $ouropts "$rsync_hardlink" $useropts "$source" "$abs_destination_dir"
    else
       rsync $ouropts $useropts "$source" "$abs_destination_dir"
    fi
-
    set +x
 
    if [ "$?" -ne 0 ]; then
