@@ -356,8 +356,8 @@ while [ "$i" -lt "$no_sources" ]; do
    echo " total keeping $c_interval backup(s)."
  
    if [ "$count" -ge "$c_interval" ]; then
-      substract=$(echo $c_interval - 1 | bc)
-      remove=$(echo $count - $substract | bc)
+      substract=$((${c_interval} - 1))
+      remove=$(($count - $substract))
       echo "Removing $remove backup(s)..."
 
       ls -d "$c_dest/${INTERVAL}."?* | sort -n | head -n $remove > "$TMP"
@@ -440,11 +440,11 @@ while [ "$i" -lt "$no_sources" ]; do
 
    end_s=$(date +%s)
 
-   full_seconds=$(echo "$end_s - $begin_s" | bc -l)
-   hours=$(echo $full_seconds / 3600 | bc)
-   seconds=$(echo "$full_seconds - ($hours * 3600)" | bc)
-   minutes=$(echo $seconds / 60 | bc)
-   seconds=$(echo "$seconds - ($minutes * 60)" | bc)
+   full_seconds=$((${end_s} - ${begin_s}))
+   hours=$(($full_seconds / 3600))
+   seconds=$(($full_seconds - ($hours * 3600)))
+   minutes=$(($seconds / 60))
+   seconds=$((${seconds} - (${minutes} * 60)))
 
    echo "Backup lasted: ${hours}:${minutes}:${seconds} (h:m:s)"
 
