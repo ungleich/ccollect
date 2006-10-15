@@ -77,7 +77,7 @@ fi
 #
 if [ ! -d "$CCOLLECT_CONF" ]; then
    echo "No configuration found in \"$CCOLLECT_CONF\"" \
-        " (set \$CCOLLECT_CONF corectly?)"
+        " (is \$CCOLLECT_CONF properly set?)"
    exit 1
 fi
 
@@ -122,7 +122,7 @@ while [ $i -le $# ]; do
 done
 
 #
-# be really really really verbose
+# be really, really, really verbose
 #
 if [ "$VERBOSE" = 1 ]; then
    set -x
@@ -137,7 +137,7 @@ if [ -x "$CPREEXEC" ]; then
    echo "Finished ${CPREEXEC}."
 
    if [ $? -ne 0 ]; then
-      echo "$CPREEXEC failed, aborting backup."
+      echo "$CPREEXEC failed, not starting backup."
       exit 1
    fi
 fi
@@ -152,7 +152,7 @@ if [ "$ALL" = 1 ]; then
    #
    # get entries from sources
    #
-   cwd=$(pwd)
+   cwd=$(pwd -P)
    cd "$CSOURCES";
    ls > "$TMP"
    
@@ -378,7 +378,10 @@ while [ "$i" -lt "$no_sources" ]; do
    #
    # make an absolute path, perhaps $CCOLLECT_CONF is relative!
    #
-   abs_destination_dir="$(cd $destination_dir; pwd -P)"
+   abs_destination_dir="$(cd $destination_dir && pwd -P)"
+
+   if [ ! "abs_destination_dir" ]; then
+      echo "Could
 
    echo "Creating $abs_destination_dir ..."
    mkdir $VVERBOSE "$abs_destination_dir"
