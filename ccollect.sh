@@ -381,13 +381,7 @@ while [ "$i" -lt "$no_sources" ]; do
    #
    # make an absolute path, perhaps $CCOLLECT_CONF is relative!
    #
-   abs_destination_dir=$(cd $destination_dir; pwd -P)
-
-   # only copy if a directory exists
-   if [ "$last_dir" ]; then
-      last_dir=$(cd "$last_dir"; pwd -P)
-      rsync_hardlink="--link-dest=\"$last_dir\""
-   fi
+   abs_destination_dir="$(cd $destination_dir; pwd -P)"
 
    #
    # the rsync part
@@ -397,6 +391,12 @@ while [ "$i" -lt "$no_sources" ]; do
    echo "$($DDATE) Transferring files..."
 
    set -x
+
+   # Clone from previous backup, if existing
+   if [ "$last_dir" ]; then
+      last_dir="$(cd "$last_dir"; pwd -P)"
+      rsync_hardlink="--link-dest=\"$last_dir\""
+   fi
 
    rsync -a --delete --numeric-ids --relative --delete-excluded   \
          $rsync_hardlink                                          \
