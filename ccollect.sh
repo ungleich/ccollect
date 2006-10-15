@@ -375,13 +375,13 @@ while [ "$i" -lt "$no_sources" ]; do
    # give some info
    echo "Beginning to backup, this may take some time..."
 
-   echo "Creating $destination_dir ..."
-   mkdir $VVERBOSE "$destination_dir"
-
    #
    # make an absolute path, perhaps $CCOLLECT_CONF is relative!
    #
    abs_destination_dir="$(cd $destination_dir; pwd -P)"
+
+   echo "Creating $abs_destination_dir ..."
+   mkdir $VVERBOSE "$abs_destination_dir"
 
    #
    # the rsync part
@@ -392,19 +392,21 @@ while [ "$i" -lt "$no_sources" ]; do
 
    set -x
 
+   ouropts="-a --delete --numeric-ids --relative --delete-excluded"
+   useropts="$VERBOSE $EXCLUDE $SUMMARY $RSYNC_EXTRA"
+
    # Clone from previous backup, if existing
    if [ "$last_dir" ]; then
-      last_dir="$(cd "$last_dir"; pwd -P)"
-      rsync_hardlink="--link-dest=\"$last_dir\""
+      rsync_hardlink="--link-dest=$last_dir"
+      rsync $ouropts "$rsync_hardlink" $useropts "$source" "$abs_destination_dir"
+   else
+      rsync $ouropts $useropts "$source" "$abs_destination_dir"
    fi
 
-   rsync -a --delete --numeric-ids --relative --delete-excluded   \
-         $rsync_hardlink                                          \
-         $VERBOSE $EXCLUDE $SUMMARY $RSYNC_EXTRA                  \
-         "$source" "$abs_destination_dir"
    set +x
+
    if [ "$?" -ne 0 ]; then
-      echo "rsync reported error $?. The backup may be broken (see rsync errors)"
+      echo "rsync reported error $?. The backup may be broken (see rsync errors)."
    fi
 
    echo "$($DDATE) Finished backup"
