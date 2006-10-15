@@ -1,3 +1,4 @@
 #!/bin/cat
 
 If you see this content, pre_exec was executed.
+(general pre_exec, not source dependent)

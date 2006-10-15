@@ -381,20 +381,12 @@ while [ "$i" -lt "$no_sources" ]; do
    #
    # make an absolute path, perhaps $CCOLLECT_CONF is relative!
    #
-   abs_destination_dir=$(cd $destination_dir; pwd)
+   abs_destination_dir=$(cd $destination_dir; pwd -P)
 
    # only copy if a directory exists
    if [ "$last_dir" ]; then
-      echo "$($DDATE) Hard linking..."
-      #cd "$last_dir"
-      #pax -rwl -p e $VVERBOSE .  "$abs_destination_dir"
+      last_dir=$(cd "$last_dir"; pwd -P)
       rsync_hardlink="--link-dest=\"$last_dir\""
-   fi
-
-   if [ $? -ne 0 ]; then
-      echo -n "$($DDATE) Creating/cloning backup directory failed."
-      echo " Skipping backup."
-      exit 1
    fi
 
    #
@@ -404,11 +396,13 @@ while [ "$i" -lt "$no_sources" ]; do
  
    echo "$($DDATE) Transferring files..."
 
+   set -x
+
    rsync -a --delete --numeric-ids --relative --delete-excluded   \
          $rsync_hardlink                                          \
          $VERBOSE $EXCLUDE $SUMMARY $RSYNC_EXTRA                  \
          "$source" "$abs_destination_dir"
-   
+   set +x
    if [ "$?" -ne 0 ]; then
       echo "rsync reported error $?. The backup may be broken (see rsync errors)"
    fi
