@@ -27,6 +27,6 @@ doc/man/ccollect.text      Manpage in text format
 doc/man/ccollect.man       Manpage in manpage format (generated)
 
 --------------------------------------------------------------------------------
-[0]: ccollect:    http://linux.schottelius.org/ccollect/
+[0]: ccollect:    http://unix.schottelius.org/ccollect/
 [1]: rsnapshot:   http://www.rsnapshot.org/
 [2]: cconfig:     http://nico.schotteli.us/papers/linux/cconfig/
