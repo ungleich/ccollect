@@ -155,6 +155,11 @@ if [ "$ALL" = 1 ]; then
    cwd=$(pwd -P)
    cd "$CSOURCES";
    ls > "$TMP"
+
+   if [ "$?" -ne 0 ]; then
+      echo "Listing of sources failed. Aborting."
+      exit 1
+   fi
    
    while read tmp; do
       eval source_${no_sources}=\"$tmp\"
