@@ -1,3 +1,5 @@
+12:25 [lugs] -!- papo [~mathias@192.168.14.164]
+12:25 [lugs] -!-  ircname  : Mathias Weyland
 11:39 <~papo> was is der Unterschied zu  rsync -a --delete 
               --link-dest=$snapshot/$lastdate /home/  $snapshot/$curdate
 --------------------------------------------------------------------------------

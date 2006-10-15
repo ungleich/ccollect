@@ -14,7 +14,7 @@ CPREEXEC="$CDEFAULTS/pre_exec"
 CPOSTEXEC="$CDEFAULTS/post_exec"
 
 TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
-VERSION=0.4.3
+VERSION=0.5
 RELEASE="2006-XX-XX"
 HALF_VERSION="ccollect $VERSION"
 FULL_VERSION="ccollect $VERSION ($RELEASE)"
@@ -386,8 +386,9 @@ while [ "$i" -lt "$no_sources" ]; do
    # only copy if a directory exists
    if [ "$last_dir" ]; then
       echo "$($DDATE) Hard linking..."
-      cd "$last_dir"
-      pax -rwl -p e $VVERBOSE .  "$abs_destination_dir"
+      #cd "$last_dir"
+      #pax -rwl -p e $VVERBOSE .  "$abs_destination_dir"
+      rsync_hardlink="--link-dest=\"$last_dir\""
    fi
 
    if [ $? -ne 0 ]; then
@@ -404,6 +405,7 @@ while [ "$i" -lt "$no_sources" ]; do
    echo "$($DDATE) Transferring files..."
 
    rsync -a --delete --numeric-ids --relative --delete-excluded   \
+         $rsync_hardlink                                          \
          $VERBOSE $EXCLUDE $SUMMARY $RSYNC_EXTRA                  \
          "$source" "$abs_destination_dir"
    
