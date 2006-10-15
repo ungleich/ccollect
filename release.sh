@@ -14,8 +14,8 @@ read bla
 NAME=$1
 TARNAME=${NAME}.tar.bz2
 
-DHOST=nico@creme.schottelius.org
-DDIR=www/org/schottelius/linux/ccollect/
+DHOST=nico@home.schottelius.org
+DDIR=www/org/schottelius/unix/www/ccollect/
 DESTINATION="$DHOST:$DDIR"
 
 tar cvfj "$TARNAME" \
