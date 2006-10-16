@@ -399,7 +399,6 @@ while [ "$i" -lt "$no_sources" ]; do
    useropts="$VERBOSE $EXCLUDE $SUMMARY $RSYNC_EXTRA"
 
    # Clone from previous backup, if existing
-   set -x
    if [ "$last_dir" ]; then
       
       #
@@ -417,7 +416,6 @@ while [ "$i" -lt "$no_sources" ]; do
    else
       rsync $ouropts $useropts "$source" "$abs_destination_dir"
    fi
-   set +x
 
    if [ "$?" -ne 0 ]; then
       echo "rsync reported error $?. The backup may be broken (see rsync errors)."
