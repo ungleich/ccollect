@@ -1,3 +1,6 @@
+0.5 to 0.5.1:
+   * Remove always printed debug information
+
 0.4.3 to 0.5:
    * Removed requirement PaX
    * Removed requirement bc
