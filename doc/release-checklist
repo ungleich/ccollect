@@ -1,0 +1,9 @@
+* Change version in ccollect.sh
+* Change version in documentation/ccollect.text
+* Regenerate documentation
+* Create tarball
+* Transfer to home.schottelius.org
+* Extract files
+* Update website
+* Announce on freshmeat
+* Announce on announce@
