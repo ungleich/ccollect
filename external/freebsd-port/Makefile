@@ -5,16 +5,16 @@
 # $FreeBSD$
 #
  
+USE_BZIP2=		yes
 PORTNAME=      ccollect
 PORTVERSION=   0.5.1
-CATEGORIES=    games
-MASTER_SITES=  ftp://ftp.cs.columbia.edu/archives/X11R5/contrib/
+CATEGORIES=    sysutils archivers
+MASTER_SITES=  http://unix.schottelius.org/ccollect/
 
 MAINTAINER=    nico-fbsd-ccollect@schottelius.org
 COMMENT=       (pseudo) incremental (parallel) backup
 
 MAN1=          ccollect.sh.1
 MANCOMPRESSED= yes
-USE_IMAKE=     yes
 
 .include <bsd.port.mk>
