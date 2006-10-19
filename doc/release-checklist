@@ -1,4 +1,4 @@
-* Change version in ccollect.sh
+* Change version and date in ccollect.sh
 * Change version in documentation/ccollect.text
 * Regenerate documentation
 * Create tarball
