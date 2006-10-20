@@ -417,8 +417,10 @@ while [ "$i" -lt "$no_sources" ]; do
       rsync $ouropts $useropts "$source" "$abs_destination_dir"
    fi
 
-   if [ "$?" -ne 0 ]; then
-      echo "rsync reported error $?. The backup may be broken (see rsync errors)."
+   ret=$?
+
+   if [ "$ret" -ne 0 ]; then
+      echo "rsync reported error $ret. The backup may be broken (see rsync errors)."
    fi
 
    echo "$($DDATE) Finished backup"
