@@ -1,3 +1,6 @@
+0.5.1 to 0.5.2:
+   * Display correct error code, if rsync returns non-zero
+
 0.5 to 0.5.1:
    * Remove always printed debug information
 
