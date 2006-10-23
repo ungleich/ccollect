@@ -283,7 +283,7 @@ while [ "$i" -lt "$no_sources" ]; do
       c_interval=$D_INTERVAL
 
       if [ -z "$c_interval" ]; then
-         echo "Default and source specific interval missing. Skipping."
+         echo "No definition for interval \"$INTERVAL\" found. Skipping."
          exit 1
       fi
    fi
