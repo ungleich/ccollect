@@ -12,8 +12,38 @@ ccollect was inspired by rsnapshot [1], which has some problems:
    - you can not specify per source exclude lists
    - no per source pre/post execution support
    - no parallel execution
+   - does unecessary moving of backup directories
    - I didn't like the configuration at all, so I used the cconfig style [2].
 
+
+A small try to visualize the differnces in a table:
+
++---------------+-------------------------------------------------------------+
++     What?     |         rsnapshot            |         ccollect             | 
++---------------+-------------------------------------------------------------+
+| Configuration | tab separated, needs         | plain cconfig-style          | 
+|               | parsing                      |                              | 
++---------------+-------------------------------------------------------------+
+| Per source    |                              |                              | 
+| post-/pre-    |            no                |            yes               | 
+| execution     |                              |                              | 
++---------------+-------------------------------------------------------------+
+| Per source    |                              |                              | 
+| exclude lists |            no                |            yes               | 
++---------------+-------------------------------------------------------------+
+| Parallel      |                              |                              | 
+| execution     |                              |                              | 
+| of multiple   |            no                |            yes               | 
+| backups       |                              |                              | 
++---------------+-------------------------------------------------------------+
+| Programming   |            perl              |            sh                | 
+| language      |                              |      (posix compatible)      | 
++---------------+-------------------------------------------------------------+
+| Lines of code |            6636              |             476              | 
+| (2006-10-25)  |                              |                              | 
++---------------+-------------------------------------------------------------+
+|    Age        |  Available since 2002/2003   |    Written at 2005-11-14     | 
++---------------+-------------------------------------------------------------+
 
 Included documentation:
 
