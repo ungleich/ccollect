@@ -19,9 +19,9 @@ ccollect was inspired by rsnapshot [1], which has some problems:
 A small try to visualize the differnces in a table:
 
 +---------------+-------------------------------------------------------------+
-+     What?     |         rsnapshot            |         ccollect             | 
+|     What?     |         rsnapshot            |         ccollect             | 
 +---------------+-------------------------------------------------------------+
-| Configuration | tab separated, needs         | plain cconfig-style          | 
+| Configuration | tab separated, needs         |     plain cconfig-style      | 
 |               | parsing                      |                              | 
 +---------------+-------------------------------------------------------------+
 | Per source    |                              |                              | 
