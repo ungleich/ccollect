@@ -381,7 +381,7 @@ while [ "$i" -lt "$no_sources" ]; do
    echo "Beginning to backup, this may take some time..."
 
    echo "Creating $destination_dir ..."
-   mkdir $VVERBOSE "$destination_dir"
+   mkdir $VVERBOSE "$destination_dir" || exit 1
 
    #
    # make an absolute path, perhaps $CCOLLECT_CONF is relative!
