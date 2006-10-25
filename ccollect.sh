@@ -90,7 +90,7 @@ no_sources=0
 
 while [ $i -le $# ]; do
    eval arg=\$$i
-   
+
    if [ "$NO_MORE_ARGS" = 1 ]; then
         eval source_${no_sources}=\"$arg\"
         no_sources=$(($no_sources+1))
@@ -148,7 +148,7 @@ fi
 if [ "$ALL" = 1 ]; then
    # reset everything specified before
    no_sources=0
-   
+
    #
    # get entries from sources
    #
@@ -160,7 +160,7 @@ if [ "$ALL" = 1 ]; then
       echo "Listing of sources failed. Aborting."
       exit 1
    fi
-   
+
    while read tmp; do
       eval source_${no_sources}=\"$tmp\"
       no_sources=$(($no_sources+1))
@@ -171,7 +171,7 @@ fi
 # Need at least ONE source to backup
 #
 if [ "$no_sources" -lt 1 ]; then
-   usage   
+   usage
 else
    echo "==> $HALF_VERSION: Beginning backup using interval $INTERVAL <=="
 fi
@@ -250,7 +250,7 @@ while [ "$i" -lt "$no_sources" ]; do
       echo "Source does not exist."
       exit 1
    fi
- 
+
    #
    # configuration _must_ be a directory
    #
@@ -316,28 +316,28 @@ while [ "$i" -lt "$no_sources" ]; do
    if [ -f "$c_exclude" ]; then
       EXCLUDE="--exclude-from=$c_exclude"
    fi
-   
+
    #
    # extra options for rsync
    #
    if [ -f "$c_rsync_extra" ]; then
       RSYNC_EXTRA="$(cat "$c_rsync_extra")"
    fi
- 
+
    #
    # Output a summary
    #
    if [ -f "$c_summary" ]; then
       SUMMARY="--stats"
    fi
-   
+
    #
    # Verbosity for rsync
    #
    if [ -f "$c_verbose" ]; then
       VERBOSE="-v"
    fi
- 
+
    #
    # MORE verbosity, includes standard verbosity
    #
@@ -345,16 +345,16 @@ while [ "$i" -lt "$no_sources" ]; do
       VERBOSE="-v"
       VVERBOSE="-v"
    fi
- 
+
    #
    # check if maximum number of backups is reached, if so remove
    #
- 
+
    # the created directories are named $INTERVAL-$DATE-$TIME.$PID
    count=$(ls -d "$c_dest/${INTERVAL}."?*  2>/dev/null | wc -l | sed 's/^ *//g')
    echo -n "Currently $count backup(s) exist(s),"
    echo " total keeping $c_interval backup(s)."
- 
+
    if [ "$count" -ge "$c_interval" ]; then
       substract=$((${c_interval} - 1))
       remove=$(($count - $substract))
@@ -367,16 +367,16 @@ while [ "$i" -lt "$no_sources" ]; do
          rm $VVERBOSE -rf "$dir"
       done < "$TMP"
    fi
- 
+
    #
    # clone the old directory with hardlinks
    #
 
    destination_date=$($CDATE)
    destination_dir="$c_dest/${INTERVAL}.${destination_date}.$$"
- 
+
    last_dir=$(ls -d "$c_dest/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)
- 
+
    # give some info
    echo "Beginning to backup, this may take some time..."
 
@@ -392,7 +392,7 @@ while [ "$i" -lt "$no_sources" ]; do
    # the rsync part
    # options partly stolen from rsnapshot
    #
- 
+
    echo "$($DDATE) Transferring files..."
 
    ouropts="-a --delete --numeric-ids --relative --delete-excluded"
@@ -400,7 +400,7 @@ while [ "$i" -lt "$no_sources" ]; do
 
    # Clone from previous backup, if existing
    if [ "$last_dir" ]; then
-      
+
       #
       # This directory MUST be absolute, because rsync does chdir()
       # before beginning backup!
@@ -466,7 +466,7 @@ if [ -x "$CPOSTEXEC" ]; then
    echo "$($DDATE) Executing $CPOSTEXEC ..."
    "$CPOSTEXEC"
    echo "$($DDATE) Finished ${CPOSTEXEC}."
- 
+
    if [ $? -ne 0 ]; then
       echo "$CPOSTEXEC failed."
    fi
