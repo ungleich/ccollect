@@ -225,6 +225,7 @@ while [ "$i" -lt "$no_sources" ]; do
    c_vverbose="$backup/very_verbose"
    c_rsync_extra="$backup/rsync_options"
    c_summary="$backup/summary"
+   c_incomplete="$backup/incomplete_remove"
 
    c_pre_exec="$backup/pre_exec"
    c_post_exec="$backup/post_exec"
@@ -347,6 +348,25 @@ while [ "$i" -lt "$no_sources" ]; do
    fi
 
    #
+   # show if we shall remove partial backup, and whether the last one
+   # is incomplete or not
+   #
+   if [ -f "$c_incomplete" ]; then
+      last_dir=$(ls -d "$c_dest/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)
+
+      # check whether the last backup was incomplete
+      # STOPPED HERE
+      # todo: implement rm -rf, implement warning on non-cleaning
+      # implement the marknig and normal removing
+      if [ "$last_dir" ]; then
+         incomplete=$(cd "$last_dir" && ls .ccollect-????-??-)
+         if [ "$incomplete" ]; then
+            "Removing incomplete backup $last_dir ..."
+         fi
+      fi
+   fi
+
+   #
    # check if maximum number of backups is reached, if so remove
    #
 
@@ -384,6 +404,11 @@ while [ "$i" -lt "$no_sources" ]; do
    mkdir $VVERBOSE "$destination_dir" || exit 1
 
    #
+   # FIXME: add marking here
+   # touch c_marker
+   #
+
+   #
    # make an absolute path, perhaps $CCOLLECT_CONF is relative!
    #
    abs_destination_dir="$(cd $destination_dir && pwd -P)"
@@ -407,7 +432,7 @@ while [ "$i" -lt "$no_sources" ]; do
       #
       abs_last_dir="$(cd "$last_dir" && pwd -P)"
       if [ -z "$abs_last_dir" ]; then
-         echo "Changing to the backup destination failed. I skip this backup."
+         echo "Changing to the last backup directory failed. I skip this backup."
          exit 1
       fi
 
@@ -422,6 +447,11 @@ while [ "$i" -lt "$no_sources" ]; do
    if [ "$ret" -ne 0 ]; then
       echo "rsync reported error $ret. The backup may be broken (see rsync errors)."
    fi
+
+   #
+   # FIXME: remove marking here
+   # rm -f $c_marker
+   #
 
    echo "$($DDATE) Finished backup"
 

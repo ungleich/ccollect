@@ -40,6 +40,8 @@
 09:40 < KillerFox> aber eigentlich logisch.
 --------------------------------------------------------------------------------
 sven / markierung
+   - wie seht der Marker aus?
+      -> .ccollect-YEAR-MM-DD.HHmm.pid (like the directory)
 --------------------------------------------------------------------------------
 Add ccollect-restore.sh (new project, perhaps coordinated with jchome's
 ccollect-config)
