@@ -1,6 +1,7 @@
 conf/sources/*/destination/*
 doc/old
 doc/*.html
+doc/*.htm
 doc/*.docbook
 doc/*.texi
 doc/man/*.html

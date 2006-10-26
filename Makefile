@@ -9,6 +9,8 @@ LN=ln -sf
 ASCIIDOC=asciidoc
 DOCBOOKTOTEXI=docbook2x-texi
 DOCBOOKTOMAN=docbook2x-man
+XSLTPROC=xsltproc
+XSL=/usr/share/xml/docbook/stylesheet/nwalsh/html/docbook.xsl
 
 prefix=/usr/packages/ccollect-git
 bindir=$(prefix)/bin
@@ -29,6 +31,26 @@ MANDOCS  = doc/man/ccollect.text
 DOCS     = $(MANDOCS) doc/ccollect.text doc/ccollect-DE.text
 
 #
+# Doku
+#
+HTMLDOCS = $(DOCS:.text=.html)
+DBHTMLDOCS = $(DOCS:.text=.htm)
+
+TEXIDOCS = $(DOCS:.text=.texi)
+
+MANPDOCS = $(MANDOCS:.text=.man)
+
+DOCBDOCS = $(DOCS:.text=.docbook)
+
+DOC_ALL  = $(HTMLDOCS) $(DBHTMLDOCS) $(TEXIDOCS) $(MANPDOCS)
+
+html: $(HTMLDOCS)
+htm: $(DBHTMLDOCS)
+info: $(TEXIDOCS)
+man: $(MANPDOCS) 
+documentation: $(DOC_ALL)
+
+#
 # End user targets
 #
 all:
@@ -47,6 +69,13 @@ install-link: install-script
 install-script:
 	$(INSTALL) -D -m 0755 $(CCOLLECT) $(destination)
 
+
+# docbook gets .htm, asciidoc directly .html
+%.htm: %.docbook
+	${XSLTPROC} -o $@ ${XSL} $<
+
+%.html: %.text %.docbook
+	${ASCIIDOC} -n -o $@ $<
 
 %.html: %.text
 	${ASCIIDOC} -n -o $@ $<
@@ -75,35 +104,15 @@ push-work:
 
 publish-doc: documentation
 	@echo "Transferring files to $(host)"
-	@chmod a+r doc/*.html doc/*.text
-	@scp doc/*.text doc/*.html doc/*.texi doc/man/*.man $(host):$(docdir)
-	@ssh $(host) "cd $(docdir); chmod a+r *"
-
-#
-# Doku
-#
-HTMLDOCS = $(DOCS:.text=.html)
-
-TEXIDOCS = $(DOCS:.text=.texi)
-
-MANPDOCS = $(MANDOCS:.text=.man)
-
-DOCBDOCS = $(DOCS:.text=.docbook)
-
-
-html: $(HTMLDOCS)
-
-info: $(TEXIDOCS)
-
-man: $(MANPDOCS) 
-
-documentation: html info man
+	@chmod a+r $(DOCS) $(DOC_ALL)
+	@tar c $(DOCS) $(DOC_ALL) | ssh $(host) "cd $(dir); tar xv"
+#	@ssh $(host) "cd $(docdir); chmod -R a+r *"
 
 #
 # Distribution
 #
 allclean:
-	rm -f $(TEXIDOCS) $(HTMLDOCS) $(MANPDOCS) $(DOCBDOCS)
+	rm -f $(DOC_ALL)
 
 distclean:
 	rm -f $(DOCBDOCS)
