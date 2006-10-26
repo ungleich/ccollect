@@ -537,6 +537,22 @@ use a link to
 
 The only requirement is that it is executable.
 
+
+Using source specific interval definitions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+When you are backing up multiple hosts via cron each night, it may be
+a problem that host "big_server" may only have 4 daily backups, because
+otherwise its backup device will be full. But for all other hosts
+you want to keep 20 daily backups. In this case you would create
+`/etc/ccollect/default/intervals/daily` containing "20" and
+`/etc/ccollect/sources/big_server/intervals/daily` containing "4".
+
+Source specific intervals always overwrite the default values.
+If you have to specify it individually for every host, because
+of different requirements, you can even omit creating
+`/etc/ccollect/default/intervals/daily`.
+
+
 F.A.Q.
 ------
 

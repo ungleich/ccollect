@@ -225,6 +225,7 @@ while [ "$i" -lt "$no_sources" ]; do
    c_vverbose="$backup/very_verbose"
    c_rsync_extra="$backup/rsync_options"
    c_summary="$backup/summary"
+
    c_incomplete="$backup/incomplete_remove"
 
    c_pre_exec="$backup/pre_exec"
@@ -405,7 +406,7 @@ while [ "$i" -lt "$no_sources" ]; do
 
    #
    # FIXME: add marking here
-   # touch c_marker
+   # touch $c_marker
    #
 
    #
