@@ -134,9 +134,10 @@ fi
 if [ -x "$CPREEXEC" ]; then
    echo "Executing $CPREEXEC ..."
    "$CPREEXEC"
+   ret=$?
    echo "Finished ${CPREEXEC}."
 
-   if [ $? -ne 0 ]; then
+   if [ $ret -ne 0 ]; then
       echo "$CPREEXEC failed, not starting backup."
       exit 1
    fi
@@ -466,9 +467,10 @@ while [ "$i" -lt "$no_sources" ]; do
    if [ -x "$c_post_exec" ]; then
       echo "$($DDATE) Executing $c_post_exec ..."
       "$c_post_exec"
+      ret=$?
       echo "$($DDATE) Finished ${c_post_exec}."
 
-      if [ $? -ne 0 ]; then
+      if [ $ret -ne 0 ]; then
          echo "$c_post_exec failed."
       fi
    fi
@@ -500,9 +502,10 @@ fi
 if [ -x "$CPOSTEXEC" ]; then
    echo "$($DDATE) Executing $CPOSTEXEC ..."
    "$CPOSTEXEC"
+   ret=$?
    echo "$($DDATE) Finished ${CPOSTEXEC}."
 
-   if [ $? -ne 0 ]; then
+   if [ $ret -ne 0 ]; then
       echo "$CPOSTEXEC failed."
    fi
 fi
