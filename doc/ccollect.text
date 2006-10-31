@@ -808,3 +808,53 @@ rsync -av -H --delete /mnt/schwarzesloch/ "$DDIR/schwarzesloch/"
 
 rsync -av -H --delete /mnt/archiv/ "$DDIR/archiv/"
 -------------------------------------------------------------------------
+
+
+Processes running when doing ccollect -p
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Truncated output from `ps axuwwwf`:
+
+-------------------------------------------------------------------------
+   S+   11:40   0:00  |   |   |   \_ /bin/sh /usr/local/bin/ccollect.sh daily -p ddba034 ddba045 ddba046 ddba047 ddba049 ddna010 ddna011
+   S+   11:40   0:00  |   |   |       \_ /bin/sh /usr/local/bin/ccollect.sh daily ddba034
+   S+   11:40   0:00  |   |   |       |   \_ /bin/sh /usr/local/bin/ccollect.sh daily ddba034
+   R+   11:40  23:40  |   |   |       |   |   \_ rsync -a --delete --numeric-ids --relative --delete-excluded --link-dest=/home/server/backup/ddba034
+   S+   11:40   0:00  |   |   |       |   |       \_ ssh -l root ddba034.netstream.ch rsync --server --sender -vlogDtprR --numeric-ids . /
+   S+   11:41   0:11  |   |   |       |   |       \_ rsync -a --delete --numeric-ids --relative --delete-excluded --link-dest=/home/server/backup/ddb
+   S+   11:40   0:00  |   |   |       |   \_ /bin/sh /usr/local/bin/ccollect.sh daily ddba034
+   S+   11:40   0:00  |   |   |       |       \_ sed s:^:\[ddba034\] :
+   S+   11:40   0:00  |   |   |       \_ /bin/sh /usr/local/bin/ccollect.sh daily ddba045
+   S+   11:40   0:00  |   |   |       |   \_ /bin/sh /usr/local/bin/ccollect.sh daily ddba045
+   R+   11:40   0:02  |   |   |       |   |   \_ rm -rf /etc/ccollect/sources/ddba045/destination/daily.2006-10-19-1807.6934
+   S+   11:40   0:00  |   |   |       |   \_ /bin/sh /usr/local/bin/ccollect.sh daily ddba045
+   S+   11:40   0:00  |   |   |       |       \_ sed s:^:\[ddba045\] :
+   S+   11:40   0:00  |   |   |       \_ /bin/sh /usr/local/bin/ccollect.sh daily ddba046
+   S+   11:40   0:00  |   |   |       |   \_ /bin/sh /usr/local/bin/ccollect.sh daily ddba046
+   R+   11:40   0:02  |   |   |       |   |   \_ rm -rf /etc/ccollect/sources/ddba046/destination/daily.2006-10-19-1810.7072
+   S+   11:40   0:00  |   |   |       |   \_ /bin/sh /usr/local/bin/ccollect.sh daily ddba046
+   S+   11:40   0:00  |   |   |       |       \_ sed s:^:\[ddba046\] :
+   S+   11:40   0:00  |   |   |       \_ /bin/sh /usr/local/bin/ccollect.sh daily ddba047
+   S+   11:40   0:00  |   |   |       |   \_ /bin/sh /usr/local/bin/ccollect.sh daily ddba047
+   R+   11:40   0:03  |   |   |       |   |   \_ rm -rf /etc/ccollect/sources/ddba047/destination/daily.2006-10-19-1816.7268
+   S+   11:40   0:00  |   |   |       |   \_ /bin/sh /usr/local/bin/ccollect.sh daily ddba047
+   S+   11:40   0:00  |   |   |       |       \_ sed s:^:\[ddba047\] :
+   S+   11:40   0:00  |   |   |       \_ /bin/sh /usr/local/bin/ccollect.sh daily ddba049
+   S+   11:40   0:00  |   |   |       |   \_ /bin/sh /usr/local/bin/ccollect.sh daily ddba049
+   D+   11:40   0:03  |   |   |       |   |   \_ rm -rf /etc/ccollect/sources/ddba049/destination/daily.2006-10-19-1821.7504
+   S+   11:40   0:00  |   |   |       |   \_ /bin/sh /usr/local/bin/ccollect.sh daily ddba049
+   S+   11:40   0:00  |   |   |       |       \_ sed s:^:\[ddba049\] :
+   S+   11:40   0:00  |   |   |       \_ /bin/sh /usr/local/bin/ccollect.sh daily ddna010
+   S+   11:40   0:00  |   |   |       |   \_ /bin/sh /usr/local/bin/ccollect.sh daily ddna010
+   R+   11:40   0:03  |   |   |       |   |   \_ rm -rf /etc/ccollect/sources/ddna010/destination/daily.2006-10-19-1805.6849
+   S+   11:40   0:00  |   |   |       |   \_ /bin/sh /usr/local/bin/ccollect.sh daily ddna010
+   S+   11:40   0:00  |   |   |       |       \_ sed s:^:\[ddna010\] :
+   S+   11:40   0:00  |   |   |       \_ /bin/sh /usr/local/bin/ccollect.sh daily ddna011
+   S+   11:40   0:00  |   |   |           \_ /bin/sh /usr/local/bin/ccollect.sh daily ddna011
+   R+   12:08   0:00  |   |   |           |   \_ rm -rf /etc/ccollect/sources/ddna011/destination/daily.2006-10-20-1502.7824
+   S+   11:40   0:00  |   |   |           \_ /bin/sh /usr/local/bin/ccollect.sh daily ddna011
+   S+   11:40   0:00  |   |   |               \_ sed s:^:\[ddna011\] :
+
+-------------------------------------------------------------------------
+As you can see, six processes are deleting old backups, while one backup
+(ddba034) is already copying data.
+

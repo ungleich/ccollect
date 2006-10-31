@@ -227,6 +227,7 @@ while [ "$i" -lt "$no_sources" ]; do
    c_summary="$backup/summary"
 
    c_incomplete="$backup/incomplete_remove"
+   c_marker=".ccollect-${CDATE}.$$"
 
    c_pre_exec="$backup/pre_exec"
    c_post_exec="$backup/post_exec"
@@ -266,7 +267,7 @@ while [ "$i" -lt "$no_sources" ]; do
    # parameters
    #
    if [ -x "$c_pre_exec" ]; then
-      echo "Executing $c_pre_exec ..."
+      echo "Executing ${c_pre_exec} ..."
       "$c_pre_exec"
       echo "Finished ${c_pre_exec}."
 
@@ -352,6 +353,7 @@ while [ "$i" -lt "$no_sources" ]; do
    # show if we shall remove partial backup, and whether the last one
    # is incomplete or not
    #
+   # FIXME: test general for incomplete and decide only for warn|delete based on option?
    if [ -f "$c_incomplete" ]; then
       last_dir=$(ls -d "$c_dest/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)
 
@@ -363,6 +365,7 @@ while [ "$i" -lt "$no_sources" ]; do
          incomplete=$(cd "$last_dir" && ls .ccollect-????-??-)
          if [ "$incomplete" ]; then
             "Removing incomplete backup $last_dir ..."
+            echo rm -rf $VVERBOSE "$last_dir"
          fi
       fi
    fi
@@ -405,14 +408,14 @@ while [ "$i" -lt "$no_sources" ]; do
    mkdir $VVERBOSE "$destination_dir" || exit 1
 
    #
-   # FIXME: add marking here
-   # touch $c_marker
-   #
-
-   #
    # make an absolute path, perhaps $CCOLLECT_CONF is relative!
    #
    abs_destination_dir="$(cd $destination_dir && pwd -P)"
+
+   #
+   # add mark
+   #
+   touch "${abs_destination_dir}/${c_marker}"
 
    #
    # the rsync part

@@ -106,7 +106,6 @@ publish-doc: documentation
 	@echo "Transferring files to $(host)"
 	@chmod a+r $(DOCS) $(DOC_ALL)
 	@tar c $(DOCS) $(DOC_ALL) | ssh $(host) "cd $(dir); tar xv"
-#	@ssh $(host) "cd $(docdir); chmod -R a+r *"
 
 #
 # Distribution
