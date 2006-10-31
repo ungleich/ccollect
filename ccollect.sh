@@ -269,9 +269,10 @@ while [ "$i" -lt "$no_sources" ]; do
    if [ -x "$c_pre_exec" ]; then
       echo "Executing ${c_pre_exec} ..."
       "$c_pre_exec"
+      ret=$?
       echo "Finished ${c_pre_exec}."
 
-      if [ $? -ne 0 ]; then
+      if [ $ret -ne 0 ]; then
          echo "$c_pre_exec failed, aborting backup."
          exit 1
       fi
