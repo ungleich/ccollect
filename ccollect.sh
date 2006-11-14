@@ -103,7 +103,7 @@ while [ $i -le $# ]; do
             VERBOSE=1
             ;;
          -p|--parallel)
-            PARALLEL="1"
+            PARALLEL=1
             ;;
          -h|--help)
             usage
@@ -154,8 +154,7 @@ if [ "$ALL" = 1 ]; then
    # get entries from sources
    #
    cwd=$(pwd -P)
-   cd "$CSOURCES";
-   ls > "$TMP"
+   ( cd "$CSOURCES" && ls > "$TMP" )
 
    if [ "$?" -ne 0 ]; then
       echo "Listing of sources failed. Aborting."
