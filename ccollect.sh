@@ -14,7 +14,7 @@ CPREEXEC="$CDEFAULTS/pre_exec"
 CPOSTEXEC="$CDEFAULTS/post_exec"
 
 TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
-VERSION=0.5.X
+VERSION=0.5.2
 RELEASE="2006-XXXXX"
 HALF_VERSION="ccollect $VERSION"
 FULL_VERSION="ccollect $VERSION ($RELEASE)"
@@ -377,7 +377,7 @@ while [ "$i" -lt "$no_sources" ]; do
    #
 
    # the created directories are named $INTERVAL-$DATE-$TIME.$PID
-   count=$(ls -d "$c_dest/${INTERVAL}."?*  2>/dev/null | wc -l | sed 's/^ *//g')
+   count=$(cd "$c_dest" && ls -p1 | grep "^${INTERVAL}\..*/\$" | wc -l | sed 's/^ *//g')
    echo -n "Currently $count backup(s) exist(s),"
    echo " total keeping $c_interval backup(s)."
 
@@ -387,6 +387,7 @@ while [ "$i" -lt "$no_sources" ]; do
       echo "Removing $remove backup(s)..."
 
       ls -d "$c_dest/${INTERVAL}."?* | sort -n | head -n $remove > "$TMP"
+      #( cd "$c_dest" && ls -p1 | grep "^${INTERVAL}\..*/\$" | sort -n | head -n $remove > "$TMP"
       while read to_remove; do
          dir="$to_remove"
          echo "Removing $dir ..."
