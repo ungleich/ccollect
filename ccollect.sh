@@ -413,7 +413,7 @@ while [ "$i" -lt "$no_sources" ]; do
    #
    # make an absolute path, perhaps $CCOLLECT_CONF is relative!
    #
-   abs_destination_dir="$(cd $destination_dir && pwd -P)"
+   abs_destination_dir="$(cd "$destination_dir" && pwd -P)"
 
    #
    # add mark
