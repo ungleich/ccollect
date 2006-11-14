@@ -192,7 +192,7 @@ while [ "$i" -lt "$no_sources" ]; do
    #
    # Get current source
    #
-   eval name=\$source_${i}
+   eval name=\"\$source_${i}\"
    i=$(($i+1))
 
    export name
@@ -269,11 +269,11 @@ while [ "$i" -lt "$no_sources" ]; do
    if [ -x "$c_pre_exec" ]; then
       echo "Executing ${c_pre_exec} ..."
       "$c_pre_exec"
-      ret=$?
+      ret="$?"
       echo "Finished ${c_pre_exec}."
 
-      if [ $ret -ne 0 ]; then
-         echo "$c_pre_exec failed, aborting backup."
+      if [ "$ret" -ne 0 ]; then
+         echo "$c_pre_exec failed. Skipping"
          exit 1
       fi
    fi
