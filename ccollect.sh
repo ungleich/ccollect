@@ -330,7 +330,7 @@ while [ "$i" -lt "$no_sources" ]; do
    # destination _must_ be a directory
    #
    if [ ! -d "$c_dest" ]; then
-      echo "Destination $c_dest does not link to a directory. Skipping"
+      echo "Destination $c_dest neither links to nor is a directory. Skipping."
       exit 1
    fi
 
@@ -338,6 +338,8 @@ while [ "$i" -lt "$no_sources" ]; do
    # exclude list
    #
    if [ -f "$c_exclude" ]; then
+      # FIXME: check how quoting at the end looks like
+      # perhaps our source contains spaces!
       EXCLUDE="--exclude-from=$c_exclude"
    fi
 
@@ -449,6 +451,11 @@ while [ "$i" -lt "$no_sources" ]; do
    echo "$($DDATE) Transferring files..."
 
    ouropts="-a --delete --numeric-ids --relative --delete-excluded"
+
+   #
+   # FIXME: check, whether this is broken with spaces...
+   # most likely it should be broken...
+   #
    useropts="$VERBOSE $EXCLUDE $SUMMARY $RSYNC_EXTRA"
 
    # Clone from previous backup, if existing
@@ -458,9 +465,10 @@ while [ "$i" -lt "$no_sources" ]; do
       # This directory MUST be absolute, because rsync does chdir()
       # before beginning backup!
       #
+
       abs_last_dir="$(cd "$last_dir" && pwd -P)"
       if [ -z "$abs_last_dir" ]; then
-         echo "Changing to the last backup directory failed. I skip this backup."
+         echo "Changing to the last backup directory failed. Skipping."
          exit 1
       fi
 
