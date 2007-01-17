@@ -12,6 +12,7 @@ and create
    _techo () { echo "$timestamp $name $msg" }
 perhaps create
    _eecho () { _techo "ERROR $msg" }
+?
 --------------------------------------------------------------------------------
 2. clonen von anderen existierenden backups?
 --------------------------------------------------------------------------------
