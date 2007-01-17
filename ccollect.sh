@@ -454,9 +454,15 @@ while [ "$i" -lt "$no_sources" ]; do
 
    #
    # FIXME: check, whether this is broken with spaces...
-   # most likely it should be broken...
+   # most likely it should be broken...MUST be...
+   # expanding depens on shell (zsh = 1, dash = 3 arguments in test case)
    #
    useropts="$VERBOSE $EXCLUDE $SUMMARY $RSYNC_EXTRA"
+
+   #
+   # FIXME:useropts / rsync extra: one parameter per line!
+   # 0.5.3!
+   #
 
    # Clone from previous backup, if existing
    if [ "$last_dir" ]; then
