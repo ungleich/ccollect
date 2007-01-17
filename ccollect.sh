@@ -372,29 +372,29 @@ while [ "$i" -lt "$no_sources" ]; do
       VVERBOSE="-v"
    fi
 
-   #
-   # show if we shall remove partial backup, and whether the last one
-   # is incomplete or not
-   #
-   # FIXME: test general for incomplete and decide only for warn|delete based on option?
-   # FIXME: Define which is the last dir before? Or put this thing into
-   # a while loop? Is it senseful to remove _ALL_ backups if non is complete?
-   if [ -f "$c_incomplete" ]; then
-      last_dir=$(ls -d "$c_dest/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)
-
-      # check whether the last backup was incomplete
-      # STOPPED HERE
-      # todo: implement rm -rf, implement warning on non-cleaning
-      # implement the marknig and normal removing
-      if [ "$last_dir" ]; then
-         incomplete=$(cd "$last_dir" && ls .ccollect-????-??-)
-         if [ "$incomplete" ]; then
-            "Removing incomplete backup $last_dir ..."
-            echo rm -rf $VVERBOSE "$last_dir"
-         fi
-      fi
-   fi
-
+#   #
+#   # show if we shall remove partial backup, and whether the last one
+#   # is incomplete or not
+#   #
+#   # FIXME: test general for incomplete and decide only for warn|delete based on option?
+#   # FIXME: Define which is the last dir before? Or put this thing into
+#   # a while loop? Is it senseful to remove _ALL_ backups if non is complete?
+#   if [ -f "$c_incomplete" ]; then
+#      last_dir=$(ls -d "$c_dest/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)
+#
+#      # check whether the last backup was incomplete
+#      # STOPPED HERE
+#      # todo: implement rm -rf, implement warning on non-cleaning
+#      # implement the marknig and normal removing
+#      if [ "$last_dir" ]; then
+#         incomplete=$(cd "$last_dir" && ls .ccollect-????-??-)
+#         if [ "$incomplete" ]; then
+#            "Removing incomplete backup $last_dir ..."
+#            echo rm -rf $VVERBOSE "$last_dir"
+#         fi
+#      fi
+#   fi
+#
    #
    # check if maximum number of backups is reached, if so remove
    #
@@ -409,7 +409,7 @@ while [ "$i" -lt "$no_sources" ]; do
       remove=$(($count - $substract))
       echo "Removing $remove backup(s)..."
 
-      ls -d "$c_dest/${INTERVAL}."?* | sort -n | head -n $remove > "$TMP"
+      ls -d "$c_dest/${INTERVAL}."?* | sort -n | head -n "$remove" > "$TMP"
       #( cd "$c_dest" && ls -p1 | grep "^${INTERVAL}\..*/\$" | sort -n | head -n $remove > "$TMP"
       while read to_remove; do
          dir="$to_remove"
@@ -421,6 +421,8 @@ while [ "$i" -lt "$no_sources" ]; do
    #
    # clone the old directory with hardlinks
    #
+
+   # FIXME: STOPPED
 
    destination_date=$($CDATE)
    destination_dir="$c_dest/${INTERVAL}.${destination_date}.$$"
