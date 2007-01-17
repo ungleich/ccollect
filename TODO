@@ -1,16 +1,28 @@
 --------------------------------------------------------------------------------
+1. export more variables for scripts
+   or check when they are automatically exported
+--------------------------------------------------------------------------------
+1.1.
+Anhaengen von der -F / --filter Doku von Killerfox
+--------------------------------------------------------------------------------
+1.2. replace sed?
+compare timing:
+   _echo () { echo "$name $msg" }
+   _techo () { echo "$timestamp $name $msg" }
+--------------------------------------------------------------------------------
+2. clonen von anderen existierenden backups?
+--------------------------------------------------------------------------------
+3. detect unfinished backups
 sven / markierung
    - wie seht der Marker aus?
       -> .ccollect-YEAR-MM-DD.HHmm.pid (like the directory)
    --> assume incomplete, when we did not finish.
    --> means it's complete,when rsync was successful
 --------------------------------------------------------------------------------
-Add ccollect-restore.sh (new project, perhaps coordinated with jchome's
-ccollect-config)
---------------------------------------------------------------------------------
-clonen von anderen existierenden backups?
---------------------------------------------------------------------------------
-Anhaengen von der -F / --filter Doku von Killerfox
+4. Add ccollect-restore.sh
+   (new project, perhaps coordinated with jchome's ccollect-config)
+
+   Who will do that?
 --------------------------------------------------------------------------------
 ccollect Zeitausgabe verbessern
    - Wofuer wie lange gebraucht
