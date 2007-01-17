@@ -20,12 +20,32 @@ HALF_VERSION="ccollect $VERSION"
 FULL_VERSION="ccollect $VERSION ($RELEASE)"
 
 #
-# Date
+# Date + Markup
 # CDATE: how we use it for naming of the archives
 # DDATE: how the user should see it in our output
+# MDATE: how to match (shell expression) the date
 #
 CDATE="date +%Y-%m-%d-%H%M"
 DDATE="date"
+
+# FIXME: match only numbers!
+MDATE="*-*-*-*"
+MSUFFIX="${MDATE}.*"
+echo $MSUFFIX "$MSUFFIX"
+exit 1
+
+#
+# Fur future releases...
+# Date matching:
+#
+# [1-9][0-9][0-9][0-9] - allow years from 1000 until 9999 - the human race will
+#                        die earlier than this value is reached
+#
+# -
+# [0-1][0-9] ...
+#
+#
+
 
 #
 # unset parallel execution
@@ -273,7 +293,7 @@ while [ "$i" -lt "$no_sources" ]; do
       echo "Finished ${c_pre_exec}."
 
       if [ "$ret" -ne 0 ]; then
-         echo "$c_pre_exec failed. Skipping"
+         echo "$c_pre_exec failed. Skipping."
          exit 1
       fi
    fi
@@ -284,7 +304,7 @@ while [ "$i" -lt "$no_sources" ]; do
    c_interval="$(cat "$backup/intervals/$INTERVAL" 2>/dev/null)"
 
    if [ -z "$c_interval" ]; then
-      c_interval=$D_INTERVAL
+      c_interval="$D_INTERVAL"
 
       if [ -z "$c_interval" ]; then
          echo "No definition for interval \"$INTERVAL\" found. Skipping."
@@ -301,7 +321,7 @@ while [ "$i" -lt "$no_sources" ]; do
    else
       source=$(cat "$c_source")
       if [ $? -ne 0 ]; then
-         echo "Skipping: Source $c_source is not readable"
+         echo "Source $c_source is not readable. Skipping."
          exit 1
       fi
    fi
@@ -355,6 +375,8 @@ while [ "$i" -lt "$no_sources" ]; do
    # is incomplete or not
    #
    # FIXME: test general for incomplete and decide only for warn|delete based on option?
+   # FIXME: Define which is the last dir before? Or put this thing into
+   # a while loop? Is it senseful to remove _ALL_ backups if non is complete?
    if [ -f "$c_incomplete" ]; then
       last_dir=$(ls -d "$c_dest/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)
 
