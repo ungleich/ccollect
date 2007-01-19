@@ -428,7 +428,7 @@ while [ "$i" -lt "$no_sources" ]; do
    destination_dir="$c_dest/${INTERVAL}.${destination_date}.$$"
 
    #
-   # FIXME: 
+   # FIXME: In 0.6 add search for the latest available backup!
    #
    last_dir=$(ls -d "$c_dest/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)
 
@@ -444,9 +444,9 @@ while [ "$i" -lt "$no_sources" ]; do
    abs_destination_dir="$(cd "$destination_dir" && pwd -P)"
 
    #
-   # add mark
+   # FIXME: add mark in 0.6 (and remove if successful later!
    #
-   touch "${abs_destination_dir}/${c_marker}"
+   #touch "${abs_destination_dir}/${c_marker}"
 
    #
    # the rsync part
