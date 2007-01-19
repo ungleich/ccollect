@@ -427,6 +427,9 @@ while [ "$i" -lt "$no_sources" ]; do
    destination_date=$($CDATE)
    destination_dir="$c_dest/${INTERVAL}.${destination_date}.$$"
 
+   #
+   # FIXME: 
+   #
    last_dir=$(ls -d "$c_dest/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)
 
    # give some info

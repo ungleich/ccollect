@@ -1,0 +1,9 @@
+- implement use of different intervals as source for cloning
+   * use 'woechentlich' if available and no backup exists for 'daily'
+   * add 'prefer_latest' to prefer different interval, that's newer than
+     ours
+   * or add 'prefer_same_interval' instead?
+- implement detection of partial backups
+- do not check by name, but by time
+   * is ls -t posix?
+   * also check: -p -1
