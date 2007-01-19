@@ -13,3 +13,11 @@ to have. This means I won't code them, so somebody can code them.
   Including cronjob, creating configuration, displaying status of
   backups, allowing manual remove, allowing manual trigger of ccollect
   (with realtime message window?)?
+
+- write mkccollectconfig (for 0.5!)
+   -> jchome works on it!
+   o create source configuration
+   o another script for changing defaults
+      x intervalls
+      x pre-/post exec
+   o (X)dialog based
