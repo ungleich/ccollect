@@ -1,0 +1,15 @@
+These todos are things that would be senseful todo, but are just nice
+to have. This means I won't code them, so somebody can code them.
+--------------------------------------------------------------------------------
+
+- Add ccollect-restore.sh
+  (new project, perhaps coordinated with jchome's ccollect-config)
+  
+  Helper (in dialog?) to restore backups
+
+  Perhaps create ccollect-gui.{whatever} instead, which does all the
+  end user staff?
+
+  Including cronjob, creating configuration, displaying status of
+  backups, allowing manual remove, allowing manual trigger of ccollect
+  (with realtime message window?)?
