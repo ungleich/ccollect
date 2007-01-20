@@ -28,25 +28,6 @@ FULL_VERSION="ccollect $VERSION ($RELEASE)"
 CDATE="date +%Y-%m-%d-%H%M"
 DDATE="date"
 
-# FIXME: match only numbers!
-MDATE="*-*-*-*"
-MSUFFIX="${MDATE}.*"
-echo $MSUFFIX "$MSUFFIX"
-exit 1
-
-#
-# Fur future releases...
-# Date matching:
-#
-# [1-9][0-9][0-9][0-9] - allow years from 1000 until 9999 - the human race will
-#                        die earlier than this value is reached
-#
-# -
-# [0-1][0-9] ...
-#
-#
-
-
 #
 # unset parallel execution
 #
