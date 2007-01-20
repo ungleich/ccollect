@@ -40,6 +40,16 @@ PARALLEL=""
 trap "rm -f \"$TMP\"" 1 2 15
 
 
+#
+# Functions
+#
+
+_exit_err()
+{
+   echo "$@"
+   exit 1
+}
+
 add_name()
 {
    sed "s:^:\[$name\] :"
@@ -227,8 +237,11 @@ while [ "$i" -lt "$no_sources" ]; do
    c_rsync_extra="$backup/rsync_options"
    c_summary="$backup/summary"
 
-   c_incomplete="$backup/incomplete_remove"
-   c_marker=".ccollect-${CDATE}.$$"
+   #
+   # FIXME: enable in 0.6
+   #
+   #c_incomplete="$backup/incomplete_remove"
+   #c_marker=".ccollect-${CDATE}.$$"
 
    c_pre_exec="$backup/pre_exec"
    c_post_exec="$backup/post_exec"
