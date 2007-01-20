@@ -7,3 +7,4 @@ doc/*.texi
 doc/man/*.html
 doc/man/*.texi
 doc/man/*.man
+test/*
