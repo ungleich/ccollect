@@ -5,6 +5,7 @@ doc/*.htm
 doc/*.docbook
 doc/*.texi
 doc/man/*.html
+doc/man/*.htm
 doc/man/*.texi
 doc/man/*.man
 test/*
