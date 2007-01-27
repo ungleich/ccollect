@@ -15,15 +15,13 @@ CPOSTEXEC="$CDEFAULTS/post_exec"
 
 TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
 VERSION=0.5.2
-RELEASE="2006-XXXXX"
+RELEASE="2007-01-21"
 HALF_VERSION="ccollect $VERSION"
 FULL_VERSION="ccollect $VERSION ($RELEASE)"
 
 #
-# Date + Markup
 # CDATE: how we use it for naming of the archives
 # DDATE: how the user should see it in our output
-# MDATE: how to match (shell expression) the date
 #
 CDATE="date +%Y-%m-%d-%H%M"
 DDATE="date"
@@ -33,12 +31,10 @@ DDATE="date"
 #
 PARALLEL=""
 
-
 #
 # catch signals
 #
 trap "rm -f \"$TMP\"" 1 2 15
-
 
 #
 # Functions
@@ -47,6 +43,7 @@ trap "rm -f \"$TMP\"" 1 2 15
 _exit_err()
 {
    echo "$@"
+   rm -f "$TMP"
    exit 1
 }
 
@@ -84,13 +81,10 @@ if [ $# -lt 2 ]; then
 fi
 
 #
-# check for configuraton directory
+# check for configuraton directory, FIXME: _exit_err
 #
-if [ ! -d "$CCOLLECT_CONF" ]; then
-   echo "No configuration found in \"$CCOLLECT_CONF\"" \
-        " (is \$CCOLLECT_CONF properly set?)"
-   exit 1
-fi
+[ -d "$CCOLLECT_CONF" ] || _exit_err "No configuration found in " \
+                        "\"$CCOLLECT_CONF\" (is \$CCOLLECT_CONF properly set?)"
 
 #
 # Filter arguments
@@ -148,6 +142,7 @@ if [ -x "$CPREEXEC" ]; then
    ret=$?
    echo "Finished ${CPREEXEC}."
 
+   # FIXME: _exit_err
    if [ $ret -ne 0 ]; then
       echo "$CPREEXEC failed, not starting backup."
       exit 1
@@ -167,6 +162,7 @@ if [ "$ALL" = 1 ]; then
    cwd=$(pwd -P)
    ( cd "$CSOURCES" && ls > "$TMP" )
 
+   # FIXME: _exit_err
    if [ "$?" -ne 0 ]; then
       echo "Listing of sources failed. Aborting."
       exit 1
@@ -430,7 +426,8 @@ while [ "$i" -lt "$no_sources" ]; do
    echo "Beginning to backup, this may take some time..."
 
    echo "Creating $destination_dir ..."
-   mkdir $VVERBOSE "$destination_dir" || exit 1
+   mkdir $VVERBOSE "$destination_dir" || \
+      _exit_err "Creating $destination_dir failed. Skipping."
 
    #
    # make an absolute path, perhaps $CCOLLECT_CONF is relative!
