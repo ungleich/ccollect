@@ -113,7 +113,7 @@ publish-doc: documentation
 allclean:
 	rm -f $(DOC_ALL)
 
-distclean:
+distclean: allclean
 	rm -f $(DOCBDOCS)
 
 #
