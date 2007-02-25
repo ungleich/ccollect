@@ -24,7 +24,8 @@ ccollect was successfully tested on the following platforms:
 - GNU/Linux on hppa/i386/amd64
 
 It *should* run on any Unix that supports rsync and has a POSIX-compatible
-bourne shell.
+bourne shell. If your platform is not listed above and you have it successfully
+running, please drop me a mail.
 
 Why you can only backup from remote hosts, not to them
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
