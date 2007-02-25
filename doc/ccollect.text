@@ -1,12 +1,13 @@
 ccollect - Installing, Configuring and Using
 ============================================
 Nico Schottelius <nico-ccollect__@__schottelius.org>
-0.5, for ccollect 0.4-0.5.2, Initial Version from 2006-01-13
+0.5, for ccollect 0.4-0.5.3, Initial Version from 2006-01-13
 :Author Initials: NS
 
 (pseudo) incremental backup
 with different exclude lists
 using hardlinks and `rsync`
+
 
 Introduction
 ------------
@@ -14,6 +15,16 @@ ccollect is a backup utility written in the sh-scripting language.
 It does not depend on a specific shell, only `/bin/sh` needs to be
 bourne shell compatible (like 'dash', 'ksh', 'zsh', 'bash', ...).
 
+
+Supported and tested operating systems and architectures
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ccollect was successfully tested on the following platforms:
+
+- OpenBSD on amd64
+- GNU/Linux on hppa/i386/amd64
+
+It *should* run on any Unix that supports rsync and has a POSIX-compatible
+bourne shell.
 
 Why you can only backup from remote hosts, not to them
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -88,7 +99,7 @@ For those who do not want to read the whole long document:
 --------------------------------------------------------------------------------
 # get latest ccollect tarball from http://unix.schottelius.org/ccollect/
 # replace value for CCV with the current version
-export CCV=0.5.1
+export CCV=0.5.2
 
 #
 # replace 'wget' with fetch on bsd
