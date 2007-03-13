@@ -14,8 +14,8 @@ CPREEXEC="$CDEFAULTS/pre_exec"
 CPOSTEXEC="$CDEFAULTS/post_exec"
 
 TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
-VERSION=0.5.2
-RELEASE="2007-01-27"
+VERSION=0.5.3
+RELEASE="2007-XX-XX"
 HALF_VERSION="ccollect $VERSION"
 FULL_VERSION="ccollect $VERSION ($RELEASE)"
 
@@ -63,10 +63,10 @@ usage()
    echo ""
    echo "   -h, --help:          Show this help screen"
    echo "   -p, --parallel:      Parallelise backup processes"
-   echo "   -a, --all:           Backup all sources specified in $CSOURCES"
+   echo "   -a, --all:           Backup all sources specified in ${CSOURCES}"
    echo "   -v, --verbose:       Be very verbose (uses set -x)."
    echo ""
-   echo "   This is version $VERSION, released on ${RELEASE}"
+   echo "   This is version ${VERSION}, released on ${RELEASE}"
    echo "   (the first version was written on 2005-12-05 by Nico Schottelius)."
    echo ""
    echo "   Retrieve latest ccollect at http://unix.schottelius.org/ccollect/"
@@ -81,26 +81,26 @@ if [ $# -lt 2 ]; then
 fi
 
 #
-# check for configuraton directory, FIXME: _exit_err
+# check for configuraton directory
 #
-[ -d "$CCOLLECT_CONF" ] || _exit_err "No configuration found in " \
+[ -d "${CCOLLECT_CONF}" ] || _exit_err "No configuration found in " \
                         "\"$CCOLLECT_CONF\" (is \$CCOLLECT_CONF properly set?)"
 
 #
 # Filter arguments
 #
-INTERVAL=$1; shift
+INTERVAL="$1"; shift
 i=1
 no_sources=0
 
-while [ $i -le $# ]; do
-   eval arg=\$$i
+while [ "$i" -le $# ]; do
+   eval arg=\"\$$i\"
 
    if [ "$NO_MORE_ARGS" = 1 ]; then
         eval source_${no_sources}=\"$arg\"
         no_sources=$(($no_sources+1))
    else
-      case $arg in
+      case "$arg" in
          -a|--all)
             ALL=1
             ;;
@@ -136,17 +136,12 @@ fi
 #
 # Look for pre-exec command (general)
 #
-if [ -x "$CPREEXEC" ]; then
-   echo "Executing $CPREEXEC ..."
-   "$CPREEXEC"
-   ret=$?
+if [ -x "${CPREEXEC}" ]; then
+   echo "Executing ${CPREEXEC} ..."
+   "${CPREEXEC}"; ret=$?
    echo "Finished ${CPREEXEC}."
 
-   # FIXME: _exit_err
-   if [ $ret -ne 0 ]; then
-      echo "$CPREEXEC failed, not starting backup."
-      exit 1
-   fi
+   [ "${ret}" -eq 0 ] || _exit_err "${CPREEXEC} failed, not starting backup."
 fi
 
 #
@@ -160,18 +155,14 @@ if [ "$ALL" = 1 ]; then
    # get entries from sources
    #
    cwd=$(pwd -P)
-   ( cd "$CSOURCES" && ls > "$TMP" )
+   ( cd "${CSOURCES}" && ls > "${TMP}" )
 
-   # FIXME: _exit_err
-   if [ "$?" -ne 0 ]; then
-      echo "Listing of sources failed. Aborting."
-      exit 1
-   fi
+   [ "$?" -eq 0 ] || _exit_err "Listing of sources failed. Aborting."
 
    while read tmp; do
       eval source_${no_sources}=\"$tmp\"
       no_sources=$(($no_sources+1))
-   done < "$TMP"
+   done < "${TMP}"
 fi
 
 #
@@ -187,8 +178,8 @@ fi
 # check default configuration
 #
 
-D_FILE_INTERVAL="$CDEFAULTS/intervals/$INTERVAL"
-D_INTERVAL=$(cat "$D_FILE_INTERVAL" 2>/dev/null)
+D_FILE_INTERVAL="${CDEFAULTS}/intervals/${INTERVAL}"
+D_INTERVAL=$(cat "${D_FILE_INTERVAL}" 2>/dev/null)
 
 #
 # Let's do the backup
@@ -207,8 +198,8 @@ while [ "$i" -lt "$no_sources" ]; do
    #
    # start ourself, if we want parallel execution
    #
-   if [ "$PARALLEL" ]; then
-      "$0" "$INTERVAL" "$name" &
+   if [ "${PARALLEL}" ]; then
+      "$0" "${INTERVAL}" "${name}" &
       continue
    fi
 
@@ -224,23 +215,25 @@ while [ "$i" -lt "$no_sources" ]; do
    #
    # Standard locations
    #
-   backup="$CSOURCES/$name"
-   c_source="$backup/source"
-   c_dest="$backup/destination"
-   c_exclude="$backup/exclude"
-   c_verbose="$backup/verbose"
-   c_vverbose="$backup/very_verbose"
-   c_rsync_extra="$backup/rsync_options"
-   c_summary="$backup/summary"
+   backup="${CSOURCES}/${name}"
+   c_source="${backup}/source"
+   c_dest="${backup}/destination"
+   c_exclude="${backup}/exclude"
+   c_verbose="${backup}/verbose"
+   c_vverbose="${backup}/very_verbose"
+   c_rsync_extra="${backup}/rsync_options"
+   c_summary="${backup}/summary"
+   c_pre_exec="${backup}/pre_exec"
+   c_post_exec="${backup}/post_exec"
+
 
    #
    # FIXME: enable in 0.6
+   # Always execute, warn if it exists in normal case
+   # and rm -rf the old backup, if "delete_incomplete" is set
    #
-   #c_incomplete="$backup/incomplete_remove"
+   c_incomplete="$backup/delete_incomplete"
    #c_marker=".ccollect-${CDATE}.$$"
-
-   c_pre_exec="$backup/pre_exec"
-   c_post_exec="$backup/post_exec"
 
    begin=$($DDATE)
    begin_s=$(date +%s)
