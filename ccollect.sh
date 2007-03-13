@@ -64,7 +64,7 @@ usage()
    echo "   -h, --help:          Show this help screen"
    echo "   -p, --parallel:      Parallelise backup processes"
    echo "   -a, --all:           Backup all sources specified in ${CSOURCES}"
-   echo "   -v, --verbose:       Be very verbose (uses set -x)."
+   echo "   -v, --verbose:       Be very verbose (uses set -x)"
    echo ""
    echo "   This is version ${VERSION}, released on ${RELEASE}"
    echo "   (the first version was written on 2005-12-05 by Nico Schottelius)."
@@ -247,12 +247,12 @@ while [ "$i" -lt "$no_sources" ]; do
    VERBOSE=""
    VVERBOSE=""
 
-   echo "$begin Beginning to backup"
+   echo "${begin} Beginning to backup"
 
    #
    # Standard configuration checks
    #
-   if [ ! -e "$backup" ]; then
+   if [ ! -e "${backup}" ]; then
       echo "Source does not exist."
       exit 1
    fi
@@ -260,8 +260,8 @@ while [ "$i" -lt "$no_sources" ]; do
    #
    # configuration _must_ be a directory
    #
-   if [ ! -d "$backup" ]; then
-      echo "\"$name\" is not a cconfig-directory. Skipping."
+   if [ ! -d "${backup}" ]; then
+      echo "\"${name}\" is not a cconfig-directory. Skipping."
       exit 1
    fi
 
@@ -269,14 +269,14 @@ while [ "$i" -lt "$no_sources" ]; do
    # first execute pre_exec, which may generate destination or other
    # parameters
    #
-   if [ -x "$c_pre_exec" ]; then
+   if [ -x "${c_pre_exec}" ]; then
       echo "Executing ${c_pre_exec} ..."
-      "$c_pre_exec"
-      ret="$?"
+      "${c_pre_exec}"; ret="$?"
       echo "Finished ${c_pre_exec}."
 
-      if [ "$ret" -ne 0 ]; then
-         echo "$c_pre_exec failed. Skipping."
+      # FIXME: is _exit_err senseful here?
+      if [ "${ret}" -ne 0 ]; then
+         echo "${c_pre_exec} failed. Skipping."
          exit 1
       fi
    fi
@@ -284,13 +284,14 @@ while [ "$i" -lt "$no_sources" ]; do
    #
    # interval definition: First try source specific, fallback to default
    #
-   c_interval="$(cat "$backup/intervals/$INTERVAL" 2>/dev/null)"
+   c_interval="$(cat "${backup}/intervals/${INTERVAL}" 2>/dev/null)"
 
-   if [ -z "$c_interval" ]; then
-      c_interval="$D_INTERVAL"
+   if [ -z "${c_interval}" ]; then
+      c_interval="${D_INTERVAL}"
 
-      if [ -z "$c_interval" ]; then
-         echo "No definition for interval \"$INTERVAL\" found. Skipping."
+      # FIXME: is _exit_err senseful here?
+      if [ -z "${c_interval}" ]; then
+         echo "No definition for interval \"${INTERVAL}\" found. Skipping."
          exit 1
       fi
    fi
@@ -298,8 +299,9 @@ while [ "$i" -lt "$no_sources" ]; do
    #
    # Source checks
    #
-   if [ ! -f "$c_source" ]; then
-      echo "Source description $c_source is not a file. Skipping."
+   # FIXME: is _exit_err senseful here?
+   if [ ! -f "${c_source}" ]; then
+      echo "Source description ${c_source} is not a file. Skipping."
       exit 1
    else
       source=$(cat "$c_source")
@@ -312,8 +314,8 @@ while [ "$i" -lt "$no_sources" ]; do
    #
    # destination _must_ be a directory
    #
-   if [ ! -d "$c_dest" ]; then
-      echo "Destination $c_dest neither links to nor is a directory. Skipping."
+   if [ ! -d "${c_dest}" ]; then
+      echo "Destination ${c_dest} neither links to nor is a directory. Skipping."
       exit 1
    fi
 
@@ -329,28 +331,28 @@ while [ "$i" -lt "$no_sources" ]; do
    #
    # extra options for rsync
    #
-   if [ -f "$c_rsync_extra" ]; then
-      RSYNC_EXTRA="$(cat "$c_rsync_extra")"
+   if [ -f "${c_rsync_extra}" ]; then
+      RSYNC_EXTRA="$(cat "${c_rsync_extra}")"
    fi
 
    #
    # Output a summary
    #
-   if [ -f "$c_summary" ]; then
+   if [ -f "${c_summary}" ]; then
       SUMMARY="--stats"
    fi
 
    #
    # Verbosity for rsync
    #
-   if [ -f "$c_verbose" ]; then
+   if [ -f "${c_verbose}" ]; then
       VERBOSE="-v"
    fi
 
    #
    # MORE verbosity, includes standard verbosity
    #
-   if [ -f "$c_vverbose" ]; then
+   if [ -f "${c_vverbose}" ]; then
       VERBOSE="-v"
       VVERBOSE="-v"
    fi
@@ -363,6 +365,7 @@ while [ "$i" -lt "$no_sources" ]; do
 #   # FIXME: Define which is the last dir before? Or put this thing into
 #   # a while loop? Is it senseful to remove _ALL_ backups if non is complete?
 #   if [ -f "$c_incomplete" ]; then
+#      echo "Searching for incomplete backups..."
 #      last_dir=$(ls -d "$c_dest/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)
 #
 #      # check whether the last backup was incomplete
@@ -382,12 +385,17 @@ while [ "$i" -lt "$no_sources" ]; do
    # check if maximum number of backups is reached, if so remove
    #
 
+   # FIXME: really do fuzzy matching here?
+   # or simply declare "everything of that directory (which is a directory) is
+   # a ccollect-backiup directory"?
    # the created directories are named $INTERVAL-$DATE-$TIME.$PID
-   count=$(cd "$c_dest" && ls -p1 | grep "^${INTERVAL}\..*/\$" | wc -l | sed 's/^ *//g')
-   echo -n "Currently $count backup(s) exist(s),"
-   echo " total keeping $c_interval backup(s)."
-
-   if [ "$count" -ge "$c_interval" ]; then
+   count=$(cd "${c_dest}" && ls -p1 | grep "^${INTERVAL}\..*/\$" | wc -l | sed 's/^ *//g')
+   # FIXME: check return value
+   echo -n "Currently ${count} backup(s) exist(s),"
+   echo " total keeping ${c_interval} backup(s)."
+   
+   # STOPPED!
+   if [ "${count}" -ge "${c_interval}" ]; then
       substract=$((${c_interval} - 1))
       remove=$(($count - $substract))
       echo "Removing $remove backup(s)..."
