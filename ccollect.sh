@@ -99,6 +99,9 @@ while [ "$i" -le $# ]; do
    if [ "$NO_MORE_ARGS" = 1 ]; then
         eval source_${no_sources}=\"$arg\"
         no_sources=$(($no_sources+1))
+        
+        # make variable available for subscripts
+        eval export source_${no_sources}
    else
       case "$arg" in
          -a|--all)
@@ -125,6 +128,9 @@ while [ "$i" -le $# ]; do
 
    i=$(($i+1))
 done
+
+# also export number of sources
+export no_sources
 
 #
 # be really, really, really verbose
