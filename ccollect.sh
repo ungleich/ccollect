@@ -89,7 +89,7 @@ fi
 #
 # Filter arguments
 #
-INTERVAL="$1"; shift
+export INTERVAL="$1"; shift
 i=1
 no_sources=0
 
