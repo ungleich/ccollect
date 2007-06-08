@@ -1,0 +1,23 @@
+ccollect-logwrapper: Logging backup output
+===========================================
+Nico Schottelius <nico-ccollect__@__schottelius.org>
+0.1, for ccollect-logwrapper 0.1, Initial Version from 2007-06-08
+:Author Initials: NS
+
+This wrapper makes it easy to have logs of ccollect output.
+
+
+Introduction
+------------
+/etc/ccollect/logwrapper/ (also uses $CCOLLECT_CONF).
+
+   <logname>
+      pipe
+      staticfile: link to a file
+      datefile:
+         contains a string that is passed to date that returns
+      dynamicfile:
+         is a program, that returns some string that we 
+
+The logger will output to which destinations it logs and with which
+parameters it was started.
