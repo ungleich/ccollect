@@ -20,8 +20,9 @@ Supported and tested operating systems and architectures
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ccollect was successfully tested on the following platforms:
 
-- OpenBSD on amd64
 - GNU/Linux on hppa/i386/amd64
+- NetBSD on i386/amd64/sparc/sparc64
+- OpenBSD on amd64
 
 It *should* run on any Unix that supports rsync and has a POSIX-compatible
 bourne shell. If your platform is not listed above and you have it successfully
