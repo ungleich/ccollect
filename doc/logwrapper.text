@@ -12,12 +12,18 @@ Introduction
 /etc/ccollect/logwrapper/ (also uses $CCOLLECT_CONF).
 
    <logname>
-      pipe
+      pipe: will pipe to a program
       staticfile: link to a file
       datefile:
          contains a string that is passed to date that returns
       dynamicfile:
-         is a program, that returns some string that we 
+         is a program, that returns some string that we use as
+         a filename
+      syslog:
+         syslog-facility
+         syslog-level
+      only-stderr:
+         omit stdout output
 
 The logger will output to which destinations it logs and with which
 parameters it was started.

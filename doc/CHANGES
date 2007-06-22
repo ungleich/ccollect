@@ -1,5 +1,6 @@
 0.5.2 to 0.5.3:
    * add 'exec-after-rm' (source specific) configuration
+   * added logwrapper
 
 0.5.1 to 0.5.2:
    * Display correct error code, if rsync returns non-zero
