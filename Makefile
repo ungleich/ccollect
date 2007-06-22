@@ -4,7 +4,8 @@
 #
 
 INSTALL=install
-CCOLLECT=ccollect.sh
+CCOLLECT_SOURCE=ccollect.sh
+CCOLLECT_DEST=ccollect.sh
 LN=ln -sf
 ASCIIDOC=asciidoc
 DOCBOOKTOTEXI=docbook2x-texi
@@ -14,10 +15,10 @@ XSL=/usr/share/xml/docbook/stylesheet/nwalsh/html/docbook.xsl
 
 prefix=/usr/packages/ccollect-git
 bindir=$(prefix)/bin
-destination=$(bindir)/$(CCOLLECT)
+destination=$(bindir)/$(CCOLLECT_DEST)
 
 path_dir=/usr/local/bin
-path_destination=$(path_dir)/$(CCOLLECT)
+path_destination=$(path_dir)/$(CCOLLECT_DEST)
 
 # where to publish
 host=home.schottelius.org
@@ -67,7 +68,7 @@ install-link: install-script
 	$(LN) $(destination) $(path_destination)
 
 install-script:
-	$(INSTALL) -D -m 0755 $(CCOLLECT) $(destination)
+	$(INSTALL) -D -m 0755 $(CCOLLECT_SOURCE) $(destination)
 
 
 # docbook gets .htm, asciidoc directly .html
