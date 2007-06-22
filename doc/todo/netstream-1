@@ -1,12 +1,20 @@
+Preamble:
+   Netstream (www.netstream.ch) may consider using ccollect for backing up many
+   unix servers and needs some clean reporting. The following things
+   need to be done, so ccollect will be useful for netstream:
+
 Logger:
-   - Eine mail pro Rechner generieren
-   - Zusammenfassung / intelligente Auswertung
-      o .*vanished.*
-   - Zusammenfassung?
-   - Nur Mail, wenn kritischer Fehler
-      o option fuer auch Warnungen
+   - Needs to write small mails (sysadmins don't have time to read mails)
+   - Needs to be able to only write a mail on error
+      * needs configuration option to also mail on warnings
+   - Should be able to send one mail per backup source
+      * or one for the whole backup job
 
-Warnungen:
-   Dateien verschwunden:
+Messages: (to be used for filtering)
+   Errors:
+      Read from remote host .*: Connection timed out
 
-Fehler:
+   Warnings:
+      rsync: mknod .* failed: Invalid argument (22)
+      file has vanished: ".*"
+
