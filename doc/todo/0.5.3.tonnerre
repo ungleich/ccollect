@@ -1,0 +1,11 @@
+NetBSD/i386,amd64,sparc,sparc64
+
+13:13 < Tonnerre> telmich, die kleine wä, 2 Variablen aus $(CCOLLECT) zu
+                  machen
+13:13 < Tonnerre> telmich, eine fü Sourcepfad und eine fü
+Destinationfpad
+13:13 < Tonnerre> pfa
+13:13 < Tonnerre> d
+13:14 < Tonnerre> telmich, die gröre wä die $() durch ${} zu ersetzen, so
+dass der Kram auch mit !GNU-Make geht
+
