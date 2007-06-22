@@ -1,0 +1,12 @@
+Logger:
+   - Eine mail pro Rechner generieren
+   - Zusammenfassung / intelligente Auswertung
+      o .*vanished.*
+   - Zusammenfassung?
+   - Nur Mail, wenn kritischer Fehler
+      o option fuer auch Warnungen
+
+Warnungen:
+   Dateien verschwunden:
+
+Fehler:
