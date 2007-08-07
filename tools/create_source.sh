@@ -25,14 +25,16 @@ _exit_err()
 }
 
 # argv
-if [ $# -ne 2 ]; then
-   _echo "Arguments needed: <name of the server> <where to store backup>"
+if [ $# -ne 3 ]; then
+   _echo "<name of the ccollect-source> <servername> <destination>"
+   _echo "Example: \"my-notebook\" \"192.168.42.42\" \"/home/server/backup/my-notebook\""
    exit 1
 fi
 
 name="$1"
+source="$2"
+destination="$3"
 fullname="${CSOURCES}/${name}"
-destination="$2"
 
 # Tests
 if [ -e "${fullname}" ]; then
@@ -40,14 +42,14 @@ if [ -e "${fullname}" ]; then
    exit 2
 fi
 
-_echo "Trying to reach ${name} ..."
-ping -c1 "${name}" || _exit_err "Cannot reach ${name}. Aborting."
+_echo "Trying to reach ${source} ..."
+ping -c1 "${source}" || _exit_err "Cannot reach ${source}. Aborting."
 
 # Create
 _echo "Creating ${fullname} ..."
 mkdir -p "${fullname}" || exit 3
 
-echo "${name}:/" > "${fullname}/source"
+echo "root@${source}:/" > "${fullname}/source"
 cat << eof > "${fullname}/exclude" || exit 4
 /dev/*
 /proc/*
@@ -69,5 +71,5 @@ ln -s "${destination}" "${fullname}/destination" || \
    _exit_err "Failed to link \"${destination}\" to \"${fullname}/destination\""
 
 # finish
-_echo "Added some default values, please verify ${fullname}."
+_echo "Added some default values, please verify \"${fullname}\"."
 _echo "Finished."
