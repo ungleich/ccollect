@@ -18,3 +18,10 @@ Messages: (to be used for filtering)
       rsync: mknod .* failed: Invalid argument (22)
       file has vanished: ".*"
 
+--------------------------------------------------------------------------------
+rsync_extra global!
+- \n delimeted
+
+Analyzer:
+   - grosse Dateien
+   - grosse Veraenderungen
