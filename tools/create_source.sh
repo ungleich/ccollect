@@ -15,7 +15,6 @@ self=$(basename $0)
 _echo()
 {
    echo "${self}> $@"
-   exit 1
 }
 
 _exit_err()
