@@ -14,7 +14,7 @@ self=$(basename $0)
 # functions first
 _echo()
 {
-   echo -n "${self}> $@"
+   echo "${self}> $@"
    exit 1
 }
 
