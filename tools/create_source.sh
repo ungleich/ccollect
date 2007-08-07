@@ -9,10 +9,12 @@ CCOLLECT_CONF=${CCOLLECT_CONF:-/etc/ccollect}
 CSOURCES=$CCOLLECT_CONF/sources
 CDEFAULTS=$CCOLLECT_CONF/defaults
 
+self=$(basename $0)
+
 # functions first
 _echo()
 {
-   echo -n "$(basename $0)> $@"
+   echo -n "${self}> $@"
    exit 1
 }
 
@@ -24,13 +26,14 @@ _exit_err()
 }
 
 # argv
-if [ $# -ne 1 ]; then
-   _echo "$(basename $0): <name of the server>"
+if [ $# -ne 2 ]; then
+   _echo "Arguments needed: <name of the server> <where to store backup>"
    exit 1
 fi
 
 name="$1"
 fullname="${CSOURCES}/${name}"
+destination="$2"
 
 # Tests
 if [ -e "${fullname}" ]; then
@@ -46,11 +49,24 @@ _echo "Creating ${fullname} ..."
 mkdir -p "${fullname}" || exit 3
 
 echo "${name}:/" > "${fullname}/source"
-cat << eof > "${fullname}/exclude"
+cat << eof > "${fullname}/exclude" || exit 4
 /dev/*
 /proc/*
 /tmp/*
 eof
+
+# Destination
+if [ -e "${destination}" ]; then
+   if [ ! -d "${destination}" ]; then
+      echo "${destination} exists, but is not a directory. Aborting."
+      exit 5
+   fi
+else
+   mkdir -p "${destination}" || _exit_err "Failed to create ${destination}."
+fi
+
+ln -s "${destination}" "${fullname}/destination" || \
+   _exit_err "Failed to link \"${destination}\" to \"${fullname}/destination\""
 
 # finish
 _echo "Added some default values, please verify ${fullname}."
