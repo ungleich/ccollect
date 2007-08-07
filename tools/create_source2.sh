@@ -25,7 +25,7 @@ _exit_err()
 }
 
 # argv
-if [ $# -ne 3 ]; then
+if [ $# -ne 2 ]; then
    _echo "<servername> <destination-basedir>"
    _echo "Example: \"192.168.42.42\" \"/home/server/backup/\""
    _echo "   This will create ${CSOURCES}/192.168.42.42 and /home/server/backup/192.168.42.42."
@@ -39,7 +39,7 @@ name="$1"
 basedir="$2"
 
 fullname="${CSOURCES}/${name}"
-destination=${basedir}/${name}"
+destination="${basedir}/${name}"
 
 # Tests
 if [ -e "${fullname}" ]; then
@@ -47,7 +47,7 @@ if [ -e "${fullname}" ]; then
    exit 2
 fi
 
-_echo "Trying to reach ${source} ..."
+_echo "Trying to reach ${name} ..."
 ping -c1 "${name}" || _exit_err "Cannot reach ${name}. Aborting."
 
 if [ ! -d "${basedir}" ]; then
