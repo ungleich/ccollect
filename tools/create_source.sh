@@ -62,6 +62,7 @@ if [ -e "${destination}" ]; then
       exit 5
    fi
 else
+   _echo "Creating ${destination} ..."
    mkdir -p "${destination}" || _exit_err "Failed to create ${destination}."
 fi
 
