@@ -1,6 +1,6 @@
 #!/bin/sh
 # Nico Schottelius
-# written for SyGroup (www.sygroup.ch)
+# Initially written for SyGroup (www.sygroup.ch)
 # Date: Mon Nov 14 11:45:11 CET 2005
 # Last Modified: (See ls -l or git)
 
@@ -24,7 +24,7 @@ FULL_VERSION="ccollect $VERSION ($RELEASE)"
 # DDATE: how the user should see it in our output
 #
 CDATE="date +%Y-%m-%d-%H%M"
-DDATE="date"
+DDATE="date +%Y-%m-%d-%H:%M:%S"
 
 #
 # unset parallel execution
