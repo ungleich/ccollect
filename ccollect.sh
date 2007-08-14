@@ -104,8 +104,7 @@ no_sources=0
 # Create source "array"
 #
 while [ "$#" -ge 1 ]; do
-   eval arg=\"\$1\"
-   shift
+   eval arg=\"\$1\"; shift
 
    if [ "$NO_MORE_ARGS" = 1 ]; then
         eval source_${no_sources}=\"$arg\"
@@ -143,9 +142,6 @@ done
 # also export number of sources
 export no_sources
 
-echo $@, $#
-exit
-
 #
 # be really, really, really verbose
 #
@@ -164,9 +160,9 @@ if [ "$ALL" = 1 ]; then
    # get entries from sources
    #
    cwd=$(pwd -P)
-   ( cd "${CSOURCES}" && ls > "${TMP}" )
+   ( cd "${CSOURCES}" && ls > "${TMP}" ); ret=$?
 
-   [ "$?" -eq 0 ] || _exit_err "Listing of sources failed. Aborting."
+   [ "${ret}" -eq 0 ] || _exit_err "Listing of sources failed. Aborting."
 
    while read tmp; do
       eval source_${no_sources}=\"$tmp\"
@@ -332,15 +328,13 @@ while [ "$i" -lt "$no_sources" ]; do
    # - insert ccollect default parameters
    # - insert options
    # - insert user options
-
+   
 
    #
    # exclude list
    #
    if [ -f "${c_exclude}" ]; then
-      # FIXME: check how quoting at the end looks like
-      # perhaps our source contains spaces!
-      EXCLUDE="--exclude-from=$c_exclude"
+      set -- "$@" "--exclude-from=$c_exclude"
    fi
 
    #
