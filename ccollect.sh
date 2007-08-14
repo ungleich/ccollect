@@ -14,14 +14,14 @@ CPREEXEC="$CDEFAULTS/pre_exec"
 CPOSTEXEC="$CDEFAULTS/post_exec"
 
 TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
-VERSION=0.5.3
+VERSION=0.6
 RELEASE="2007-XX-XX"
 HALF_VERSION="ccollect $VERSION"
 FULL_VERSION="ccollect $VERSION ($RELEASE)"
 
 #
 # CDATE: how we use it for naming of the archives
-# DDATE: how the user should see it in our output
+# DDATE: how the user should see it in our output (DISPLAY)
 #
 CDATE="date +%Y-%m-%d-%H%M"
 DDATE="date +%Y-%m-%d-%H:%M:%S"
@@ -40,9 +40,16 @@ trap "rm -f \"$TMP\"" 1 2 15
 # Functions
 #
 
+# time displaying echo
+_techo()
+{
+   echo "$(${DDATE}): $@"
+}
+
+# exit on error
 _exit_err()
 {
-   echo "$@"
+   _techo "$@"
    rm -f "$TMP"
    exit 1
 }
@@ -96,8 +103,9 @@ no_sources=0
 #
 # Create source "array"
 #
-while [ "$i" -le $# ]; do
-   eval arg=\"\$$i\"
+while [ "$#" -ge 1 ]; do
+   eval arg=\"\$1\"
+   shift
 
    if [ "$NO_MORE_ARGS" = 1 ]; then
         eval source_${no_sources}=\"$arg\"
@@ -135,6 +143,9 @@ done
 # also export number of sources
 export no_sources
 
+echo $@, $#
+exit
+
 #
 # be really, really, really verbose
 #
@@ -164,6 +175,15 @@ if [ "$ALL" = 1 ]; then
 fi
 
 #
+# Need at least ONE source to backup
+#
+if [ "${no_sources}" -lt 1 ]; then
+   usage
+else
+   _techo "${HALF_VERSION}: Beginning backup using interval ${INTERVAL}"
+fi
+
+#
 # Look for pre-exec command (general)
 #
 if [ -x "${CPREEXEC}" ]; then
@@ -171,17 +191,8 @@ if [ -x "${CPREEXEC}" ]; then
    "${CPREEXEC}"; ret=$?
    echo "Finished ${CPREEXEC}."
 
-   [ "${ret}" -eq 0 ] || _exit_err "${CPREEXEC} exited with return-code $ret" \
+   [ "${ret}" -eq 0 ] || _exit_err "${CPREEXEC} exited with return code ${ret}" \
                                    ", aborting backup."
-fi
-
-#
-# Need at least ONE source to backup
-#
-if [ "$no_sources" -lt 1 ]; then
-   usage
-else
-   echo "==> $HALF_VERSION: Beginning backup using interval $INTERVAL <=="
 fi
 
 #
@@ -190,6 +201,7 @@ fi
 
 D_FILE_INTERVAL="${CDEFAULTS}/intervals/${INTERVAL}"
 D_INTERVAL=$(cat "${D_FILE_INTERVAL}" 2>/dev/null)
+
 
 #
 # Let's do the backup
@@ -223,7 +235,7 @@ while [ "$i" -lt "$no_sources" ]; do
    exec 2>&1
 
    #
-   # Standard locations
+   # Configuration
    #
    backup="${CSOURCES}/${name}"
    c_source="${backup}/source"
@@ -235,17 +247,12 @@ while [ "$i" -lt "$no_sources" ]; do
    c_summary="${backup}/summary"
    c_pre_exec="${backup}/pre_exec"
    c_post_exec="${backup}/post_exec"
-
-
-   #
-   # FIXME: enable in 0.6
-   # Always execute, warn if it exists in normal case
-   # and rm -rf the old backup, if "delete_incomplete" is set
-   #
    c_incomplete="$backup/delete_incomplete"
-   #c_marker=".ccollect-${CDATE}.$$"
 
-   begin=$($DDATE)
+   #
+   # Times
+   #
+   c_marker=".ccollect-$(${CDATE}).$$"
    begin_s=$(date +%s)
 
    #
@@ -257,13 +264,13 @@ while [ "$i" -lt "$no_sources" ]; do
    VERBOSE=""
    VVERBOSE=""
 
-   echo "${begin} Beginning to backup"
+   _techo "Beginning to backup"
 
    #
    # Standard configuration checks
    #
    if [ ! -e "${backup}" ]; then
-      echo "Source does not exist."
+      _techo "Source does not exist."
       exit 1
    fi
 
@@ -271,7 +278,7 @@ while [ "$i" -lt "$no_sources" ]; do
    # configuration _must_ be a directory
    #
    if [ ! -d "${backup}" ]; then
-      echo "\"${name}\" is not a cconfig-directory. Skipping."
+      _techo "\"${name}\" is not a cconfig-directory. Skipping."
       exit 1
    fi
 
@@ -280,14 +287,12 @@ while [ "$i" -lt "$no_sources" ]; do
    # parameters
    #
    if [ -x "${c_pre_exec}" ]; then
-      echo "Executing ${c_pre_exec} ..."
+      _techo "Executing ${c_pre_exec} ..."
       "${c_pre_exec}"; ret="$?"
-      echo "Finished ${c_pre_exec}."
+      _techo "Finished ${c_pre_exec} (return code ${ret})."
 
-      # FIXME: is _exit_err senseful here?
       if [ "${ret}" -ne 0 ]; then
-         echo "${c_pre_exec} failed. Skipping."
-         exit 1
+         _exit_err "${c_pre_exec} failed. Skipping."
       fi
    fi
 
@@ -299,25 +304,20 @@ while [ "$i" -lt "$no_sources" ]; do
    if [ -z "${c_interval}" ]; then
       c_interval="${D_INTERVAL}"
 
-      # FIXME: is _exit_err senseful here?
       if [ -z "${c_interval}" ]; then
-         echo "No definition for interval \"${INTERVAL}\" found. Skipping."
-         exit 1
+         _exit_err "No definition for interval \"${INTERVAL}\" found. Skipping."
       fi
    fi
 
    #
    # Source checks
    #
-   # FIXME: is _exit_err senseful here?
    if [ ! -f "${c_source}" ]; then
-      echo "Source description ${c_source} is not a file. Skipping."
-      exit 1
+      _exit_err "Source description \"${c_source}\" is not a file. Skipping."
    else
-      source=$(cat "$c_source")
-      if [ $? -ne 0 ]; then
-         echo "Source $c_source is not readable. Skipping."
-         exit 1
+      source=$(cat "${c_source}"); ret=$?
+      if [ ${ret} -ne 0 ]; then
+         _exit_err "Source ${c_source} is not readable. Skipping."
       fi
    fi
 
@@ -325,14 +325,19 @@ while [ "$i" -lt "$no_sources" ]; do
    # destination _must_ be a directory
    #
    if [ ! -d "${c_dest}" ]; then
-      echo "Destination ${c_dest} neither links to nor is a directory. Skipping."
-      exit 1
+      _exit_err "Destination ${c_dest} neither links to nor is a directory. Skipping."
    fi
+
+   # NEW
+   # - insert ccollect default parameters
+   # - insert options
+   # - insert user options
+
 
    #
    # exclude list
    #
-   if [ -f "$c_exclude" ]; then
+   if [ -f "${c_exclude}" ]; then
       # FIXME: check how quoting at the end looks like
       # perhaps our source contains spaces!
       EXCLUDE="--exclude-from=$c_exclude"
