@@ -93,6 +93,9 @@ export INTERVAL="$1"; shift
 i=1
 no_sources=0
 
+#
+# Create source "array"
+#
 while [ "$i" -le $# ]; do
    eval arg=\"\$$i\"
 
@@ -140,17 +143,6 @@ if [ "$VERBOSE" = 1 ]; then
 fi
 
 #
-# Look for pre-exec command (general)
-#
-if [ -x "${CPREEXEC}" ]; then
-   echo "Executing ${CPREEXEC} ..."
-   "${CPREEXEC}"; ret=$?
-   echo "Finished ${CPREEXEC}."
-
-   [ "${ret}" -eq 0 ] || _exit_err "${CPREEXEC} failed, not starting backup."
-fi
-
-#
 # Look, if we should take ALL sources
 #
 if [ "$ALL" = 1 ]; then
@@ -169,6 +161,18 @@ if [ "$ALL" = 1 ]; then
       eval source_${no_sources}=\"$tmp\"
       no_sources=$(($no_sources+1))
    done < "${TMP}"
+fi
+
+#
+# Look for pre-exec command (general)
+#
+if [ -x "${CPREEXEC}" ]; then
+   echo "Executing ${CPREEXEC} ..."
+   "${CPREEXEC}"; ret=$?
+   echo "Finished ${CPREEXEC}."
+
+   [ "${ret}" -eq 0 ] || _exit_err "${CPREEXEC} exited with return-code $ret" \
+                                   ", aborting backup."
 fi
 
 #
