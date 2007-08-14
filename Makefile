@@ -121,3 +121,6 @@ distclean: allclean
 # Be nice with the users and generate documentation for them
 #
 dist: distclean documentation
+
+test: ccollect.sh
+	CCOLLECT_CONF=./conf ./ccollect.sh daily "source with spaces"
