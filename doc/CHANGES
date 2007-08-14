@@ -1,8 +1,9 @@
-0.5.2 to 0.5.3:
+0.5.2 to 0.6:
    * add 'exec-after-rm' (source specific) configuration
    * added logwrapper
    * Always print return code of rsync
    * Add much more timing information
+   * One option per line in rsync_options now
 
 0.5.1 to 0.5.2:
    * Display correct error code, if rsync returns non-zero

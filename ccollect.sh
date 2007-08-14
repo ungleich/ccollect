@@ -341,7 +341,9 @@ while [ "$i" -lt "$no_sources" ]; do
    # extra options for rsync
    #
    if [ -f "${c_rsync_extra}" ]; then
-      RSYNC_EXTRA="$(cat "${c_rsync_extra}")"
+      while read line; do
+         set -- "$@" "$line"
+         RSYNC_EXTRA="$(cat "${c_rsync_extra}")"
    fi
 
    #
