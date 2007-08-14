@@ -329,7 +329,11 @@ while [ "$i" -lt "$no_sources" ]; do
    # - insert options
    # - insert user options
    
+   #
+   # rsync standard options
+   #
 
+   ouropts="-a --delete --numeric-ids --relative --delete-excluded"
    #
    # exclude list
    #
@@ -338,34 +342,28 @@ while [ "$i" -lt "$no_sources" ]; do
    fi
 
    #
-   # extra options for rsync
-   #
-   if [ -f "${c_rsync_extra}" ]; then
-      while read line; do
-         set -- "$@" "$line"
-         RSYNC_EXTRA="$(cat "${c_rsync_extra}")"
-   fi
-
-   #
    # Output a summary
    #
    if [ -f "${c_summary}" ]; then
-      SUMMARY="--stats"
+      set -- "$@" "--stats"
    fi
 
    #
    # Verbosity for rsync
    #
-   if [ -f "${c_verbose}" ]; then
-      VERBOSE="-v"
+   if [ -f "${c_vverbose}" ]; then
+      set -- "$@" "-vv"
+   elif [ -f "${c_verbose}" ]; then
+      set -- "$@" "-v"
    fi
 
    #
-   # MORE verbosity, includes standard verbosity
+   # extra options for rsync provided by the user
    #
-   if [ -f "${c_vverbose}" ]; then
-      VERBOSE="-v"
-      VVERBOSE="-v"
+   if [ -f "${c_rsync_extra}" ]; then
+      while read line; do
+         set -- "$@" "$line"
+      done < "${c_rsync_extra}"
    fi
 
 #   #
@@ -447,25 +445,17 @@ while [ "$i" -lt "$no_sources" ]; do
    abs_destination_dir="$(cd "$destination_dir" && pwd -P)"
 
    #
-   # FIXME: add mark in 0.6 (and remove if successful later!
+   # added mark in 0.6 (and remove it, if successful later)
    #
-   #touch "${abs_destination_dir}/${c_marker}"
+   touch "${abs_destination_dir}/${c_marker}"
 
    #
    # the rsync part
    # options partly stolen from rsnapshot
    #
 
-   echo "$($DDATE) Transferring files..."
+   _techo "Transferring files..."
 
-   ouropts="-a --delete --numeric-ids --relative --delete-excluded"
-
-   #
-   # FIXME: check, whether this is broken with spaces...
-   # most likely it should be broken...MUST be...
-   # expanding depens on shell (zsh = 1, dash = 3 arguments in test case)
-   #
-   useropts="$VERBOSE $EXCLUDE $SUMMARY $RSYNC_EXTRA"
 
    #
    # FIXME:useropts / rsync extra: one parameter per line!
