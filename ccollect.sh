@@ -489,8 +489,10 @@ while [ "$i" -lt "$no_sources" ]; do
 
    ret=$?
 
+   echo "Rsync return code: $ret."
+
    if [ "$ret" -ne 0 ]; then
-      echo "rsync reported error $ret. The backup may be broken (see rsync errors)."
+      echo "Warning: rsync exited non-zero, the backup may be broken (see rsync errors)."
    fi
 
    #
