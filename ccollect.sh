@@ -405,11 +405,11 @@ while [ "${i}" -lt "${no_sources}" ]; do
       done < "${TMP}"
    ) || _exit_err "Searching for incomplete backups failed."
 
+
    #
    # check if maximum number of backups is reached, if so remove
-   #
-
    # use grep and ls -p so we only look at directories
+   #
    count=$(cd "${c_dest}" && ls -p1 | grep "^${INTERVAL}\..*/\$" | wc -l \
       | sed 's/^ *//g')  || _exit_err "Counting backups failed"
 
@@ -427,46 +427,51 @@ while [ "${i}" -lt "${no_sources}" ]; do
 
          while read to_remove; do
             _techo "Removing ${to_remove} ..."
-            rm $VVERBOSE -rf "$to_remove"
+            # FIXME DEBUG
+            echo rm $VVERBOSE -rf "$to_remove"
          done < "${TMP}"
-      ) || _exit_err "
+      ) || _exit_err "Problem removing old backups"
    fi
 
-   #last_dir=$(ls -d "${c_dest}/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)
+
    #
    # Check for backup directory to clone from
    #
-   found_old=0
-   (
-      # can we use ls? or will it produce broken results?
-      #cd "${c_dest}" && ls -dp1 | grep "^${INTERVAL}\..*/\$" | wc -l | sed 's/^ *//g')
-      cd "${c_dest}" && ls -dp1 "${INTERVAL}".* > "${TMP}"
-   )
-   while read old; do
-      echo "Found ${old}"
-   done < "${TMP}"
 
-   #
-   # Check for backups on other intervals, if we did not find any
-   #
+   # try our interval
+   set -x
+   last_dir="$(ls -d "${c_dest}/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)"
+   
+   # try other intervals, if there's none four our interval
+   if [ -z "${last_dir}" ]; then
+      _techo "Did not find existing backups for interval ${INTERVAL}."
 
-   #
-   # clone the old directory with hardlinks
-   #
+      # get list
+      : > "${TMP}"
+      ( cd "${backup}/intervals/"    2>/dev/null   && ls >> "${TMP}" )
+      ( cd "${CDEFAULTS}/intervals/" 2>/dev/null   && ls >> "${TMP}" )
 
-   destination_date=$($CDATE)
-   destination_dir="$c_dest/${INTERVAL}.${destination_date}.$$"
 
-   #
-   # FIXME: In 0.6 add search for the latest available backup!
-   #
-   last_dir=$(ls -d "$c_dest/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)
+
+      # FIXME in 0.6.1: choose best source, not first one.
+      while read other_interval; do
+         last_dir="$(ls -d "${c_dest}/${other_interval}."?* 2>/dev/null | sort -n | tail -n 1)"
+         if [ "${last_dir}" ]; then
+            _techo "Using backup from ${other_interval}."
+            break
+         fi
+      done < "${TMP}"
+   fi
+
+   # set time when we really begin to backup, not when we began to remove above
+   destination_date=$(${CDATE})
+   destination_dir="${c_dest}/${INTERVAL}.${destination_date}.$$"
 
    # give some info
-   echo "Beginning to backup, this may take some time..."
+   _techo "Beginning to backup, this may take some time..."
 
-   echo "Creating $destination_dir ..."
-   mkdir $VVERBOSE "$destination_dir" || \
+   echo "Creating ${destination_dir} ..."
+   mkdir ${VVERBOSE} "${destination_dir}" || \
       _exit_err "Creating $destination_dir failed. Skipping."
 
    #
@@ -493,7 +498,8 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
 
    set -x
-   rsync "$@" "$source" "$abs_destination_dir"; ret=$?
+   rsync "$@" "${source}" "${abs_destination_dir}"; ret=$?
+
    #   abs_last_dir="$(cd "$last_dir" && pwd -P)"
   #    if [ -z "$abs_last_dir" ]; then
   #       echo "Changing to the last backup directory failed. Skipping."
@@ -501,18 +507,15 @@ while [ "${i}" -lt "${no_sources}" ]; do
   #    fi
   #    rsync_hardlink="--link-dest=$abs_last_dir"
 
-   set +x
-   if [ "$ret" -ne 0 ]; then
-      echo "Warning: rsync exited non-zero, the backup may be broken (see rsync errors)."
-   fi
-
    #
    # remove marking here
    #
    rm -f "${abs_destination_dir}/${c_marker}"
 
    _techo "Finished backup (rsync return code: $ret)."
-
+   if [ "$ret" -ne 0 ]; then
+      _techo "Warning: rsync exited non-zero, the backup may be broken (see rsync errors)."
+   fi
 
    #
    # post_exec
