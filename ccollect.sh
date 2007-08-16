@@ -185,10 +185,9 @@ fi
 if [ -x "${CPREEXEC}" ]; then
    _techo "Executing ${CPREEXEC} ..."
    "${CPREEXEC}"; ret=$?
-   _techo "Finished ${CPREEXEC}."
+   _techo "Finished ${CPREEXEC} (return code: ${ret})."
 
-   [ "${ret}" -eq 0 ] || _exit_err "${CPREEXEC} exited with return code ${ret}" \
-      ", aborting backup."
+   [ "${ret}" -eq 0 ] || _exit_err "${CPREEXEC} failed. Aborting"
 fi
 
 #
@@ -384,17 +383,15 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # Check for incomplete backups
    #
-   ( cd "${c_dest}" 2>/dev/null && ls -1 "${INTERVAL}"*/${c_marker} > "${TMP}" 2>/dev/null)
-
-   # FIXME: debug
-   cat "${TMP}"
+   ( cd "${c_dest}" 2>/dev/null && ls -1 "${INTERVAL}"*"/${c_marker}" > "${TMP}" 2>/dev/null)
 
    while read incomplete; do
       realincomplete=$(echo ${incomplete} | sed "s/${c_marker}\$//")
       _techo "Incomplete backup: ${realincomplete}"
       if [ "${DELETE_INCOMPLETE}" = "yes" ]; then
          _techo "Deleting ${realincomplete} ..."
-         rm $VVERBOSE -rf "${c_dest}/${realincomplete}"
+         rm $VVERBOSE -rf "${c_dest}/${realincomplete}" || \
+            _exit_err "Removing ${c_dest}/${realincomplete} failed."
       fi
    done < "${TMP}"
 
@@ -413,17 +410,14 @@ while [ "${i}" -lt "${no_sources}" ]; do
       remove=$((${count} - ${substract}))
       _techo "Removing ${remove} backup(s)..."
 
-      (
-         set -e
-         cd "${c_dest}"
-         ls -p1 | grep "^${INTERVAL}\..*/\$" | sort -n | head -n "${remove}" > "${TMP}"
+      ( cd "${c_dest}" 2>/dev/null && ls -p1 | grep "^${INTERVAL}\..*/\$" | \
+        sort -n | head -n "${remove}" > "${TMP}" )
 
-         while read to_remove; do
-            _techo "Removing ${to_remove} ..."
-            # FIXME DEBUG
-            echo rm $VVERBOSE -rf "$to_remove"
-         done < "${TMP}"
-      ) || _exit_err "Problem removing old backups"
+      while read to_remove; do
+         _techo "Removing ${to_remove} ..."
+         rm ${VVERBOSE} -rf "$to_remove" || \
+            _exit_err "Removing ${to_remove} failed."
+      done < "${TMP}"
    fi
 
 
@@ -432,9 +426,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
 
    # try our interval
-   set -x
    last_dir="$(ls -d "${c_dest}/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)"
-   set +x
    
    # try other intervals, if there's none four our interval
    if [ -z "${last_dir}" ]; then
@@ -444,8 +436,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
       : > "${TMP}"
       ( cd "${backup}/intervals/"    2>/dev/null   && ls >> "${TMP}" )
       ( cd "${CDEFAULTS}/intervals/" 2>/dev/null   && ls >> "${TMP}" )
-
-
 
       # FIXME in 0.6.1: choose best source, not first one.
       while read other_interval; do
@@ -458,7 +448,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    fi
 
    #
-   # add old backup if existing
+   # clone from old backup, if existing
    #
    if [ "${last_dir}" ]; then
       abs_last_dir="$(cd "${last_dir}" && pwd -P)" || _exit_err "Could not change to last dir ${last_dir}."
@@ -469,7 +459,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # set time when we really begin to backup, not when we began to remove above
    destination_date=$(${CDATE})
    destination_dir="${c_dest}/${INTERVAL}.${destination_date}.$$"
-
 
    # give some info
    _techo "Beginning to backup, this may take some time..."
@@ -492,15 +481,13 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
 
    _techo "Transferring files..."
-
-   set -x
    rsync "$@" "${source}" "${abs_destination_dir}"; ret=$?
-   set +x
 
    #
    # remove marking here
    #
-   rm -f "${abs_destination_dir}/${c_marker}"
+   rm -f "${abs_destination_dir}/${c_marker}" || \
+      _exit_err "Removing ${abs_destination_dir}/${c_marker} failed."
 
    _techo "Finished backup (rsync return code: $ret)."
    if [ "$ret" -ne 0 ]; then
@@ -538,7 +525,7 @@ done
 # Be a good parent and wait for our children, if they are running wild parallel
 #
 if [ "${PARALLEL}" ]; then
-   _techo "Waiting for child jobs to complete..."
+   _techo "Waiting for children to complete..."
    wait
 fi
 
@@ -547,12 +534,11 @@ fi
 #
 if [ -x "${CPOSTEXEC}" ]; then
    _techo "Executing ${CPOSTEXEC} ..."
-   "${CPOSTEXEC}"
-   ret=$?
-   _techo "Finished ${CPOSTEXEC}."
+   "${CPOSTEXEC}"; ret=$?
+   _techo "Finished ${CPOSTEXEC} (return code: ${ret})."
 
    if [ ${ret} -ne 0 ]; then
-      echo "${CPOSTEXEC} failed."
+      _echo "${CPOSTEXEC} failed."
    fi
 fi
 
