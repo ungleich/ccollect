@@ -6,6 +6,7 @@
    * Added management tools (including manpages):
       * add_ccollect_source.sh
       * delete_ccollect_source.sh
+   * Changed license to GPLv3 (from GPLv2)
 
 0.5.1 to 0.5.2:
    * Display correct error code, if rsync returns non-zero
