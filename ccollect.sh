@@ -321,10 +321,10 @@ while [ "$i" -lt "$no_sources" ]; do
    # destination _must_ be a directory
    #
    if [ ! -d "${c_dest}" ]; then
-      _exit_err "Destination ${c_dest} neither links to nor is a directory. Skipping."
+      _exit_err "Destination ${c_dest} is not a directory. Skipping."
    fi
 
-   # NEW
+   # NEW method as of 0.6:
    # - insert ccollect default parameters
    # - insert options
    # - insert user options
@@ -333,7 +333,9 @@ while [ "$i" -lt "$no_sources" ]; do
    # rsync standard options
    #
 
-   ouropts="-a --delete --numeric-ids --relative --delete-excluded"
+   set -- "$@" "--archive" "--delete" "--numeric-ids" "--relative"   \
+                "--delete-excluded" "--sparse" 
+
    #
    # exclude list
    #
@@ -366,44 +368,54 @@ while [ "$i" -lt "$no_sources" ]; do
       done < "${c_rsync_extra}"
    fi
 
-#   #
-#   # show if we shall remove partial backup, and whether the last one
-#   # is incomplete or not
-#   #
-#   # FIXME: test general for incomplete and decide only for warn|delete based on option?
-#   # FIXME: Define which is the last dir before? Or put this thing into
-#   # a while loop? Is it senseful to remove _ALL_ backups if non is complete?
-#   if [ -f "$c_incomplete" ]; then
-#      echo "Searching for incomplete backups..."
-#      last_dir=$(ls -d "$c_dest/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)
-#
-#      # check whether the last backup was incomplete
-#      # STOPPED HERE
-#      # todo: implement rm -rf, implement warning on non-cleaning
-#      # implement the marknig and normal removing
-#      if [ "$last_dir" ]; then
-#         incomplete=$(cd "$last_dir" && ls .ccollect-????-??-)
-#         if [ "$incomplete" ]; then
-#            "Removing incomplete backup $last_dir ..."
-#            echo rm -rf $VVERBOSE "$last_dir"
-#         fi
-#      fi
-#   fi
-#
+   #
+   # Check for incomplete backups
+   #
+   (
+      set -x
+      cd "${c_dest}"
+      ls
+      ls "${INTERVAL}"*/.ccollect-* > "${TMP}"
+      cat "${TMP}"
+
+      while read broken; do
+         realbroken=$(echo $broken | sed 's/.ccollect-*/')
+         echo "Broken backup"
+      done
+   )
+   sleep 10
+   while read incomplete; do
+      echo "${incomplete} is incomplete"
+   done < "${TMP}"
+
+   last_dir=$(ls -d "$c_dest/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)
+
    #
    # check if maximum number of backups is reached, if so remove
    #
 
-   # FIXME: really do fuzzy matching here?
-   # or simply declare "everything of that directory (which is a directory) is
-   # a ccollect-backiup directory"?
-   # the created directories are named $INTERVAL-$DATE-$TIME.$PID
+   #
+   # Check for backup directory to clone from
+   #
+   found_old=0
+   (
+      # can we use ls? or will it produce broken results?
+      #cd "${c_dest}" && ls -dp1 | grep "^${INTERVAL}\..*/\$" | wc -l | sed 's/^ *//g')
+      cd "${c_dest}" && ls -dp1 "${INTERVAL}".* > "${TMP}"
+   )
+   while read old; do
+      echo "Found ${old}"
+   done < "${TMP}"
+
+
+   #
+   # Check for backups on other intervals, if we did not find any
+   #
+
    count=$(cd "${c_dest}" && ls -p1 | grep "^${INTERVAL}\..*/\$" | wc -l | sed 's/^ *//g')
    # FIXME: check return value
-   echo -n "Currently ${count} backup(s) exist(s),"
-   echo " total keeping ${c_interval} backup(s)."
+   _techo "Existing backups: ${count} Total keeping backups: ${c_interval}"
    
-   # STOPPED!
    if [ "${count}" -ge "${c_interval}" ]; then
       substract=$((${c_interval} - 1))
       remove=$(($count - $substract))
@@ -421,8 +433,6 @@ while [ "$i" -lt "$no_sources" ]; do
    #
    # clone the old directory with hardlinks
    #
-
-   # FIXME: STOPPED
 
    destination_date=$($CDATE)
    destination_dir="$c_dest/${INTERVAL}.${destination_date}.$$"
@@ -462,55 +472,42 @@ while [ "$i" -lt "$no_sources" ]; do
    # 0.5.3!
    #
 
-   # Clone from previous backup, if existing
-   if [ "$last_dir" ]; then
+   set -x
+   rsync "$@" "$source" "$abs_destination_dir"; ret=$?
+   #   abs_last_dir="$(cd "$last_dir" && pwd -P)"
+  #    if [ -z "$abs_last_dir" ]; then
+  #       echo "Changing to the last backup directory failed. Skipping."
+  #       exit 1
+  #    fi
+  #    rsync_hardlink="--link-dest=$abs_last_dir"
 
-      #
-      # This directory MUST be absolute, because rsync does chdir()
-      # before beginning backup!
-      #
-
-      abs_last_dir="$(cd "$last_dir" && pwd -P)"
-      if [ -z "$abs_last_dir" ]; then
-         echo "Changing to the last backup directory failed. Skipping."
-         exit 1
-      fi
-
-      rsync_hardlink="--link-dest=$abs_last_dir"
-      rsync $ouropts "$rsync_hardlink" $useropts "$source" "$abs_destination_dir"
-   else
-      rsync $ouropts $useropts "$source" "$abs_destination_dir"
-   fi
-
-   ret=$?
-
-   echo "Rsync return code: $ret."
-
+   set +x
    if [ "$ret" -ne 0 ]; then
       echo "Warning: rsync exited non-zero, the backup may be broken (see rsync errors)."
    fi
 
    #
-   # FIXME: remove marking here
-   # rm -f $c_marker
+   # remove marking here
    #
+   rm -f "${abs_destination_dir}/${c_marker}"
 
-   echo "$($DDATE) Finished backup"
+   _techo "Finished backup (rsync return code: $ret)."
+
 
    #
    # post_exec
    #
-   if [ -x "$c_post_exec" ]; then
-      echo "$($DDATE) Executing $c_post_exec ..."
-      "$c_post_exec"
-      ret=$?
-      echo "$($DDATE) Finished ${c_post_exec}."
+   if [ -x "${c_post_exec}" ]; then
+      _techo "Executing ${c_post_exec} ..."
+      "${c_post_exec}"; ret=$?
+      _techo "Finished ${c_post_exec}."
 
-      if [ $ret -ne 0 ]; then
-         echo "$c_post_exec failed."
+      if [ ${ret} -ne 0 ]; then
+         _exit_err "${c_post_exec} failed."
       fi
    fi
 
+   # Calculation
    end_s=$(date +%s)
 
    full_seconds=$((${end_s} - ${begin_s}))
@@ -519,7 +516,7 @@ while [ "$i" -lt "$no_sources" ]; do
    minutes=$(($seconds / 60))
    seconds=$((${seconds} - (${minutes} * 60)))
 
-   echo "Backup lasted: ${hours}:${minutes}:${seconds} (h:m:s)"
+   _techo "Backup lasted: ${hours}:${minutes}:${seconds} (h:m:s)"
 
 ) | add_name
 done
@@ -527,24 +524,24 @@ done
 #
 # Be a good parent and wait for our children, if they are running wild parallel
 #
-if [ "$PARALLEL" ]; then
-   echo "$($DDATE) Waiting for child jobs to complete..."
+if [ "${PARALLEL}" ]; then
+   _techo "Waiting for child jobs to complete..."
    wait
 fi
 
 #
 # Look for post-exec command (general)
 #
-if [ -x "$CPOSTEXEC" ]; then
-   echo "$($DDATE) Executing $CPOSTEXEC ..."
-   "$CPOSTEXEC"
+if [ -x "${CPOSTEXEC}" ]; then
+   _techo "Executing ${CPOSTEXEC} ..."
+   "${CPOSTEXEC}"
    ret=$?
-   echo "$($DDATE) Finished ${CPOSTEXEC}."
+   _techo "Finished ${CPOSTEXEC}."
 
-   if [ $ret -ne 0 ]; then
-      echo "$CPOSTEXEC failed."
+   if [ ${ret} -ne 0 ]; then
+      echo "${CPOSTEXEC} failed."
    fi
 fi
 
-rm -f "$TMP"
-echo "==> Finished $WE <=="
+rm -f "${TMP}"
+_techo "Finished ${WE}"
