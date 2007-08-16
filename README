@@ -39,8 +39,8 @@ A small try to visualize the differnces in a table:
 | Programming   |            perl              |            sh                | 
 | language      |                              |      (posix compatible)      | 
 +---------------+-------------------------------------------------------------+
-| Lines of code |            6636              |             476              | 
-| (2006-10-25)  |                              |                              | 
+| Lines of code |  6772 (5353 w/o comments,    |  546 (375 w/o comments,      | 
+| (2006-10-25)  |        4794 w/o empty lines) |       288 w/o empty lines)   | 
 +---------------+-------------------------------------------------------------+
 |    Age        |  Available since 2002/2003   |    Written at 2005-11-14     | 
 +---------------+-------------------------------------------------------------+
