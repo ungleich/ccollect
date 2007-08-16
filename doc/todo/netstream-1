@@ -19,8 +19,6 @@ Messages: (to be used for filtering)
       file has vanished: ".*"
 
 --------------------------------------------------------------------------------
-rsync_extra global!
-- \n delimeted
 
 Analyzer:
    - grosse Dateien
@@ -38,6 +36,12 @@ linux:
    /proc/*
    /dev/*
    /tmp/*
+
+--------------------------------------------------------------------------------
+done:
+
+rsync_extra global!
+- \n delimeted
 --------------------------------------------------------------------------------
        -S, --sparse
               Try  to handle sparse files efficiently so they take up less space on the des‐
@@ -46,3 +50,4 @@ linux:
 
 --------------------------------------------------------------------------------
    Always report return code!
+
