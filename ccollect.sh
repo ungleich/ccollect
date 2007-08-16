@@ -385,6 +385,8 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # Check for incomplete backups
    #
    (
+      set -e
+      # FIXME: debug
       set -x
       cd "${c_dest}"
       # one column output to ${TMP}
@@ -401,18 +403,36 @@ while [ "${i}" -lt "${no_sources}" ]; do
             echo rm $VVERBOSE -rf "${realincomplete}"
          fi
       done < "${TMP}"
-   )
-   sleep 10
-   while read incomplete; do
-      echo "${incomplete} is incomplete"
-   done < "${TMP}"
-
-   last_dir=$(ls -d "${c_dest}/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)
+   ) || _exit_err "Searching for incomplete backups failed."
 
    #
    # check if maximum number of backups is reached, if so remove
    #
 
+   # use grep and ls -p so we only look at directories
+   count=$(cd "${c_dest}" && ls -p1 | grep "^${INTERVAL}\..*/\$" | wc -l \
+      | sed 's/^ *//g')  || _exit_err "Counting backups failed"
+
+   _techo "Existing backups: ${count} Total keeping backups: ${c_interval}"
+   
+   if [ "${count}" -ge "${c_interval}" ]; then
+      substract=$((${c_interval} - 1))
+      remove=$((${count} - ${substract}))
+      echo "Removing ${remove} backup(s)..."
+
+      (
+         set -e
+         cd "${c_dest}"
+         ls -p1 | grep "^${INTERVAL}\..*/\$" | sort -n | head -n "${remove}" > "${TMP}"
+
+         while read to_remove; do
+            _techo "Removing ${to_remove} ..."
+            rm $VVERBOSE -rf "$to_remove"
+         done < "${TMP}"
+      ) || _exit_err "
+   fi
+
+   #last_dir=$(ls -d "${c_dest}/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)
    #
    # Check for backup directory to clone from
    #
@@ -426,28 +446,9 @@ while [ "${i}" -lt "${no_sources}" ]; do
       echo "Found ${old}"
    done < "${TMP}"
 
-
    #
    # Check for backups on other intervals, if we did not find any
    #
-
-   count=$(cd "${c_dest}" && ls -p1 | grep "^${INTERVAL}\..*/\$" | wc -l | sed 's/^ *//g')
-   # FIXME: check return value
-   _techo "Existing backups: ${count} Total keeping backups: ${c_interval}"
-   
-   if [ "${count}" -ge "${c_interval}" ]; then
-      substract=$((${c_interval} - 1))
-      remove=$(($count - $substract))
-      echo "Removing $remove backup(s)..."
-
-      ls -d "$c_dest/${INTERVAL}."?* | sort -n | head -n "$remove" > "$TMP"
-      #( cd "$c_dest" && ls -p1 | grep "^${INTERVAL}\..*/\$" | sort -n | head -n $remove > "$TMP"
-      while read to_remove; do
-         dir="$to_remove"
-         echo "Removing $dir ..."
-         rm $VVERBOSE -rf "$dir"
-      done < "$TMP"
-   fi
 
    #
    # clone the old directory with hardlinks
