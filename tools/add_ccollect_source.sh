@@ -49,8 +49,9 @@ if [ $# -lt 1 ]; then
    _exit_err "<hostnames to create sources for>"
 fi
 
-while [ $# -gt 0 ]; do
+_echo "Reading defaults from ${SCONFIG} ..."
 
+while [ $# -gt 0 ]; do
    source="$1"; shift
 
    # Create
@@ -68,59 +69,34 @@ while [ $# -gt 0 ]; do
    # copy standard files
    for file in $standard_opts; do
       eval rfile=\"\$$file\"
-      echo r: $rfile
       eval filename=${SCONFIG}/${rfile}
-      echo f: $filename
       if [ -e "${filename}" ]; then
-         _echo Copying $rfile for $source ...
+         _echo Copying \"$rfile\" to ${fullname} ...
          cp -r "${filename}" "${fullname}/${rfile}"
       fi
    done
 
    # create source entry
    if [ -f "${src_prefix}" ]; then
-      source_source="$(cat "${src_prefix}")" || _exit_err "Reading $src_prefix failed."
+      source_source="$(cat "${src_prefix}")" || _exit_err "${src_prefix}: Reading failed."
    fi
    source_source="${source_source}${source}"
    if [ -f "${src_postfix}" ]; then
-      source_source="${source_source}$(cat "${src_postfix}")" || _exit_err "Reading $src_postfix failed."
+      source_source="${source_source}$(cat "${src_postfix}")" || _exit_err "${src_postfix}: Reading failed."
    fi
-   _echo "Adding ${source_source} as source for ${source}"
+   _echo "Adding \"${source_source}\" as source for ${source}"
    echo "${source_source}" > "${fullname}/source"
 
    # create destination directory
    dest="${destination_base}/${source}"
    _echo "Creating destination ${dest} ..."
-   mkdir -p "${dest}" || _exit_err "${fullname}: Cannot create ${dest}."
+   mkdir -p "${dest}" || _exit_err "${dest}: Cannot create."
+
+   # link destination directory
+   dest_abs=$(cd "${dest}" && pwd -P) || _exit_err "${dest}: Changing to newly create dirctory failed."
+   ln -s "${dest_abs}" "${fullname}/destination" || \
+      _exit_err "${fullname}/destination: Failed to link \"${dest_abs}\""
 
 done
 
-
 exit 0
-
-
-
-echo "root@${source}:/" > "${fullname}/source"
-cat << eof > "${fullname}/exclude" || exit 4
-/dev/*
-/proc/*
-/tmp/*
-eof
-
-# Destination
-if [ -e "${destination}" ]; then
-   if [ ! -d "${destination}" ]; then
-      echo "${destination} exists, but is not a directory. Aborting."
-      exit 5
-   fi
-else
-   _echo "Creating ${destination} ..."
-   mkdir -p "${destination}" || _exit_err "Failed to create ${destination}."
-fi
-
-ln -s "${destination}" "${fullname}/destination" || \
-   _exit_err "Failed to link \"${destination}\" to \"${fullname}/destination\""
-
-# finish
-_echo "Added some default values, please verify \"${fullname}\"."
-_echo "Finished."
