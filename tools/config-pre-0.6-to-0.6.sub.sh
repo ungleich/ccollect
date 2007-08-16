@@ -14,6 +14,8 @@ fi
 
 tmp=$(mktemp)
 
+echo "Working on $1 ..."
+
 for option in $(cat "$1"); do
    echo "${option}" >> "${tmp}"
 done
