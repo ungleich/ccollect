@@ -8,22 +8,22 @@
 # where to find our configuration and temporary file
 #
 CCOLLECT_CONF=${CCOLLECT_CONF:-/etc/ccollect}
-CSOURCES=$CCOLLECT_CONF/sources
-CDEFAULTS=$CCOLLECT_CONF/defaults
-CPREEXEC="$CDEFAULTS/pre_exec"
-CPOSTEXEC="$CDEFAULTS/post_exec"
+CSOURCES=${CCOLLECT_CONF}/sources
+CDEFAULTS=${CCOLLECT_CONF}/defaults
+CPREEXEC="${CDEFAULTS}/pre_exec"
+CPOSTEXEC="${CDEFAULTS}/post_exec"
 
-TMP=$(mktemp /tmp/$(basename $0).XXXXXX)
+TMP=$(mktemp "/tmp/$(basename $0).XXXXXX")
 VERSION=0.6
-RELEASE="2007-XX-XX"
-HALF_VERSION="ccollect $VERSION"
-FULL_VERSION="ccollect $VERSION ($RELEASE)"
+RELEASE="2007-08-16/17"
+HALF_VERSION="ccollect ${VERSION}"
+FULL_VERSION="ccollect ${VERSION} (${RELEASE})"
 
 #
 # CDATE: how we use it for naming of the archives
 # DDATE: how the user should see it in our output (DISPLAY)
 #
-CDATE="date +%Y-%m-%d-%H%M"
+CDATE="date +%Y%m%d-%H%M"
 DDATE="date +%Y-%m-%d-%H:%M:%S"
 
 #
@@ -34,7 +34,7 @@ PARALLEL=""
 #
 # catch signals
 #
-trap "rm -f \"$TMP\"" 1 2 15
+trap "rm -f \"${TMP}\"" 1 2 15
 
 #
 # Functions
@@ -43,20 +43,20 @@ trap "rm -f \"$TMP\"" 1 2 15
 # time displaying echo
 _techo()
 {
-   echo "$(${DDATE}): $@"
+   echo "$(${DDATE}): " "$@"
 }
 
 # exit on error
 _exit_err()
 {
    _techo "$@"
-   rm -f "$TMP"
+   rm -f "${TMP}"
    exit 1
 }
 
 add_name()
 {
-   sed "s:^:\[$name\] :"
+   sed "s:^:\[${name}\] :"
 }
 
 #
@@ -91,7 +91,7 @@ fi
 # check for configuraton directory
 #
 [ -d "${CCOLLECT_CONF}" ] || _exit_err "No configuration found in " \
-                        "\"$CCOLLECT_CONF\" (is \$CCOLLECT_CONF properly set?)"
+   "\"${CCOLLECT_CONF}\" (is \$CCOLLECT_CONF properly set?)"
 
 #
 # Filter arguments
@@ -106,14 +106,14 @@ no_sources=0
 while [ "$#" -ge 1 ]; do
    eval arg=\"\$1\"; shift
 
-   if [ "$NO_MORE_ARGS" = 1 ]; then
-        eval source_${no_sources}=\"$arg\"
-        no_sources=$(($no_sources+1))
+   if [ "${NO_MORE_ARGS}" = 1 ]; then
+        eval source_${no_sources}=\"${arg}\"
+        no_sources=$((${no_sources}+1))
         
         # make variable available for subscripts
         eval export source_${no_sources}
    else
-      case "$arg" in
+      case "${arg}" in
          -a|--all)
             ALL=1
             ;;
@@ -145,14 +145,14 @@ export no_sources
 #
 # be really, really, really verbose
 #
-if [ "$VERBOSE" = 1 ]; then
+if [ "${VERBOSE}" = 1 ]; then
    set -x
 fi
 
 #
 # Look, if we should take ALL sources
 #
-if [ "$ALL" = 1 ]; then
+if [ "${ALL}" = 1 ]; then
    # reset everything specified before
    no_sources=0
 
@@ -165,8 +165,8 @@ if [ "$ALL" = 1 ]; then
    [ "${ret}" -eq 0 ] || _exit_err "Listing of sources failed. Aborting."
 
    while read tmp; do
-      eval source_${no_sources}=\"$tmp\"
-      no_sources=$(($no_sources+1))
+      eval source_${no_sources}=\"${tmp}\"
+      no_sources=$((${no_sources}+1))
    done < "${TMP}"
 fi
 
@@ -183,12 +183,12 @@ fi
 # Look for pre-exec command (general)
 #
 if [ -x "${CPREEXEC}" ]; then
-   echo "Executing ${CPREEXEC} ..."
+   _techo "Executing ${CPREEXEC} ..."
    "${CPREEXEC}"; ret=$?
-   echo "Finished ${CPREEXEC}."
+   _techo "Finished ${CPREEXEC}."
 
    [ "${ret}" -eq 0 ] || _exit_err "${CPREEXEC} exited with return code ${ret}" \
-                                   ", aborting backup."
+      ", aborting backup."
 fi
 
 #
@@ -203,13 +203,13 @@ D_INTERVAL=$(cat "${D_FILE_INTERVAL}" 2>/dev/null)
 # Let's do the backup
 #
 i=0
-while [ "$i" -lt "$no_sources" ]; do
+while [ "${i}" -lt "${no_sources}" ]; do
 
    #
    # Get current source
    #
    eval name=\"\$source_${i}\"
-   i=$(($i+1))
+   i=$((${i}+1))
 
    export name
 
@@ -266,16 +266,14 @@ while [ "$i" -lt "$no_sources" ]; do
    # Standard configuration checks
    #
    if [ ! -e "${backup}" ]; then
-      _techo "Source does not exist."
-      exit 1
+      _exit_err "Source does not exist."
    fi
 
    #
    # configuration _must_ be a directory
    #
    if [ ! -d "${backup}" ]; then
-      _techo "\"${name}\" is not a cconfig-directory. Skipping."
-      exit 1
+      _exit_err "\"${name}\" is not a cconfig-directory. Skipping."
    fi
 
    #
@@ -340,7 +338,7 @@ while [ "$i" -lt "$no_sources" ]; do
    # exclude list
    #
    if [ -f "${c_exclude}" ]; then
-      set -- "$@" "--exclude-from=$c_exclude"
+      set -- "$@" "--exclude-from=${c_exclude}"
    fi
 
    #
@@ -388,7 +386,7 @@ while [ "$i" -lt "$no_sources" ]; do
       echo "${incomplete} is incomplete"
    done < "${TMP}"
 
-   last_dir=$(ls -d "$c_dest/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)
+   last_dir=$(ls -d "${c_dest}/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)
 
    #
    # check if maximum number of backups is reached, if so remove
