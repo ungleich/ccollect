@@ -1,8 +1,9 @@
 ccollect - Installing, Configuring and Using
 ============================================
 Nico Schottelius <nico-ccollect__@__schottelius.org>
-0.5, for ccollect 0.4-0.5.3, Initial Version from 2006-01-13
+0.6, for ccollect 0.6, Initial Version from 2006-01-13
 :Author Initials: NS
+
 
 (pseudo) incremental backup
 with different exclude lists
@@ -11,20 +12,20 @@ using hardlinks and `rsync`
 
 Introduction
 ------------
-ccollect is a backup utility written in the sh-scripting language.
+`ccollect` is a backup utility written in the sh-scripting language.
 It does not depend on a specific shell, only `/bin/sh` needs to be
 bourne shell compatible (like 'dash', 'ksh', 'zsh', 'bash', ...).
 
 
 Supported and tested operating systems and architectures
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-ccollect was successfully tested on the following platforms:
+`ccollect` was successfully tested on the following platforms:
 
-- GNU/Linux on hppa/i386/amd64
-- NetBSD on i386/amd64/sparc/sparc64
-- OpenBSD on amd64
+- GNU/Linux on amd64/hppa/i386
+- NetBSD    on amd64/i386/sparc/sparc64
+- OpenBSD   on amd64
 
-It *should* run on any Unix that supports rsync and has a POSIX-compatible
+It *should* run on any Unix that supports `rsync` and has a POSIX-compatible
 bourne shell. If your platform is not listed above and you have it successfully
 running, please drop me a mail.
 
@@ -61,6 +62,23 @@ All other backups are still secure.
 
 Incompatibilities
 ~~~~~~~~~~~~~~~~~
+
+Versions 0.5 and 0.6
+^^^^^^^^^^^^^^^^^^^^^
+.The format of `rsync_options` changed:
+- Before 0.6 it was whitespace delimeted
+- As of 0.6 it is newline seperated (so you can pass whitespaces to `rsync`)
+
+You can update your configuration using `tools/config-pre-0.6-to-0.6.sub.sh`.
+
+.The name of the backup directories changed:
+- Before 0.6: "date +%Y-%m-%d-%H%M"
+- As of 0.6:  "date +%Y%m%d-%H%M" (better readable, date is closer together)
+
+For the second change there is no updated needed, as XXXX- is always before
+XXXXX (- comes before digit).
+
+
 
 Versions 0.4 and 0.5
 ^^^^^^^^^^^^^^^^^^^^^
@@ -101,7 +119,7 @@ For those who do not want to read the whole long document:
 --------------------------------------------------------------------------------
 # get latest ccollect tarball from http://unix.schottelius.org/ccollect/
 # replace value for CCV with the current version
-export CCV=0.5.2
+export CCV=0.6
 
 #
 # replace 'wget' with fetch on bsd
@@ -118,8 +136,9 @@ cd ccollect-${CCV}
 mkdir -p miniconfig/defaults/intervals
 mkdir miniconfig/sources
 
-# create a sample interval
-echo 42 > miniconfig/defaults/intervals/testinterval
+# create sample intervals
+echo 2 > miniconfig/defaults/intervals/testinterval
+echo 3 > miniconfig/defaults/intervals/testinterval2
 
 # create destination directory, where the backups will be kept
 mkdir ~/DASI
@@ -133,11 +152,21 @@ ln -s ~/DASI miniconfig/sources/testsource/destination
 touch miniconfig/sources/testsource/verbose
 touch miniconfig/sources/testsource/summary
 
-# do the backup, twice
+echo "do the backup, twice"
 CCOLLECT_CONF=./miniconfig ./ccollect.sh testinterval testsource
 CCOLLECT_CONF=./miniconfig ./ccollect.sh testinterval testsource
 
-# Let's see how much space we used with two backups and compare it to /bin
+echo "the third time ccollect begins to remove old backups"
+echo -n "Hit enter to see it"
+read
+CCOLLECT_CONF=./miniconfig ./ccollect.sh testinterval testsource
+
+echo "Now we add another interval, ccollect should clone from existent ones"
+echo -n "Hit enter to see it"
+read
+CCOLLECT_CONF=./miniconfig ./ccollect.sh testinterval2 testsource
+
+echo "Let's see how much space we used with two backups and compare it to /bin"
 du -s ~/DASI /bin
 
 --------------------------------------------------------------------------------
@@ -265,15 +294,17 @@ Each source contains at least the following files:
 
 Additionally a source may have the following files:
 
-   - `verbose`       whether to be verbose (passes -v to `rsync`)
-   - `very_verbose`  be very verbose (-v also for `mkdir`, `rm`)
-   - `summary`       create a transfer summary when `rsync` finished
+   - `verbose`             whether to be verbose (passes -v to `rsync`)
+   - `very_verbose`        be very verbose (`mkdir -v`, `rm -v` and `rsync -vv`)
+   - `summary`             create a transfer summary when `rsync` finished
 
-   - `exclude`       exclude list for `rsync`. newline ('\n') seperates list.
-   - `rsync_options` extra options to pass to `rsync`
+   - `exclude`             exclude list  for `rsync`. newline seperated list.
+   - `rsync_options`       extra options for `rsync`. newline seperated list.
 
-   - `pre_exec`      program to execute before backing up *this* source
-   - `post_exec`     program to execute after backing up *this* source
+   - `pre_exec`            program to execute before backing up *this* source
+   - `post_exec`           program to execute after backing up *this* source
+   
+   - `delete_incomplete`
 
 
 Example:
