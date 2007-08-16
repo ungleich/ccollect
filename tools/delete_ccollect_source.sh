@@ -26,9 +26,9 @@ _exit_err()
 
 # argv
 if [ $# -lt 1 ]; then
-   _echo "[-f] [-d] <sources to delete>"
-   _echo "-f: Do not ask, simply delete. Dangerous and good for sysadmins."
-   _echo "-d: Also delete the destination (removes all backups)"
+   _echo "${self} [-f] [-d] <sources to delete>"
+   _echo "  -f: Do not ask, simply delete. Dangerous and good for sysadmins."
+   _echo "  -d: Also delete the destination (removes all backups)"
    _exit_err "Exiting."
 fi
 
@@ -37,26 +37,32 @@ force=""
 backups=""
 
 while [ $# -gt 0 ]; do
-   source="$1"; shift
 
    if [ "$params_possible" ]; then
       case "$1" in
          "-f"|"--force")
             force=yes
+            shift; continue
             ;;
          "-d"|"--destination")
             backups=yes
+            shift; continue
             ;;
-         *)
+         --)
+            params_possible=""
+            shift; continue
+            ;;
+         -*|--*)
             _exit_err "Unknown option: $1" 
             ;;
       esac
 
-      shift
    fi
 
    # Reached here? So there are no more parameters.
    params_possible=""
+
+   source="$1"; shift
 
    # Create
    _echo "Deleting ${source} ..."
@@ -65,7 +71,7 @@ while [ $# -gt 0 ]; do
    # ask the user per source, if she's not forcing us
    if [ -z "$force" ]; then
       sure=""
-      _echo "Do you really want to delete ${source} (y/n)? "
+      echo -n "Do you really want to delete ${source} (y/n)? "
       read sure
       
       if [ "$sure" != "y" ]; then
