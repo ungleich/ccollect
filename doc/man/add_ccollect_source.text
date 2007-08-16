@@ -1,0 +1,72 @@
+add_ccollect_source(1)
+======================
+Nico Schottelius <nico-ccollect--@--schottelius.org>
+
+
+NAME
+----
+add_ccollect_source - create new source for ccollect(1)
+
+
+SYNOPSIS
+--------
+
+'add_ccollect_source.sh' <hostnames to create sources for>
+
+
+DESCRIPTION
+-----------
+add_ccollect_source.sh creates a new backup source for use with
+ccollect(1). It copies the files from to the source directory with the hostname
+below $CCOLLECT_CONF/sources.
+
+
+FILES
+-----
+$CCOLLECT_CONF/defaults/sources::
+   Main configuration directory. $CCOLLECT_CONF is '/etc/ccollect', if unset.
+   All the following files reside below this directory.
+
+exclude::
+summary::
+intervals::
+pre_exec::
+post_exec::
+rsync_options::
+verbose::
+very_verbose::
+   Those are the standard configuration files known by ccollect(1).
+   If the file exist it will be copied to the newly created source.
+   Directories ('intervals') are copied recursively.
+
+destination_base::
+   A link to the directory where to store the backups. Below this directory
+   `add_ccollect_source.sh` will create a directory with the hostname you
+   specified on the command line.
+
+source_prefix::
+source_postfix::
+   `source_prefix` is put before the hostname, `source_postfix` is appended
+   after it. A common value for `source_prefix` maybe 'root@' and ':/'
+   for `source_postfix`.
+
+
+SEE ALSO
+--------
+delete_ccollect_source(1), ccollect(1)
+
+
+AUTHOR
+------
+Nico Schottelius <mailto:nico-ccollect--@--schottelius.org[]>
+
+
+RESOURCES
+---------
+Main web site: http://unix.schottelius.org/ccollect/[]
+
+
+COPYING
+-------
+Copyright \(C) 2006 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License Version 3 (GPLv3).
