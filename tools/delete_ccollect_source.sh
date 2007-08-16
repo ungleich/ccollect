@@ -2,8 +2,7 @@
 # Nico Schottelius
 # 2007-08-16
 # Written for Netstream (www.netstream.ch)
-# Creates a source from standard values specified in
-# /etc/ccollect/defaults/sources
+# Delete sources and their backups (optionally).
 
 # standard values
 CCOLLECT_CONF="${CCOLLECT_CONF:-/etc/ccollect}"
