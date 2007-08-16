@@ -463,24 +463,32 @@ while [ "${i}" -lt "${no_sources}" ]; do
       done < "${TMP}"
    fi
 
+   #
+   # add old backup if existing
+   #
+   if [ "${last_dir}" ]; then
+      abs_last_dir="$(cd "${last_dir}" && pwd -P)" || _exit_err "Could not change to last dir ${last_dir}."
+      set -- "$@" "--link-dest=${abs_last_dir}"
+   fi
+      
+
    # set time when we really begin to backup, not when we began to remove above
    destination_date=$(${CDATE})
    destination_dir="${c_dest}/${INTERVAL}.${destination_date}.$$"
+
 
    # give some info
    _techo "Beginning to backup, this may take some time..."
 
    echo "Creating ${destination_dir} ..."
    mkdir ${VVERBOSE} "${destination_dir}" || \
-      _exit_err "Creating $destination_dir failed. Skipping."
+      _exit_err "Creating ${destination_dir} failed. Skipping."
+
+   # absulte now, it's existing
+   abs_destination_dir="$(cd "${destination_dir}" && pwd -P)"
 
    #
-   # make an absolute path, perhaps $CCOLLECT_CONF is relative!
-   #
-   abs_destination_dir="$(cd "$destination_dir" && pwd -P)"
-
-   #
-   # added mark in 0.6 (and remove it, if successful later)
+   # added marking in 0.6 (and remove it, if successful later)
    #
    touch "${abs_destination_dir}/${c_marker}"
 
@@ -491,21 +499,8 @@ while [ "${i}" -lt "${no_sources}" ]; do
 
    _techo "Transferring files..."
 
-
-   #
-   # FIXME:useropts / rsync extra: one parameter per line!
-   # 0.5.3!
-   #
-
    set -x
    rsync "$@" "${source}" "${abs_destination_dir}"; ret=$?
-
-   #   abs_last_dir="$(cd "$last_dir" && pwd -P)"
-  #    if [ -z "$abs_last_dir" ]; then
-  #       echo "Changing to the last backup directory failed. Skipping."
-  #       exit 1
-  #    fi
-  #    rsync_hardlink="--link-dest=$abs_last_dir"
 
    #
    # remove marking here
@@ -534,9 +529,9 @@ while [ "${i}" -lt "${no_sources}" ]; do
    end_s=$(date +%s)
 
    full_seconds=$((${end_s} - ${begin_s}))
-   hours=$(($full_seconds / 3600))
-   seconds=$(($full_seconds - ($hours * 3600)))
-   minutes=$(($seconds / 60))
+   hours=$((${full_seconds} / 3600))
+   seconds=$((${full_seconds} - (${hours} * 3600)))
+   minutes=$((${seconds} / 60))
    seconds=$((${seconds} - (${minutes} * 60)))
 
    _techo "Backup lasted: ${hours}:${minutes}:${seconds} (h:m:s)"
