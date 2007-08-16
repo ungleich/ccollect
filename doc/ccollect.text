@@ -511,6 +511,17 @@ the user.
 Hints
 -----
 
+Using source names or interval in pre_/post_exec scripts
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The pre-/post_exec scripts can access some internal variables from `ccollect`:
+
+- INTERVAL: The interval specified on the command line
+- no_sources: number of sources
+- source_$NUM: the name of the source
+- name: the name of the currently being backuped source (not available for
+  generic pre_exec script)
+
+
 Using rsync protocol without ssh
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 When you have a computer with little computing power, it may be useful to use
