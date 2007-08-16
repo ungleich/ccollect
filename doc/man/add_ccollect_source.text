@@ -16,9 +16,9 @@ SYNOPSIS
 
 DESCRIPTION
 -----------
-add_ccollect_source.sh creates a new backup source for use with
-ccollect(1). It copies the files from to the source directory with the hostname
-below $CCOLLECT_CONF/sources.
+add_ccollect_source.sh creates a new backup source for use with ccollect(1).
+It copies the files from to the source directory with the hostname below
+'$CCOLLECT_CONF/sources'.
 
 
 FILES
@@ -53,7 +53,7 @@ source_postfix::
 
 SEE ALSO
 --------
-delete_ccollect_source(1), ccollect(1)
+ccollect(1), delete_ccollect_source(1)
 
 
 AUTHOR
@@ -68,5 +68,5 @@ Main web site: http://unix.schottelius.org/ccollect/[]
 
 COPYING
 -------
-Copyright \(C) 2006 Nico Schottelius. Free use of this software is
+Copyright \(C) 2007 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License Version 3 (GPLv3).
