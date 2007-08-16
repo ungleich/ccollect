@@ -384,26 +384,19 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # Check for incomplete backups
    #
-   (
-      set -e
-      # FIXME: debug
-      set -x
-      cd "${c_dest}"
-      # one column output to ${TMP}
-      ls -1 "${INTERVAL}"*/${c_marker} > "${TMP}"
+   ( cd "${c_dest}" 2>/dev/null && ls -1 "${INTERVAL}"*/${c_marker} > "${TMP}" 2>/dev/null)
 
-      # FIXME: debug
-      cat "${TMP}"
+   # FIXME: debug
+   cat "${TMP}"
 
-      while read incomplete; do
-         realincomplete=$(echo ${incomplete} | sed "s/${c_marker}\$//")
-         _techo "Incomplete backup: ${realincomplete}"
-         if [ "$DELETE_INCOMPLETE" = "yes" ]; then
-            _techo "Deleting ${realincomplete}"
-            echo rm $VVERBOSE -rf "${realincomplete}"
-         fi
-      done < "${TMP}"
-   ) || _exit_err "Searching for incomplete backups failed."
+   while read incomplete; do
+      realincomplete=$(echo ${incomplete} | sed "s/${c_marker}\$//")
+      _techo "Incomplete backup: ${realincomplete}"
+      if [ "${DELETE_INCOMPLETE}" = "yes" ]; then
+         _techo "Deleting ${realincomplete} ..."
+         rm $VVERBOSE -rf "${c_dest}/${realincomplete}"
+      fi
+   done < "${TMP}"
 
 
    #
@@ -441,6 +434,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # try our interval
    set -x
    last_dir="$(ls -d "${c_dest}/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)"
+   set +x
    
    # try other intervals, if there's none four our interval
    if [ -z "${last_dir}" ]; then
@@ -501,6 +495,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
 
    set -x
    rsync "$@" "${source}" "${abs_destination_dir}"; ret=$?
+   set +x
 
    #
    # remove marking here
