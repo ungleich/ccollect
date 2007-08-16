@@ -9,3 +9,4 @@ doc/man/*.htm
 doc/man/*.texi
 doc/man/*.man
 test/*
+.*.swp
