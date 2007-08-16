@@ -522,7 +522,20 @@ host mx2.schottelius.org
 
 If you only use that port for backup and normally want to use another port,
 you can add 'HostName' and "HostKeyAlias" (if you also have different
-keys on the different ports).
+keys on the different ports):
+
+--------------------------------------------------------------------------------
+Host hhydrogenium
+   Hostname bruehe.schottelius.org
+   Port 666
+   HostKeyAlias hydrogenium
+
+Host bruehe
+   Hostname bruehe.schottelius.org
+   Port 22
+   HostKeyAlias bruehe.schottelius.org
+--------------------------------------------------------------------------------
+
 
 
 Using source names or interval in pre_/post_exec scripts
