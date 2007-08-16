@@ -538,7 +538,7 @@ if [ -x "${CPOSTEXEC}" ]; then
    _techo "Finished ${CPOSTEXEC} (return code: ${ret})."
 
    if [ ${ret} -ne 0 ]; then
-      _echo "${CPOSTEXEC} failed."
+      _techo "${CPOSTEXEC} failed."
    fi
 fi
 
