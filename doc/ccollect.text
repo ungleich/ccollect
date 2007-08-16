@@ -502,6 +502,10 @@ df -h
 
 Detailed description of "delete_incomplete"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+If you create the file `delete_incomplete` in a source specification directory,
+`ccollect` will look for incomplete backups (when the whole `ccollect` process
+was interrupted) and remove them. Without this file `ccollect` will only warn
+the user.
 
 
 Hints
