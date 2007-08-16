@@ -411,7 +411,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    if [ "${count}" -ge "${c_interval}" ]; then
       substract=$((${c_interval} - 1))
       remove=$((${count} - ${substract}))
-      echo "Removing ${remove} backup(s)..."
+      _techo "Removing ${remove} backup(s)..."
 
       (
          set -e
