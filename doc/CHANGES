@@ -1,14 +1,11 @@
 0.5.2 to 0.6:
    * Always print return code of rsync
    * Add much more timing information
-   * One option per line in rsync_options now
+   * One option per line in rsync_options now (NOT space seperated)
    * Added --sparse as default option
-   * Added management tools:
+   * Added management tools (including manpages):
       * add_ccollect_source.sh
       * delete_ccollect_source.sh
-
-   * add 'exec-after-rm' (source specific) configuration
-   * added logwrapper
 
 0.5.1 to 0.5.2:
    * Display correct error code, if rsync returns non-zero
