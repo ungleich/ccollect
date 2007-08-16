@@ -6,6 +6,8 @@
    * Added management tools (including manpages):
       * add_ccollect_source.sh
       * delete_ccollect_source.sh
+      * list_ccollect_intervals.sh
+   * Cleaned up exit calls (now always cleanly removes temporary files)
    * Changed license to GPLv3 (from GPLv2)
 
 0.5.1 to 0.5.2:
