@@ -173,7 +173,7 @@ du -s ~/DASI /bin
 
 Cutting and pasting the complete section above to your shell will result in
 the download of ccollect, the creation of a sample configuration and the
-execution of two backups.
+execution of some backups.
 
 
 Requirements
@@ -200,7 +200,13 @@ Using ccollect
 Installing
 ----------
 Either type 'make install' or simply copy it to a directory in your
-$PATH and execute 'chmod *0755* /path/to/ccollect.sh'.
+$PATH and execute 'chmod *0755* /path/to/ccollect.sh'. If you would
+like to use the new management scripts (available since 0.6), copy
+the following scripts to a directory in $PATH:
+
+- `tools/add_ccollect_source.sh`
+- `tools/list_ccollect_intervals.sh`
+- `tools/delete_ccollect_source.sh`
 
 
 Configuring
@@ -241,7 +247,8 @@ Interval definition
 ^^^^^^^^^^^^^^^^^^^^
 The interval definition can be found in
 '$CCOLLECT_CONF/defaults/intervals/' or '/etc/ccollect/defaults/intervals'. 
-Each file in this directory specifies an interval. The name of the file is the same as the name of the interval: `intervals/'<interval name>'`.
+Each file in this directory specifies an interval. The name of the file is
+the same as the name of the interval: `intervals/'<interval name>'`.
 
 The content of this file should be a single line containing a number.
 This number defines how many versions of this interval are kept.
@@ -304,7 +311,7 @@ Additionally a source may have the following files:
    - `pre_exec`            program to execute before backing up *this* source
    - `post_exec`           program to execute after backing up *this* source
    
-   - `delete_incomplete`
+   - `delete_incomplete`   delete incomplete backups
 
 
 Example:
@@ -493,6 +500,9 @@ df -h
 df -h
 --------------------------------------------------------------------------------
 
+Detailed description of "delete_incomplete"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 
 Hints
 -----
@@ -611,6 +621,9 @@ This leads to
    - more transferred files
    - much greater disk space usage, as no hardlinks can be used
 
+If the whole `ccollect` process was interrupted, `ccollect` (since 0.6) can
+detect that and remove the incomplete backups, so you can clone from a complete
+backup instead.
 
 When backing up from localhost the destination is also included. Is this a bug?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -630,7 +643,6 @@ permissions. Try `chmod 0755 /etc/ccollect/sources/'yoursource'/*_exec``.
 
 Why does the backup job fail when part of the source is a link?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 When a part of your path you specified in the source is a
 (symbolic, hard links are not possible for directories) link,
 the backup *must* fail.
@@ -669,6 +681,18 @@ In conclusion you cannot use paths with a linked part.
 However, you can backup directories containing symbolic links
 (in this case you could backup /home/user/nico, which contains
 /home/user/nico/projekte and oeffentlich/computer/projekte).
+
+
+How can I prevent missing the right time to enter my password?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+As `ccollect` first deletes the old backups, it may take some time
+until `rsync` requests the password for the `ssh` session from you.
+
+The easiest way not to miss that point is running `ccollect` in `screen`,
+which has the ability to monitor the output for activity. So as soon as
+your screen beeps, after `ccollect` began to remove the last directory,
+you can enter your password (have a look at screen(1), especially "C-a M"
+and "C-a _", for more information).
 
 
 Examples
@@ -901,4 +925,3 @@ Truncated output from `ps axuwwwf`:
 -------------------------------------------------------------------------
 As you can see, six processes are deleting old backups, while one backup
 (ddba034) is already copying data.
-
