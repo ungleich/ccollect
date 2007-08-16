@@ -511,6 +511,20 @@ the user.
 Hints
 -----
 
+Using a different ssh port
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+Mostly easy is to use your ~/.ssh/config file:
+
+--------------------------------------------------------------------------------
+host mx2.schottelius.org
+   Port 2342
+--------------------------------------------------------------------------------
+
+If you only use that port for backup and normally want to use another port,
+you can add 'HostName' and "HostKeyAlias" (if you also have different
+keys on the different ports).
+
+
 Using source names or interval in pre_/post_exec scripts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The pre-/post_exec scripts can access some internal variables from `ccollect`:
@@ -587,7 +601,7 @@ Now you can use /home/backup/web1 as the `destination` for the backup.
 Do *not* name the first backup something like "daily.initial", but use
 the "*0*" (or some number that is lower than the current year)
 as extension. `ccollect` uses `sort` to find the latest backup. `ccollect`
-itself uses 'interval.YEAR-MONTH-DAY-HOURMINUTE.PID'. This notation will
+itself uses 'interval.YEARMONTHDAY-HOURMINUTE.PID'. This notation will
 *always* be before "daily.initial", as numbers are earlier in the list
 which is produced by `sort`. So, if you have a directory named "daily.initial",
 `ccollect` will always diff against this backup and transfer and delete
