@@ -1,6 +1,6 @@
-ccollect.sh(1)
-==============
-Nico Schottelius <nico-linux-ccollect__@__schottelius.org>
+ccollect(1)
+===========
+Nico Schottelius <nico-ccollect--@--schottelius.org>
 
 
 NAME
@@ -15,16 +15,16 @@ SYNOPSIS
 
 DESCRIPTION
 -----------
-ccollect is a backup utility written in the sh-scripting language.
+`ccollect` is a backup utility written in the sh-scripting language.
 It does not depend on a specific shell, only `/bin/sh` needs to be
 bourne shell compatibel (like 'dash', 'ksh', 'zsh', 'bash', ...).
 
-For more information refer to the texinfo or html documentation.
+For more information refer to the manual titled
+"ccollect - Installing, Configuring and Using" (available as texinfo or html).
 
 
 OPTIONS
 -------
-
 -h, --help::
    Show the help screen
 
@@ -37,14 +37,9 @@ OPTIONS
 -v, --verbose::
    Be very verbose (uses set -x).
 
-BUGS
-----
-None.
-
-
 AUTHOR
 ------
-Nico Schottelius <mailto:nico-linux-ccollect__@__schottelius.org[]>
+Nico Schottelius <mailto:nico-ccollect--@--schottelius.org[]>
 
 
 RESOURCES
@@ -54,5 +49,5 @@ Main web site: http://unix.schottelius.org/ccollect/[]
 
 COPYING
 -------
-Copyright \(C) 2006 Nico Schottelius. Free use of this software is
-granted under the terms of the GNU General Public License (GPL).
+Copyright \(C) 2006-2007 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License Version 3 (GPLv3).
