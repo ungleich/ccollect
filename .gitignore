@@ -10,3 +10,6 @@ doc/man/*.texi
 doc/man/*.man
 test/*
 .*.swp
+doc/man/*.[0-9]
+doc/*.xml
+doc/*/*.xml
