@@ -1,0 +1,55 @@
+delete_ccollect_source(1)
+=========================
+Nico Schottelius <nico-ccollect--@--schottelius.org>
+
+
+NAME
+----
+delete_ccollect_source - delete sources from ccollect(1)
+
+
+SYNOPSIS
+--------
+'add_ccollect_source.sh' [-d] [-f] <hostnames to create sources for>
+
+
+DESCRIPTION
+-----------
+delete_ccollect_source.sh deletes backup sources from ccollect(1) and optional
+also the backups created for that source.
+
+OPTIONS
+-------
+-d:
+   Delete also the destination directory. `'add_ccollect_source.sh` will change
+   to the source/'name'/destination directory, get the absolute name and delete
+   it recursively.
+-f:
+   Force deletion. Do not ask. Very handy for people who know what they do.
+   Very dangerous for everyone.
+
+
+FILES
+-----
+$CCOLLECT_CONF/sources::
+   Directory containing the sources. $CCOLLECT_CONF is '/etc/ccollect', if unset.
+
+SEE ALSO
+--------
+add_ccollect_source(1), ccollect(1)
+
+
+AUTHOR
+------
+Nico Schottelius <mailto:nico-ccollect--@--schottelius.org[]>
+
+
+RESOURCES
+---------
+Main web site: http://unix.schottelius.org/ccollect/[]
+
+
+COPYING
+-------
+Copyright \(C) 2007 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License Version 3 (GPLv3).
