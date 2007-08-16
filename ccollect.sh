@@ -463,7 +463,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # give some info
    _techo "Beginning to backup, this may take some time..."
 
-   echo "Creating ${destination_dir} ..."
+   _techo "Creating ${destination_dir} ..."
    mkdir ${VVERBOSE} "${destination_dir}" || \
       _exit_err "Creating ${destination_dir} failed. Skipping."
 
