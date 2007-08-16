@@ -43,7 +43,7 @@ trap "rm -f \"${TMP}\"" 1 2 15
 # time displaying echo
 _techo()
 {
-   echo "$(${DDATE}): " "$@"
+   echo "$(${DDATE}): $@"
 }
 
 # exit on error
@@ -243,12 +243,16 @@ while [ "${i}" -lt "${no_sources}" ]; do
    c_summary="${backup}/summary"
    c_pre_exec="${backup}/pre_exec"
    c_post_exec="${backup}/post_exec"
-   c_incomplete="$backup/delete_incomplete"
+   c_incomplete="${backup}/delete_incomplete"
+
+   #
+   # Marking backups: If we abort it's not removed => Backup is broken
+   #
+   c_marker=".ccollect-marker"
 
    #
    # Times
    #
-   c_marker=".ccollect-$(${CDATE}).$$"
    begin_s=$(date +%s)
 
    #
@@ -259,6 +263,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    SUMMARY=""
    VERBOSE=""
    VVERBOSE=""
+   DELETE_INCOMPLETE=""
 
    _techo "Beginning to backup"
 
@@ -322,6 +327,16 @@ while [ "${i}" -lt "${no_sources}" ]; do
       _exit_err "Destination ${c_dest} is not a directory. Skipping."
    fi
 
+   #
+   # Check whether to delete incomplete backups
+   #
+   if [ -f "${c_incomplete}" ]; then
+      DELETE_INCOMPLETE="yes"
+   fi
+
+   #
+   # Verbosity for rsync
+
    # NEW method as of 0.6:
    # - insert ccollect default parameters
    # - insert options
@@ -372,14 +387,20 @@ while [ "${i}" -lt "${no_sources}" ]; do
    (
       set -x
       cd "${c_dest}"
-      ls
-      ls "${INTERVAL}"*/.ccollect-* > "${TMP}"
+      # one column output to ${TMP}
+      ls -1 "${INTERVAL}"*/${c_marker} > "${TMP}"
+
+      # FIXME: debug
       cat "${TMP}"
 
-      while read broken; do
-         realbroken=$(echo $broken | sed 's/.ccollect-*/')
-         echo "Broken backup"
-      done
+      while read incomplete; do
+         realincomplete=$(echo ${incomplete} | sed "s/${c_marker}\$//")
+         _techo "Incomplete backup: ${realincomplete}"
+         if [ "$DELETE_INCOMPLETE" = "yes" ]; then
+            _techo "Deleting ${realincomplete}"
+            echo rm $VVERBOSE -rf "${realincomplete}"
+         fi
+      done < "${TMP}"
    )
    sleep 10
    while read incomplete; do
