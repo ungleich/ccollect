@@ -45,18 +45,23 @@ DOCS     = ${MANDOCS} doc/ccollect.text doc/ccollect-DE.text
 HTMLDOCS = ${DOCS:.text=.html}
 DBHTMLDOCS = ${DOCS:.text=.htm}
 
+# texi is broken currently, don't know why xslt things complain yet
 TEXIDOCS = ${DOCS:.text=.texi}
+TEXIDOCS = 
+
+PDFDOCS  =  ${DOCS:.text=.pdf}
 
 MANPDOCS = ${MANDOCS:.text=.man}
 
 DOCBDOCS = ${DOCS:.text=.docbook}
 
-DOC_ALL  = ${HTMLDOCS} ${DBHTMLDOCS} ${TEXIDOCS} ${MANPDOCS}
+DOC_ALL  = ${HTMLDOCS} ${DBHTMLDOCS} ${TEXIDOCS} ${MANPDOCS} ${PDFDOCS}
 
 html: ${HTMLDOCS}
 htm: ${DBHTMLDOCS}
 info: ${TEXIDOCS}
 man: ${MANPDOCS} 
+pdf: ${PDFDOCS} 
 documentation: ${DOC_ALL}
 
 #
@@ -112,6 +117,9 @@ install-manlink: install-man
 %.man: %.text
 	${A2X} -f manpage $<
 
+%.pdf: %.text
+	${A2X} -f pdf $<
+
 
 #
 # Developer targets
@@ -131,18 +139,17 @@ publish-doc: documentation
 #
 # Distribution
 #
-allclean:
+clean:
 	rm -f ${DOC_ALL}
 	rm -f doc/man/*.[0-9] doc/man/*.xml
 
-distclean: allclean
+distclean: clean
 	rm -f ${DOCBDOCS}
-	rm -f doc/man/*.[0-9] doc/man/*.xml
 
 #
 # Be nice with the users and generate documentation for them
 #
 dist: distclean documentation
 
-test: ccollect.sh
+test: ccollect.sh documentation
 	CCOLLECT_CONF=./conf ./ccollect.sh daily "source with spaces"
