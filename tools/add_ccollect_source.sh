@@ -89,10 +89,8 @@ while [ $# -gt 0 ]; do
    echo "${source_source}" > "${fullname}/source"
 
    # create destination directory
-   _echo "Creating destination ..."
-   
    absbase=$(cd "${destination_base}" 2>/dev/null && pwd -P) || \
-      _exit_err "${destination_base} should exist before creating sources."
+      _exit_err "${destination_base} must exist before creating sources."
 
    dest="${absbase}/${source}"
    _echo "Creating ${dest} ..."
