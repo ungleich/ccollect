@@ -28,5 +28,6 @@ cd "${CCOLLECT_SOURCES}"
 while [ "$#" -gt 0 ]; do
    source="$1"; shift
    fsource="${CCOLLECT_SOURCES}/${source}"
-   du "${fsource}/"* "${fsource}"
+   du -s "${fsource}/"* "${fsource}"
+   # du -l should follow
 done
