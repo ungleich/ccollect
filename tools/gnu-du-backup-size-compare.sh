@@ -23,9 +23,10 @@ if [ ! -d "$CCOLLECT_SOURCES" ]; then
    exit 1
 fi
 
-cd "$CCOLLECT_INTERVALS"
+cd "${CCOLLECT_SOURCES}"
 
-for interval in *; do
-   eval int_$interval=$(cat $interval);
-   eval echo $interval: \$int_$interval;
+while [ "$#" -gt 0 ]; do
+   source="$1"; shift
+   fsource="${CCOLLECT_SOURCES}/${source}"
+   du "${fsource}/"* "${fsource}"
 done
