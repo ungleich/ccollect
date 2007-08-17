@@ -1,5 +1,6 @@
 0.6 to 0.6.1:
    * Added check for destination_base in add_ccollect_source.sh
+   * Add support for -V and --version
 
 0.5.2 to 0.6:
    * Always print return code of rsync
