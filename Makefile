@@ -12,10 +12,14 @@ DOCBOOKTOTEXI=docbook2x-texi
 DOCBOOKTOMAN=docbook2x-man
 XSLTPROC=xsltproc
 XSL=/usr/share/xml/docbook/stylesheet/nwalsh/html/docbook.xsl
+A2X=a2x
 
 prefix=/usr/packages/ccollect-git
 bindir=${prefix}/bin
 destination=${bindir}/${CCOLLECT_DEST}
+
+mandest=${prefix}/man/man1
+manlink=/usr/local/man/man1
 
 path_dir=/usr/local/bin
 path_destination=${path_dir}/${CCOLLECT_DEST}
@@ -28,7 +32,11 @@ docdir=${dir}/doc
 #
 # Asciidoc will be used to generate other formats later
 #
-MANDOCS  = doc/man/ccollect.text
+MANDOCS  = doc/man/ccollect.text 			\
+	doc/man/add_ccollect_source.text 		\
+	doc/man/delete_ccollect_source.text		\
+	doc/man/list_ccollect_intervals.text
+
 DOCS     = ${MANDOCS} doc/ccollect.text doc/ccollect-DE.text
 
 #
@@ -62,13 +70,21 @@ all:
 	@echo "man:              only generate manpage{s}"
 	@echo "install:          install ccollect to ${prefix}"
 
-install: install-script install-link
+install: install-link install-manlink
 
 install-link: install-script
 	${LN} ${destination} ${path_destination}
 
 install-script:
 	${INSTALL} -D -m 0755 ${CCOLLECT_SOURCE} ${destination}
+
+install-man: man
+	${INSTALL} -d -m 0755 ${mandest}
+	${INSTALL} -D -m 0644 doc/man/*.1 ${mandest}
+
+install-manlink: install-man
+	${INSTALL} -d -m 0755 ${manlink}
+	for man in ${mandest}/*; do ${LN} $$man ${manlink}; done
 
 
 # docbook gets .htm, asciidoc directly .html
@@ -87,11 +103,15 @@ install-script:
 %.texi: %.docbook
 	${DOCBOOKTOTEXI} --to-stdout $< > $@
 
-%.mandocbook: %.text
-	${ASCIIDOC} -b docbook -d manpage -o $@ $<
+#%.mandocbook: %.text
+#	${ASCIIDOC} -b docbook -d manpage -o $@ $<
 
-%.man: %.mandocbook
-	${DOCBOOKTOMAN} --to-stdout $< > $@
+#%.man: %.mandocbook
+#	${DOCBOOKTOMAN} --to-stdout $< > $@
+
+%.man: %.text
+	${A2X} -f manpage $<
+
 
 #
 # Developer targets
@@ -113,9 +133,11 @@ publish-doc: documentation
 #
 allclean:
 	rm -f ${DOC_ALL}
+	rm -f doc/man/*.[0-9] doc/man/*.xml
 
 distclean: allclean
 	rm -f ${DOCBDOCS}
+	rm -f doc/man/*.[0-9] doc/man/*.xml
 
 #
 # Be nice with the users and generate documentation for them
