@@ -14,8 +14,8 @@ CPREEXEC="${CDEFAULTS}/pre_exec"
 CPOSTEXEC="${CDEFAULTS}/post_exec"
 
 TMP=$(mktemp "/tmp/$(basename $0).XXXXXX")
-VERSION=0.6
-RELEASE="2007-08-17"
+VERSION=0.6.1
+RELEASE="2007-08-XX"
 HALF_VERSION="ccollect ${VERSION}"
 FULL_VERSION="ccollect ${VERSION} (${RELEASE})"
 
@@ -60,6 +60,15 @@ add_name()
 }
 
 #
+# Version
+#
+display_version()
+{
+   echo "${FULL_VERSION}"
+   exit 0
+}
+
+#
 # Tell how to use us
 #
 usage()
@@ -72,6 +81,7 @@ usage()
    echo "   -p, --parallel:      Parallelise backup processes"
    echo "   -a, --all:           Backup all sources specified in ${CSOURCES}"
    echo "   -v, --verbose:       Be very verbose (uses set -x)"
+   echo "   -V, --version:       Print version information"
    echo ""
    echo "   This is version ${VERSION}, released on ${RELEASE}"
    echo "   (the first version was written on 2005-12-05 by Nico Schottelius)."
@@ -84,7 +94,11 @@ usage()
 # need at least interval and one source or --all
 #
 if [ $# -lt 2 ]; then
-   usage
+   if [ "$1" = "-V" -o "$1" = "--version" ]; then
+      display_version
+   else
+      usage
+   fi
 fi
 
 #
