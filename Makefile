@@ -53,7 +53,7 @@ TEXIDOCS =
 PDFDOCS  =  ${DOCS:.text=.pdf}
 PDFDOCS  = 
 
-MANPDOCS = ${MANDOCS:.text=.man}
+MANPDOCS = ${MANDOCS:.text=.1}
 
 DOCBDOCS = ${DOCS:.text=.docbook}
 
@@ -116,7 +116,8 @@ install-manlink: install-man
 #%.man: %.mandocbook
 #	${DOCBOOKTOMAN} --to-stdout $< > $@
 
-%.man: %.text
+#%.man: %.text
+%.1: %.text
 	${A2X} -f manpage $<
 
 %.pdf: %.text
@@ -127,11 +128,7 @@ install-manlink: install-man
 # Developer targets
 #
 update:
-	@cg-update home
-
-push-work:
-	@cg-push home
-	@cg-push sygroup
+	@git push
 
 publish-doc: documentation
 	@echo "Transferring files to ${host}"
@@ -143,7 +140,7 @@ publish-doc: documentation
 #
 clean:
 	rm -f ${DOC_ALL}
-	rm -f doc/man/*.[0-9] doc/man/*.xml
+	rm -f doc/man/*.[0-9] doc/man/*.xml doc/*.fo doc/man/*.fo
 
 distclean: clean
 	rm -f ${DOCBDOCS}

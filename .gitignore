@@ -13,3 +13,5 @@ test/*
 doc/man/*.[0-9]
 doc/*.xml
 doc/*/*.xml
+*.texi
+*.fo
