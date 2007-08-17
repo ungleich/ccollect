@@ -333,9 +333,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
       DELETE_INCOMPLETE="yes"
    fi
 
-   #
-   # Verbosity for rsync
-
    # NEW method as of 0.6:
    # - insert ccollect default parameters
    # - insert options
@@ -422,36 +419,24 @@ while [ "${i}" -lt "${no_sources}" ]; do
 
 
    #
-   # Check for backup directory to clone from
+   # Check for backup directory to clone from: Always clone from the latest one!
+   #
+   # Use ls -1c instead of -1t, because last modification maybe the same on all
+   # and metadate update (-c) is updated by rsync locally.
    #
 
-   # try our interval
-   last_dir="$(ls -d "${c_dest}/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)"
+   set -x
+   #last_dir="$(ls -d "${c_dest}/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)"
+   last_dir="$(cd "${c_dest}" && ls -pc1 | grep '/$' | tail -n 1)" || \
+      _exit_err "Failed to list contents of ${c_dest}."
+   set +x
    
-   # try other intervals, if there's none four our interval
-   if [ -z "${last_dir}" ]; then
-      _techo "Did not find existing backups for interval ${INTERVAL}."
-
-      # get list
-      : > "${TMP}"
-      ( cd "${backup}/intervals/"    2>/dev/null   && ls >> "${TMP}" )
-      ( cd "${CDEFAULTS}/intervals/" 2>/dev/null   && ls >> "${TMP}" )
-
-      # FIXME in 0.6.1: choose best source, not first one.
-      while read other_interval; do
-         last_dir="$(ls -d "${c_dest}/${other_interval}."?* 2>/dev/null | sort -n | tail -n 1)"
-         if [ "${last_dir}" ]; then
-            _techo "Using backup from ${other_interval}."
-            break
-         fi
-      done < "${TMP}"
-   fi
-
    #
    # clone from old backup, if existing
    #
    if [ "${last_dir}" ]; then
-      abs_last_dir="$(cd "${last_dir}" && pwd -P)" || _exit_err "Could not change to last dir ${last_dir}."
+      abs_last_dir="$(cd "${last_dir}" && pwd -P)" || \
+         _exit_err "Could not change to last dir ${last_dir}."
       set -- "$@" "--link-dest=${abs_last_dir}"
    fi
       
