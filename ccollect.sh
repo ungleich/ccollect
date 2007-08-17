@@ -424,12 +424,9 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # Use ls -1c instead of -1t, because last modification maybe the same on all
    # and metadate update (-c) is updated by rsync locally.
    #
-
-   set -x
-   #last_dir="$(ls -d "${c_dest}/${INTERVAL}."?* 2>/dev/null | sort -n | tail -n 1)"
-   last_dir="$(cd "${c_dest}" && ls -pc1 | grep '/$' | tail -n 1)" || \
+   rel_last_dir="$(cd "${c_dest}" && ls -tcp1 | grep '/$' | head -n 1)" || \
       _exit_err "Failed to list contents of ${c_dest}."
-   set +x
+   last_dir="${c_dest}/${rel_last_dir}"
    
    #
    # clone from old backup, if existing
@@ -438,6 +435,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
       abs_last_dir="$(cd "${last_dir}" && pwd -P)" || \
          _exit_err "Could not change to last dir ${last_dir}."
       set -- "$@" "--link-dest=${abs_last_dir}"
+      _techo "Hard linking from ${rel_last_dir}"
    fi
       
 
