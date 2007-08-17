@@ -1,0 +1,45 @@
+list_ccollect_intervals(1)
+==========================
+Nico Schottelius <nico-ccollect--@--schottelius.org>
+
+
+NAME
+----
+list_ccollect_intervals - list available intervals from ccollect(1)
+
+
+SYNOPSIS
+--------
+'list_ccollect_intervals.sh'
+
+
+DESCRIPTION
+-----------
+list_ccollect_intervals.sh shows intervals specified in the configuration 
+for ccollect(1). It displays the name of each interval, followed by a colon
+followed by the number backups to keep.
+
+FILES
+-----
+$CCOLLECT_CONF/intervals::
+   Directory containing the intervals. $CCOLLECT_CONF is '/etc/ccollect', if unset.
+
+SEE ALSO
+--------
+add_ccollect_source(1), ccollect(1), delete_ccollect_source(1)
+
+
+AUTHOR
+------
+Nico Schottelius <mailto:nico-ccollect--@--schottelius.org[]>
+
+
+RESOURCES
+---------
+Main web site: http://unix.schottelius.org/ccollect/[]
+
+
+COPYING
+-------
+Copyright \(C) 2007 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License Version 3 (GPLv3).
