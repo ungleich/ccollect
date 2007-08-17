@@ -89,8 +89,13 @@ while [ $# -gt 0 ]; do
    echo "${source_source}" > "${fullname}/source"
 
    # create destination directory
-   dest="${destination_base}/${source}"
-   _echo "Creating destination ${dest} ..."
+   _echo "Creating destination ..."
+   
+   absbase=$(cd "${destination_base}" 2>/dev/null && pwd -P) || \
+      _exit_err "${destination_base} should exist before creating sources."
+
+   dest="${absbase}/${source}"
+   _echo "Creating ${dest} ..."
    mkdir -p "${dest}" || _exit_err "${dest}: Cannot create."
 
    # link destination directory
