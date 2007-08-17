@@ -49,7 +49,9 @@ DBHTMLDOCS = ${DOCS:.text=.htm}
 TEXIDOCS = ${DOCS:.text=.texi}
 TEXIDOCS = 
 
+# fop fails here, so disable it for now
 PDFDOCS  =  ${DOCS:.text=.pdf}
+PDFDOCS  = 
 
 MANPDOCS = ${MANDOCS:.text=.man}
 
