@@ -3,6 +3,7 @@
 # 2007-08-16
 # Written for Netstream (www.netstream.ch)
 # Delete sources and their backups (optionally).
+# Copying: GPLv3 (See file COPYING in top directory)
 
 # standard values
 CCOLLECT_CONF="${CCOLLECT_CONF:-/etc/ccollect}"

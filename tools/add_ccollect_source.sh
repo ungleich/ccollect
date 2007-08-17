@@ -4,6 +4,7 @@
 # Written for Netstream (www.netstream.ch)
 # Creates a source from standard values specified in
 # /etc/ccollect/defaults/sources
+# Copying: GPLv3
 
 # standard values
 CCOLLECT_CONF="${CCOLLECT_CONF:-/etc/ccollect}"

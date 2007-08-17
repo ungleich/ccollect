@@ -3,6 +3,7 @@
 # Nico Schottelius <nico-ccollect //@// schottelius.org>
 # Date: 24-Jun-2006
 # Last Modified: -
+# Copying: GPLv3 (See file COPYING in top directory)
 #
 
 CCOLLECT_CONF=${CCOLLECT_CONF:-/etc/ccollect}
