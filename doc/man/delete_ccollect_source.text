@@ -10,7 +10,7 @@ delete_ccollect_source - delete sources from ccollect(1)
 
 SYNOPSIS
 --------
-'add_ccollect_source.sh' [-d] [-f] <hostnames to create sources for>
+'delete_ccollect_source.sh' [-d] [-f] <hostnames to create sources for>
 
 
 DESCRIPTION
@@ -21,7 +21,7 @@ also the backups created for that source.
 OPTIONS
 -------
 -d:
-   Delete also the destination directory. `'add_ccollect_source.sh` will change
+   Delete also the destination directory. `add_ccollect_source.sh` will change
    to the source/'name'/destination directory, get the absolute name and delete
    it recursively.
 -f:
@@ -36,7 +36,7 @@ $CCOLLECT_CONF/sources::
 
 SEE ALSO
 --------
-add_ccollect_source(1), ccollect(1)
+add_ccollect_source(1), ccollect(1), list_ccollect_intervals(1)
 
 
 AUTHOR

@@ -53,7 +53,7 @@ source_postfix::
 
 SEE ALSO
 --------
-ccollect(1), delete_ccollect_source(1)
+ccollect(1), delete_ccollect_source(1), list_ccollect_intervals(1)
 
 
 AUTHOR

@@ -37,6 +37,11 @@ OPTIONS
 -v, --verbose::
    Be very verbose (uses set -x).
 
+SEE ALSO
+--------
+add_ccollect_source(1), delete_ccollect_source(1), list_ccollect_intervals(1)
+
+
 AUTHOR
 ------
 Nico Schottelius <mailto:nico-ccollect--@--schottelius.org[]>
