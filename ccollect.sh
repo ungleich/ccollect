@@ -446,6 +446,8 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # clone from old backup, if existing
    #
    if [ "${last_dir}" ]; then
+      # must be absolute, otherwise rsync uses it relative to
+      # the destination directory. See rsync(1).
       abs_last_dir="$(cd "${last_dir}" && pwd -P)" || \
          _exit_err "Could not change to last dir ${last_dir}."
       set -- "$@" "--link-dest=${abs_last_dir}"
