@@ -12,7 +12,7 @@ LOGCONF=$CCOLLECT_CONF/logwrapper
 
 logdir="${LOGCONF}/destination"
 CDATE="date +%Y%m%d-%H%M"
-we="$(basenae $0)"
+we="$(basename $0)"
 pid=$$
 
 logfile="${logdir}/$(${CDATE}).${pid}"
@@ -21,8 +21,9 @@ logfile="${logdir}/$(${CDATE}).${pid}"
 # Also use echo, can be redirected with > /dev/null if someone cares
 _echo()
 {
-   logger "${we}-${pid}: $@"
-   echo "${we}-${pid}: $@"
+   string="${we} (${pid}): $@"
+   logger "${string}"
+   echo "${string}"
 }
 
 
@@ -37,5 +38,9 @@ _exit_err()
 # put everything into that specified file
 _echo "Starting with arguments: $@"
 touch "${logfile}" || _exit_err "Failed to create ${logfile}"
-ccollect.sh "$@" > "${logfile}" 2>&1
+
+# First line in the logfile is always the commandline
+echo ccollect.sh "$@" > "${logfile}" 2>&1
+ccollect.sh "$@" >> "${logfile}" 2>&1
+
 _echo "Finished."
