@@ -2,11 +2,7 @@
 # Nico Schottelius
 # written for Netstream (www.netstream.ch)
 # Date: Fr 8. Jun 10:30:24 CEST 2007
-# Call the log-wrapper instead of ccollect.sh and it will log
-# to your selected destinations
-
-# not implemented
-exit 0
+# Call the log-wrapper instead of ccollect.sh and it will create nice logs
 
 Analyses output produced by ccollect.
 
@@ -15,11 +11,32 @@ Analyses output produced by ccollect.
 #
 CCOLLECT_CONF=${CCOLLECT_CONF:-/etc/ccollect}
 LOGCONF=$CCOLLECT_CONF/logwrapper
-VERSION=0.1
-RELEASE="2007-XX-XX"
 
-HALF_VERSION="ccollect $VERSION"
-FULL_VERSION="ccollect $VERSION ($RELEASE)"
+logdir="${LOGCONF}/destination"
+CDATE="date +%Y%m%d-%H%M"
+we="$(basenae $0)"
+pid=$$
 
-# syslog: logger -t ccollect-logwrapper
+logfile="${logdir}/$(${CDATE}).${pid}"
 
+# use syslog normally
+_echo()
+{
+   logger "${we}-${pid}: $@"
+   echo "${we}-${pid}: $@"
+}
+
+
+# exit on error
+_exit_err()
+{
+   _echo "$@"
+   rm -f "${TMP}"
+   exit 1
+}
+
+# put everything into that specified file
+_echo "Starting with arguments: $@"
+touch "${logfile}" || _exit_err "Failed to create ${logfile}"
+ccollect.sh "$@" > "${logfile}" 2>&1
+_echo "Finished."
