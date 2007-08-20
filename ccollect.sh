@@ -15,7 +15,7 @@ CPOSTEXEC="${CDEFAULTS}/post_exec"
 
 TMP=$(mktemp "/tmp/$(basename $0).XXXXXX")
 VERSION=0.6.1
-RELEASE="2007-08-XX"
+RELEASE="2007-08-20"
 HALF_VERSION="ccollect ${VERSION}"
 FULL_VERSION="ccollect ${VERSION} (${RELEASE})"
 
