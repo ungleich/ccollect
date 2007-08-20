@@ -4,8 +4,6 @@
 # Date: Fr 8. Jun 10:30:24 CEST 2007
 # Call the log-wrapper instead of ccollect.sh and it will create nice logs
 
-Analyses output produced by ccollect.
-
 #
 # where to find our configuration and temporary file
 #
@@ -20,6 +18,7 @@ pid=$$
 logfile="${logdir}/$(${CDATE}).${pid}"
 
 # use syslog normally
+# Also use echo, can be redirected with > /dev/null if someone cares
 _echo()
 {
    logger "${we}-${pid}: $@"
