@@ -1,0 +1,55 @@
+ccollect_logwrapper(1)
+======================
+Nico Schottelius <nico-ccollect--@--schottelius.org>
+
+
+NAME
+----
+ccollect_logwrapper - start ccollect(1) and create a unique log
+
+
+SYNOPSIS
+--------
+'ccollect_logwrapper.sh' <ccollect options>
+
+
+DESCRIPTION
+-----------
+ccollect_logwrapper.sh creates a unique logfile below
+'$CCOLLECT_CONF/logwrapper' and redirects ccollect(1) output 
+(stdout and stderr) to it.
+
+
+OPTIONS
+-------
+Options are passed directly to ccollect(1).
+
+
+FILES
+-----
+$CCOLLECT_CONF/logwrapper::
+   Directory containing the configuration. $CCOLLECT_CONF is '/etc/ccollect', if unset.
+
+$CCOLLECT_CONF/logwrapper/destination::
+   Link to the destination directory for the logfiles
+
+SEE ALSO
+--------
+add_ccollect_source(1), ccollect(1),
+delete_ccollect_source(1), list_ccollect_intervals(1)
+
+
+AUTHOR
+------
+Nico Schottelius <mailto:nico-ccollect--@--schottelius.org[]>
+
+
+RESOURCES
+---------
+Main web site: http://unix.schottelius.org/ccollect/[]
+
+
+COPYING
+-------
+Copyright \(C) 2007 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License Version 3 (GPLv3).
