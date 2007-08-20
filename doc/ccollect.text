@@ -511,6 +511,21 @@ the user.
 Hints
 -----
 
+Smart logging
+~~~~~~~~~~~~~
+Since ccollect-0.6.1 you can use the ccollect-logwrapper.sh(1) for logging.
+You call it the same way you call ccollect.sh and it will create a
+logfile containing the output of ccollect.sh. For more information look
+at the manpage 'ccollect-logwrapper'. The following is an example running
+ccollect-logwrapper.sh:
+
+--------------------------------------------------------------------------------
+u0219 ~ # ~chdscni9/ccollect-logwrapper.sh daily u0160.nshq.ch.netstream.com
+ccollect-logwrapper.sh (11722): Starting with arguments: daily u0160.nshq.ch.netstream.com
+ccollect-logwrapper.sh (11722): Finished.
+--------------------------------------------------------------------------------
+
+
 Using a different ssh port
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 Mostly easy is to use your ~/.ssh/config file:
