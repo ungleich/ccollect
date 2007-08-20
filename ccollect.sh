@@ -467,7 +467,8 @@ while [ "${i}" -lt "${no_sources}" ]; do
       _exit_err "Creating ${destination_dir} failed. Skipping."
 
    # absulte now, it's existing
-   abs_destination_dir="$(cd "${destination_dir}" && pwd -P)"
+   abs_destination_dir="$(cd "${destination_dir}" && pwd -P)" || \
+      _exit_err "Changing to newly created ${destination_dir} failed. Skipping."
 
    #
    # added marking in 0.6 (and remove it, if successful later)
