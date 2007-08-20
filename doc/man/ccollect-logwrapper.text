@@ -1,21 +1,21 @@
-ccollect_logwrapper(1)
+ccollect-logwrapper(1)
 ======================
 Nico Schottelius <nico-ccollect--@--schottelius.org>
 
 
 NAME
 ----
-ccollect_logwrapper - start ccollect(1) and create a unique log
+ccollect-logwrapper - start ccollect(1) and create a unique log
 
 
 SYNOPSIS
 --------
-'ccollect_logwrapper.sh' <ccollect options>
+'ccollect-logwrapper.sh' <ccollect options>
 
 
 DESCRIPTION
 -----------
-ccollect_logwrapper.sh creates a unique logfile below
+ccollect-logwrapper.sh creates a unique logfile below
 '$CCOLLECT_CONF/logwrapper' and redirects ccollect(1) output 
 (stdout and stderr) to it.
 
