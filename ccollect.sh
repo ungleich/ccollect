@@ -477,7 +477,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
 
    #
    # the rsync part
-   # options partly stolen from rsnapshot
    #
 
    _techo "Transferring files..."
@@ -490,7 +489,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
       _exit_err "Removing ${abs_destination_dir}/${c_marker} failed."
 
    _techo "Finished backup (rsync return code: $ret)."
-   if [ "$ret" -ne 0 ]; then
+   if [ "${ret}" -ne 0 ]; then
       _techo "Warning: rsync exited non-zero, the backup may be broken (see rsync errors)."
    fi
 
