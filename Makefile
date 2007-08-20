@@ -35,6 +35,7 @@ docdir=${dir}/doc
 MANDOCS  = doc/man/ccollect.text 			\
 	doc/man/add_ccollect_source.text 		\
 	doc/man/delete_ccollect_source.text		\
+	doc/man/ccollect-logwrapper.text			\
 	doc/man/list_ccollect_intervals.text
 
 DOCS     = ${MANDOCS} doc/ccollect.text doc/ccollect-DE.text

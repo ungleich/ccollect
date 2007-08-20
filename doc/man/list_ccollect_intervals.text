@@ -26,7 +26,8 @@ $CCOLLECT_CONF/intervals::
 
 SEE ALSO
 --------
-add_ccollect_source(1), ccollect(1), delete_ccollect_source(1)
+add_ccollect_source(1), ccollect(1), 
+ccollect-logwrapper(1), delete_ccollect_source(1)
 
 
 AUTHOR
