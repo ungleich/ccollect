@@ -15,7 +15,7 @@ CDATE="date +%Y%m%d-%H%M"
 we="$(basename $0)"
 pid=$$
 
-logfile="${logdir}/$(${CDATE}).${pid}"
+export ccollect_logfile="${logdir}/$(${CDATE}).${pid}"
 
 # use syslog normally
 # Also use echo, can be redirected with > /dev/null if someone cares
@@ -30,17 +30,17 @@ _echo()
 # exit on error
 _exit_err()
 {
-   _echo "$@"
+   _echo "$@" >&2
    rm -f "${TMP}"
    exit 1
 }
 
 # put everything into that specified file
 _echo "Starting with arguments: $@"
-touch "${logfile}" || _exit_err "Failed to create ${logfile}"
+touch "${ccollect_logfile}" || _exit_err "Failed to create ${ccollect_logfile}"
 
 # First line in the logfile is always the commandline
-echo ccollect.sh "$@" > "${logfile}" 2>&1
-ccollect.sh "$@" >> "${logfile}" 2>&1
+echo ccollect.sh "$@" > "${ccollect_logfile}" 2>&1
+ccollect.sh "$@" >> "${ccollect_logfile}" 2>&1
 
 _echo "Finished."
