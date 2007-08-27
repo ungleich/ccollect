@@ -402,7 +402,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
       if [ "${DELETE_INCOMPLETE}" = "yes" ]; then
          _techo "Deleting ${realincomplete} ..."
          rm $VVERBOSE -rf "${c_dest}/${realincomplete}" || \
-            _exit_err "Removing ${c_dest}/${realincomplete} failed."
+            _exit_err "Removing ${realincomplete} failed."
       fi
    done < "${TMP}"
 
