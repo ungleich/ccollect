@@ -2,6 +2,8 @@
    * Added analyse-ccollect-logs.sh
    * Fixed bug: Removing of backups was broken since update to 0.6
      (forgot to prepend path...)
+   * Fixed bug: The marker was always deleted, because rsync deleted it.
+     Create it outside of the backup destination now.
 
 0.6 to 0.6.1:
    * Added check for destination_base in add_ccollect_source.sh
