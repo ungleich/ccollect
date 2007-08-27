@@ -426,7 +426,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
 
       while read to_remove; do
          _techo "Removing ${to_remove} ..."
-         rm ${VVERBOSE} -rf "$to_remove" || \
+         rm ${VVERBOSE} -rf "${c_dest}/${to_remove}" || \
             _exit_err "Removing ${to_remove} failed."
       done < "${TMP}"
    fi
