@@ -14,7 +14,7 @@ CPREEXEC="${CDEFAULTS}/pre_exec"
 CPOSTEXEC="${CDEFAULTS}/post_exec"
 
 TMP=$(mktemp "/tmp/$(basename $0).XXXXXX")
-VERSION=0.6.1
+VERSION=0.6.2
 RELEASE="2007-08-20"
 HALF_VERSION="ccollect ${VERSION}"
 FULL_VERSION="ccollect ${VERSION} (${RELEASE})"
@@ -394,10 +394,10 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # Check for incomplete backups
    #
-   ( cd "${c_dest}" 2>/dev/null && ls -1 "${INTERVAL}"*"/${c_marker}" > "${TMP}" 2>/dev/null)
+   ( cd "${c_dest}" 2>/dev/null && ls -1 "${INTERVAL}"*".${c_marker}" > "${TMP}" 2>/dev/null)
 
    while read incomplete; do
-      realincomplete=$(echo ${incomplete} | sed "s/${c_marker}\$//")
+      realincomplete=$(echo ${incomplete} | sed "s/\\.${c_marker}\$//")
       _techo "Incomplete backup: ${realincomplete}"
       if [ "${DELETE_INCOMPLETE}" = "yes" ]; then
          _techo "Deleting ${realincomplete} ..."
@@ -422,7 +422,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
       _techo "Removing ${remove} backup(s)..."
 
       ( cd "${c_dest}" 2>/dev/null && ls -p1 | grep "^${INTERVAL}\..*/\$" | \
-        sort -n | head -n "${remove}" > "${TMP}" )
+        sort -n | head -n "${remove}" ) > "${TMP}"
 
       while read to_remove; do
          _techo "Removing ${to_remove} ..."
