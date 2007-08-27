@@ -473,7 +473,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # added marking in 0.6 (and remove it, if successful later)
    #
-   touch "${abs_destination_dir}/${c_marker}"
+   touch "${abs_destination_dir}.${c_marker}"
 
    #
    # the rsync part
@@ -485,7 +485,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # remove marking here
    #
-   rm -f "${abs_destination_dir}/${c_marker}" || \
+   rm "${abs_destination_dir}.${c_marker}" || \
       _exit_err "Removing ${abs_destination_dir}/${c_marker} failed."
 
    _techo "Finished backup (rsync return code: $ret)."
