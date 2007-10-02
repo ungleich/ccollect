@@ -9,12 +9,10 @@ CCOLLECT_LOGDIR=${CCOLLECT_LOGDIR:-/var/log/backup}
 latest_log=$(cd "${CCOLLECT_LOGDIR}" && ls -tcp1 | grep -v '/$' | head -n 1)
 LOGFILE="${CCOLLECT_LOGDIR}/${latest_log}"
 
-
-
 case "$1" in
    config)
 cat << eof
-graph_title Backups speedup
+graph_title ccollect Backups speedup
 graph_category backup
 graph_vlabel speedup
 graph_info Shows the speedup of ccollect backups (higher means better, zero means no value found)
