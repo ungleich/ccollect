@@ -17,6 +17,7 @@ cat << eof
 graph_title Backups speedup
 graph_category backup
 graph_vlabel speedup
+graph_info Shows the speedup of ccollect backups (higher means better, zero means no value found)
 timeout 30
 eof
 # create labels
@@ -24,10 +25,8 @@ cd "${CSOURCES}"
 for source in *; do
    name="_$(echo $source | sed 's/\./_/g')"
    echo ${name}.label ${source}
+   echo ${name}.min 0
 done
-
-
-
       exit 0
    ;;
 esac
