@@ -17,6 +17,7 @@ graph_category backup
 graph_vlabel Bytes
 graph_info Shows how much data ccollect recieved for each server (0 means no value found)
 timeout 30
+graph_args --base 1024
 eof
 # create labels
 cd "${CSOURCES}"
