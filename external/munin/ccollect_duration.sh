@@ -34,7 +34,7 @@ cd "${CSOURCES}"
 for source in *; do
    name="_$(echo $source | sed 's/\./_/g')"
    value_raw="$(awk "/^\[${source}\] Backup lasted: / { print \$4 }" < "${LOGFILE}")"
-   value="$(echo $value | awk -F: '{ print $1 *3600 + $2 * 60 +  $3 }')"
+   value="$(echo $value_raw | awk -F: '{ print $1 *3600 + $2 * 60 +  $3 }')"
    # value = 0 = no result found
    [ "$value" ] || value=0
    echo ${name}.value "${value}"
