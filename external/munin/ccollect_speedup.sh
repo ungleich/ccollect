@@ -30,3 +30,9 @@ done
    ;;
 esac
 
+# get values
+cd "${CSOURCES}"
+for source in *; do
+   name="_$(echo $source | sed 's/\./_/g')"
+   awk "/^\[${source}\] total size is/ { print \$8 }" "${LOGFILE}"
+done
