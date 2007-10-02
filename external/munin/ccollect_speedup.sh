@@ -6,7 +6,8 @@
 CCOLLECT_CONF=${CCOLLECT_CONF:-/etc/ccollect}
 CSOURCES=${CCOLLECT_CONF}/sources
 CCOLLECT_LOGDIR=${CCOLLECT_LOGDIR:-/var/log/backup}
-LOGFILE=$(cd "${CCOLLECT_LOGDIR}" && ls -tcp1 | grep '/$' | head -n 1)
+latest_log=$(cd "${CCOLLECT_LOGDIR}" && ls -tcp1 | grep -v '/$' | head -n 1)
+LOGFILE="${CCOLLECT_LOGDIR}/${latest_log}"
 
 
 
@@ -16,6 +17,7 @@ cat << eof
 graph_title Backups speedup
 graph_category backup
 graph_vlabel speedup
+timeout 30
 eof
 # create labels
 cd "${CSOURCES}"
@@ -34,5 +36,8 @@ esac
 cd "${CSOURCES}"
 for source in *; do
    name="_$(echo $source | sed 's/\./_/g')"
-   awk "/^\[${source}\] total size is/ { print \$8 }" "${LOGFILE}"
+   value=$(awk "/^\[${source}\] total size is/ { print \$8 }" "${LOGFILE}")
+   # value = 0 = no result found
+   [ "$value" ] || value=0
+   echo ${name}.value "${value}"
 done
