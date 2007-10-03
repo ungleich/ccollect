@@ -36,6 +36,6 @@ for source in *; do
    name="_$(echo $source | sed 's/\./_/g')"
    value="$(awk "/^\[${source}\] Total bytes received: / { print \$5 }" < "${LOGFILE}")"
    # value = 0 = no result found
-   [ "$value" ] || value=0
+   [ "$value" ] || value=U
    echo ${name}.value "${value}"
 done

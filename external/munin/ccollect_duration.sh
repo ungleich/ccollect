@@ -36,6 +36,6 @@ for source in *; do
    value_raw="$(awk "/^\[${source}\] Backup lasted: / { print \$4 }" < "${LOGFILE}")"
    value="$(echo $value_raw | awk -F: '{ print $1 *3600 + $2 * 60 +  $3 }')"
    # value = 0 = no result found
-   [ "$value" ] || value=0
+   [ "$value" ] || value=U
    echo ${name}.value "${value}"
 done
