@@ -30,10 +30,9 @@ done
 esac
 
 # unset $@ and $#
-while [ "$#" -gt 0 ]; do
-   shift
-done
+set --
 
+# tmpfile
 me=${0##*/}
 tmp="$(mktemp /tmp/${me}.XXXXXXXXXXXXX)"
 
@@ -46,6 +45,7 @@ done
 
 grep "$@" "${LOGFILE}" > "${tmp}"
 
+# get values
 for source in *; do
    name="_$(echo $source | sed 's/\./_/g')"
    value=$(awk "/^\[${source}\]/ { print \$8 }" "${tmp}" | sed 's/).$//')
