@@ -30,11 +30,25 @@ done
    ;;
 esac
 
+# RETRIEVE VALUES TEMPORARY
+# retrieve values before
+# unset $@ and $#
+set --
+me=${0##*/}
+tmp="$(mktemp /tmp/${me}.XXXXXXXXXXXXX)"
+cd "${CSOURCES}"
+for source in *; do
+   term="^\[${source}\] Total bytes received: "
+   set -- "$@" -e "${term}"
+done
+
+grep "$@" "${LOGFILE}" > "${tmp}"
+
 # get values
 cd "${CSOURCES}"
 for source in *; do
    name="_$(echo $source | sed 's/\./_/g')"
-   value="$(awk "/^\[${source}\] Total bytes received: / { print \$5 }" < "${LOGFILE}")"
+   value="$(awk "/^\[${source}\] Total bytes received: / { print \$5 }" < "${tmp}")"
    # value = 0 = no result found
    [ "$value" ] || value=U
    echo ${name}.value "${value}"
