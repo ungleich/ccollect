@@ -2,6 +2,7 @@
 # ccollect
 # Nico Schottelius, Fri Jan 13 12:13:08 CET 2006
 #
+# FIXME: add prefix-support?
 
 INSTALL=install
 CCOLLECT_SOURCE=ccollect.sh
