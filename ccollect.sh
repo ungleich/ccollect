@@ -14,8 +14,8 @@ CPREEXEC="${CDEFAULTS}/pre_exec"
 CPOSTEXEC="${CDEFAULTS}/post_exec"
 
 TMP=$(mktemp "/tmp/$(basename $0).XXXXXX")
-VERSION=0.6.3
-RELEASE="2007-09-XX"
+VERSION=0.7.0
+RELEASE="2008-09-XX"
 HALF_VERSION="ccollect ${VERSION}"
 FULL_VERSION="ccollect ${VERSION} (${RELEASE})"
 
@@ -334,10 +334,15 @@ while [ "${i}" -lt "${no_sources}" ]; do
    fi
 
    #
-   # destination _must_ be a directory
+   # destination can be anything rsync supports
    #
-   if [ ! -d "${c_dest}" ]; then
-      _exit_err "Destination ${c_dest} is not a directory. Skipping."
+   if [ ! -f "${c_dest}" ]; then
+      _exit_err "Destination ${c_dest} is not a file. Skipping."
+   else
+      destination=$(cat "${c_dest}"); ret=$?
+      if [ "${ret}" -ne 0 ]; then
+         _exit_err "Destination ${c_dest} is not readable. Skipping."
+      fi
    fi
 
    #
@@ -357,7 +362,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
 
    set -- "$@" "--archive" "--delete" "--numeric-ids" "--relative"   \
-                "--delete-excluded" "--sparse" 
+               "--delete-excluded" "--sparse" 
 
    #
    # exclude list
