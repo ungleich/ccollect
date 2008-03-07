@@ -34,8 +34,8 @@ docdir=${dir}/doc
 # Asciidoc will be used to generate other formats later
 #
 MANDOCS  = doc/man/ccollect.text 			\
-	doc/man/add_ccollect_source.text 		\
-	doc/man/delete_ccollect_source.text		\
+	doc/man/ccollect_add_source.text 		\
+	doc/man/ccollect_delete_source.text		\
 	doc/man/ccollect-logwrapper.text			\
 	doc/man/list_ccollect_intervals.text
 
