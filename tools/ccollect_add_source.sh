@@ -1,10 +1,27 @@
 #!/bin/sh
-# Nico Schottelius
-# 2007-08-16
-# Written for Netstream (www.netstream.ch)
+# 
+# 2007-2008 Nico Schottelius (nico-ccollect at schottelius.org)
+# 
+# This file is part of ccollect.
+#
+# ccollect is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# ccollect is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with ccollect. If not, see <http://www.gnu.org/licenses/>.
+#
+# 2007-08-16: Written for Netstream (www.netstream.ch)
+#
 # Creates a source from standard values specified in
 # /etc/ccollect/defaults/sources
-# Copying: GPLv3
+#
 
 # standard values
 CCOLLECT_CONF="${CCOLLECT_CONF:-/etc/ccollect}"
@@ -70,7 +87,7 @@ while [ $# -gt 0 ]; do
    # copy standard files
    for file in $standard_opts; do
       eval rfile=\"\$$file\"
-      eval filename=${SCONFIG}/${rfile}
+      eval filename="${SCONFIG}/${rfile}"
       if [ -e "${filename}" ]; then
          _echo Copying \"$rfile\" to ${fullname} ...
          cp -r "${filename}" "${fullname}/${rfile}"
@@ -86,7 +103,7 @@ while [ $# -gt 0 ]; do
       source_source="${source_source}$(cat "${src_postfix}")" || _exit_err "${src_postfix}: Reading failed."
    fi
    _echo "Adding \"${source_source}\" as source for ${source}"
-   echo "${source_source}" > "${fullname}/source"
+   echo "${source_source}" > "${fullname}/source" || _exit_err "Creating ${fullname}/source: failed."
 
    # create destination directory
    absbase=$(cd "${destination_base}" 2>/dev/null && pwd -P) || \
@@ -97,9 +114,9 @@ while [ $# -gt 0 ]; do
    mkdir -p "${dest}" || _exit_err "${dest}: Cannot create."
 
    # link destination directory
-   dest_abs=$(cd "${dest}" && pwd -P) || _exit_err "${dest}: Changing to newly create dirctory failed."
-   ln -s "${dest_abs}" "${fullname}/destination" || \
-      _exit_err "${fullname}/destination: Failed to link \"${dest_abs}\""
+   dest_abs=$(cd "${dest}" && pwd -P) || _exit_err "${dest}: Changing to newly created directory failed."
+   echo "${dest_abs}" > "${fullname}/destination" || \
+      _exit_err "${fullname}/destination: Failed to create."
 
 done
 
