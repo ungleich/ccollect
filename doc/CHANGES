@@ -1,3 +1,12 @@
+0.6.2 to 0.7.0:
+   * Add capability to backup to a host
+      - updated documentation
+   * Changed "destination" format (use ... to convert pre 0.7.x configurations)
+   * Renamed tools to begin with "ccollect_"
+   * Updated ccollect_add_source.sh and added manpage
+   * Changed license to GPLv3
+
+
 0.6.1 to 0.6.2:
    * Added analyse-ccollect-logs.sh
    * Fixed bug: Removing of backups was broken since update to 0.6
