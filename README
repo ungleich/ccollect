@@ -2,10 +2,9 @@
 ccollect.sh, Nico Schottelius, 2005-12-06
 --------------------------------------------------------------------------------
 
-ccollect backups data from local or remote hosts to your local harddisk.
+ccollect backups (local or remote) data to local or remote destinations.
 
-
-You can retriev the latest version of ccollect at [0].
+You can retrieve the latest version of ccollect at [0].
 
 ccollect was inspired by rsnapshot [1], which has some problems:
    - configuration parameters has to be TAB seperated
@@ -15,8 +14,10 @@ ccollect was inspired by rsnapshot [1], which has some problems:
    - does unecessary moving of backup directories
    - I didn't like the configuration at all, so I used the cconfig style [2].
 
+Please use tools/report_success.sh to report success, if you are successfully
+using ccollect.
 
-A small try to visualize the differnces in a table:
+A small try to visualize the differences in a table:
 
 +---------------+-------------------------------------------------------------+
 |     What?     |         rsnapshot            |         ccollect             | 
