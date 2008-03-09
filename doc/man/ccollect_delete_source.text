@@ -1,21 +1,21 @@
-delete_ccollect_source(1)
+ccollect_delete_source(1)
 =========================
 Nico Schottelius <nico-ccollect--@--schottelius.org>
 
 
 NAME
 ----
-delete_ccollect_source - delete sources from ccollect(1)
+ccollect_delete_source - delete sources from ccollect(1)
 
 
 SYNOPSIS
 --------
-'delete_ccollect_source.sh' [-d] [-f] <hostnames to create sources for>
+'ccollect_delete_source.sh' [-d] [-f] <hostnames to create sources for>
 
 
 DESCRIPTION
 -----------
-delete_ccollect_source.sh deletes backup sources from ccollect(1) and optional
+ccollect_delete_source.sh deletes backup sources from ccollect(1) and optional
 also the backups created for that source.
 
 OPTIONS
@@ -36,8 +36,8 @@ $CCOLLECT_CONF/sources::
 
 SEE ALSO
 --------
-add_ccollect_source(1), ccollect(1),
-ccollect-logwrapper(1), list_ccollect_intervals(1)
+ccollect_add_source(1), ccollect(1),
+ccollect-logwrapper(1), ccollect_list_intervals(1)
 
 
 AUTHOR
@@ -52,5 +52,5 @@ Main web site: http://unix.schottelius.org/ccollect/[]
 
 COPYING
 -------
-Copyright \(C) 2007 Nico Schottelius. Free use of this software is
+Copyright \(C) 2007-2008 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License Version 3 (GPLv3).

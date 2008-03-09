@@ -5,20 +5,21 @@ Nico Schottelius <nico-ccollect--@--schottelius.org>
 
 NAME
 ----
-add_ccollect_source - create new source for ccollect(1)
+ccollect_add_source - create new source for ccollect(1)
 
 
 SYNOPSIS
 --------
 
-'add_ccollect_source.sh' <hostnames to create sources for>
+'ccollect_add_source.sh' <hostnames to create sources for>
 
 
 DESCRIPTION
 -----------
-add_ccollect_source.sh creates a new backup source for use with ccollect(1).
+ccollect_add_source.sh creates a new backup source for use with ccollect(1).
 It copies the files from to the source directory with the hostname below
-'$CCOLLECT_CONF/sources'.
+'$CCOLLECT_CONF/sources'. It is designed to run on a backup server to create
+new directories for new hosts.
 
 
 FILES
@@ -41,8 +42,9 @@ very_verbose::
 
 destination_base::
    A link to the directory where to store the backups. Below this directory
-   `add_ccollect_source.sh` will create a directory with the hostname you
-   specified on the command line.
+   `ccollect_add_source.sh` will create a directory with the hostname you
+   specified on the command line. A common valua for `destination_base` is
+   '/home/server/backup'.
 
 source_prefix::
 source_postfix::
@@ -54,7 +56,7 @@ source_postfix::
 SEE ALSO
 --------
 ccollect(1), ccollect-logwrapper(1),
-delete_ccollect_source(1), list_ccollect_intervals(1)
+ccollect_delete_source(1), ccollect_list_intervals(1)
 
 
 AUTHOR

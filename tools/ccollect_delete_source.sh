@@ -1,9 +1,24 @@
 #!/bin/sh
-# Nico Schottelius
-# 2007-08-16
-# Written for Netstream (www.netstream.ch)
+# 
+# 2007-2008 Nico Schottelius (nico-ccollect at schottelius.org)
+# 
+# This file is part of ccollect.
+#
+# ccollect is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# ccollect is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with ccollect. If not, see <http://www.gnu.org/licenses/>.
+#
+# 2007-08-16 Written for Netstream (www.netstream.ch)
 # Delete sources and their backups (optionally).
-# Copying: GPLv3 (See file COPYING in top directory)
 
 # standard values
 CCOLLECT_CONF="${CCOLLECT_CONF:-/etc/ccollect}"
@@ -37,11 +52,10 @@ force=""
 backups=""
 
 while [ $# -gt 0 ]; do
-
    if [ "$params_possible" ]; then
       case "$1" in
          "-f"|"--force")
-            force=yes
+            force="-r"
             shift; continue
             ;;
          "-d"|"--destination")
@@ -81,14 +95,14 @@ while [ $# -gt 0 ]; do
    fi
 
    if [ "$backups" ]; then
-      ddir=$(cd "${fullname}/destination" && pwd -P) || _exit_err "Cannot change to ${fullname}/destination"
-      _echo "Deleting ${ddir} ..."
-      rm -r "${ddir}"
+      ddir="$(cat "${fullname}/destination")"
+      addir="$(cd && pwd -P)" || _exit_err "Cannot change to ${ddir}"
+      _echo "Deleting ${addir} ..."
+      rm -r $force "${addir}"
    fi
 
    _echo "Deleting ${fullname} ..."
-   rm -r "${fullname}"
-
+   rm -r $force "${fullname}"
 done
 
 exit 0
