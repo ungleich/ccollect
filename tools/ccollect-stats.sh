@@ -1,5 +1,13 @@
 #!/bin/sh
+#
+# 2007 Daniel Aubry
+# 2008 Nico Schottelius (added minimal header)
+#
+# Copying license unknown
+#
 
+# TODO:
+# add variables, add copying, add configuration
 
 if [ ! -e /tmp/ccollect-stats.lock ] 
 then
