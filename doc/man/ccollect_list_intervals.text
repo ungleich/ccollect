@@ -10,7 +10,7 @@ ccollect_list_intervals - list available intervals from ccollect(1)
 
 SYNOPSIS
 --------
-'list_ccollect_intervals.sh'
+'ccollect_list_intervals.sh'
 
 
 DESCRIPTION
@@ -28,8 +28,8 @@ $CCOLLECT_CONF/intervals::
 
 SEE ALSO
 --------
-ccollect_add_source(1), ccollect_analyse_logs(1),
-ccollect_logwrapper(1), ccollect_delete_source(1), ccollect(1)
+collect(1), ccollect_add_source(1), ccollect_analyse_logs(1),
+ccollect_delete_source(1), ccollect_logwrapper(1)
 
 
 AUTHOR

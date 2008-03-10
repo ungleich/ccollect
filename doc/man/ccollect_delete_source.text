@@ -18,6 +18,7 @@ DESCRIPTION
 ccollect_delete_source.sh deletes backup sources from ccollect(1) and optional
 also the backups created for that source.
 
+
 OPTIONS
 -------
 -d:
@@ -26,7 +27,7 @@ OPTIONS
    it recursively.
 -f:
    Force deletion. Do not ask. Very handy for people who know what they do.
-   Very dangerous for everyone.
+   Very dangerous for everyone else.
 
 
 FILES
@@ -36,8 +37,8 @@ $CCOLLECT_CONF/sources::
 
 SEE ALSO
 --------
-ccollect_add_source(1), ccollect(1),
-ccollect-logwrapper(1), ccollect_list_intervals(1)
+ccollect(1), ccollect_add_source(1), ccollect_add_source(1),
+ccollect_logwrapper(1), ccollect_list_intervals(1)
 
 
 AUTHOR

@@ -20,7 +20,8 @@ It does not depend on a specific shell, only `/bin/sh` needs to be
 bourne shell compatibel (like 'dash', 'ksh', 'zsh', 'bash', ...).
 
 For more information refer to the manual titled
-"ccollect - Installing, Configuring and Using" (available as texinfo or html).
+"ccollect - Installing, Configuring and Using" (available as text (asciidoc),
+texinfo or html).
 
 
 OPTIONS
@@ -37,10 +38,11 @@ OPTIONS
 -v, --verbose::
    Be very verbose (uses set -x).
 
+
 SEE ALSO
 --------
-add_ccollect_source(1), ccollect-logwrapper(1)
-delete_ccollect_source(1), list_ccollect_intervals(1)
+ccollect_add_source(1), ccollect_analyse_logs(1), ccollect_logwrapper(1)
+ccollect_delete_source(1), ccollect_list_intervals(1)
 
 
 AUTHOR
@@ -55,5 +57,5 @@ Main web site: http://unix.schottelius.org/ccollect/[]
 
 COPYING
 -------
-Copyright \(C) 2006-2007 Nico Schottelius. Free use of this software is
+Copyright \(C) 2006-2008 Nico Schottelius. Free use of this software is
 granted under the terms of the GNU General Public License Version 3 (GPLv3).
