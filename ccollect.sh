@@ -75,6 +75,15 @@ add_name()
    sed "s:^:\[${name}\] :"
 }
 
+pcmd()
+{
+   if [ "$remote_server" ]; then
+      ssh "$host" "$@"
+   else
+      "$@"
+   fi
+}
+
 #
 # Version
 #
@@ -273,6 +282,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    c_pre_exec="${backup}/pre_exec"
    c_post_exec="${backup}/post_exec"
    c_incomplete="${backup}/delete_incomplete"
+   c_remote_host="${backup}/remote_host"
 
    #
    # Marking backups: If we abort it's not removed => Backup is broken
@@ -343,23 +353,46 @@ while [ "${i}" -lt "${no_sources}" ]; do
    if [ ! -f "${c_source}" ]; then
       _exit_err "Source description \"${c_source}\" is not a file. Skipping."
    else
-      source=$(cat "${c_source}"); ret=$?
-      if [ ${ret} -ne 0 ]; then
+      source=$(cat "${c_source}"); ret="$?"
+      if [ "${ret}" -ne 0 ]; then
          _exit_err "Source ${c_source} is not readable. Skipping."
       fi
    fi
 
    #
-   # destination can be anything rsync supports
+   # Destination is a path
    #
    if [ ! -f "${c_dest}" ]; then
       _exit_err "Destination ${c_dest} is not a file. Skipping."
    else
-      destination=$(cat "${c_dest}"); ret=$?
+      ddir=$(cat "${c_dest}"); ret="$?"
       if [ "${ret}" -ne 0 ]; then
          _exit_err "Destination ${c_dest} is not readable. Skipping."
       fi
    fi
+
+   #
+   # do we backup to a remote host? then set pre-cmd
+   #
+   if [ -f "${c_remote_host}" ]; then
+      # adjust ls and co
+      remote_host=$(cat "${c_remote_host}"); ret="$?"
+      if [ "${ret}" -ne 0 ]; then
+         _exit_err "Remote host file ${c_remote_host} exists, but is not readable. Skipping."
+      fi
+      pcmd="ssh ${remote_host}"
+      destination="${remote_host}:${ddir}"
+   else
+      pcmd=""
+      destination="${ddir}"
+   fi
+
+   #
+   # check for existence / use real name
+   #
+   # FIXME: ssh / grouping
+   ddir=$($pcmd (cd "$ddir" || _exit_err "Cannot change to ${ddir}. Skipping."
+
 
    #
    # Check whether to delete incomplete backups
@@ -415,14 +448,17 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # Check for incomplete backups
    #
-   ( cd "${c_dest}" 2>/dev/null && ls -1 "${INTERVAL}"*".${c_marker}" > "${TMP}" 2>/dev/null)
+   (
+      $pcmd cd "${ddir}" 2>/dev/null && \
+      $pcmd ls -1 "${INTERVAL}"*".${c_marker}" > "${TMP}" 2>/dev/null
+   )
 
    while read incomplete; do
       realincomplete=$(echo ${incomplete} | sed "s/\\.${c_marker}\$//")
       _techo "Incomplete backup: ${realincomplete}"
       if [ "${DELETE_INCOMPLETE}" = "yes" ]; then
          _techo "Deleting ${realincomplete} ..."
-         rm $VVERBOSE -rf "${c_dest}/${realincomplete}" || \
+         $pcmd rm $VVERBOSE -rf "${ddir}/${realincomplete}" || \
             _exit_err "Removing ${realincomplete} failed."
       fi
    done < "${TMP}"
@@ -432,7 +468,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # check if maximum number of backups is reached, if so remove
    # use grep and ls -p so we only look at directories
    #
-   count=$(cd "${c_dest}" && ls -p1 | grep "^${INTERVAL}\..*/\$" | wc -l \
+   count=$($pcmd cd "${ddir}" && $pcmd ls -p1 | grep "^${INTERVAL}\..*/\$" | wc -l \
       | sed 's/^ *//g')  || _exit_err "Counting backups failed"
 
    _techo "Existing backups: ${count} Total keeping backups: ${c_interval}"
@@ -442,12 +478,12 @@ while [ "${i}" -lt "${no_sources}" ]; do
       remove=$((${count} - ${substract}))
       _techo "Removing ${remove} backup(s)..."
 
-      ( cd "${c_dest}" 2>/dev/null && ls -p1 | grep "^${INTERVAL}\..*/\$" | \
+      ( $pcmd cd "${ddir}" 2>/dev/null && $pcmd ls -p1 | grep "^${INTERVAL}\..*/\$" | \
         sort -n | head -n "${remove}" ) > "${TMP}"
 
       while read to_remove; do
          _techo "Removing ${to_remove} ..."
-         rm ${VVERBOSE} -rf "${c_dest}/${to_remove}" || \
+         $pcmd rm ${VVERBOSE} -rf "${ddir}/${to_remove}" || \
             _exit_err "Removing ${to_remove} failed."
       done < "${TMP}"
    fi
@@ -459,14 +495,14 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # Use ls -1c instead of -1t, because last modification maybe the same on all
    # and metadate update (-c) is updated by rsync locally.
    #
-   rel_last_dir="$(cd "${c_dest}" && ls -tcp1 | grep '/$' | head -n 1)" || \
-      _exit_err "Failed to list contents of ${c_dest}."
-   last_dir="${c_dest}/${rel_last_dir}"
+   rel_last_dir="$($pcmd cd "${ddir}" && $pcmd ls -tcp1 | grep '/$' | head -n 1)" || \
+      _exit_err "Failed to list contents of ${ddir}."
    
    #
    # clone from old backup, if existing
    #
-   if [ "${last_dir}" ]; then
+   if [ "${rel_last_dir}" ]; then
+      last_dir="${ddir}/${rel_last_dir}"
       # must be absolute, otherwise rsync uses it relative to
       # the destination directory. See rsync(1).
       abs_last_dir="$(cd "${last_dir}" && pwd -P)" || \
