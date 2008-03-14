@@ -77,8 +77,8 @@ add_name()
 
 pcmd()
 {
-   if [ "$remote_server" ]; then
-      ssh "$host" "$@"
+   if [ "$remote_host" ]; then
+      ssh "$remote_host" "$@"
    else
       "$@"
    fi
@@ -380,18 +380,17 @@ while [ "${i}" -lt "${no_sources}" ]; do
       if [ "${ret}" -ne 0 ]; then
          _exit_err "Remote host file ${c_remote_host} exists, but is not readable. Skipping."
       fi
-      pcmd="ssh ${remote_host}"
       destination="${remote_host}:${ddir}"
    else
-      pcmd=""
+      remote_host=""
       destination="${ddir}"
    fi
+   export remote_host
 
    #
    # check for existence / use real name
    #
-   # FIXME: ssh / grouping
-   ddir=$($pcmd (cd "$ddir" || _exit_err "Cannot change to ${ddir}. Skipping."
+   pcmd cd "$ddir" || _exit_err "Cannot change to ${ddir}. Skipping."
 
 
    #
@@ -448,27 +447,29 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # Check for incomplete backups
    #
-   (
-      $pcmd cd "${ddir}" 2>/dev/null && \
-      $pcmd ls -1 "${INTERVAL}"*".${c_marker}" > "${TMP}" 2>/dev/null
-   )
+   pcmd ls -1 "$ddir/${INTERVAL}"*".${c_marker}" > "${TMP}" 2>/dev/null
 
+   i=0
    while read incomplete; do
-      realincomplete=$(echo ${incomplete} | sed "s/\\.${c_marker}\$//")
+      eva incomplete_$i=$(echo ${incomplete} | sed "s/\\.${c_marker}\$//")
+      i=$(($i+1))
+   done < "${TMP}"
+
+   while [ $i -gt 0 ]; do
+      eval realincomplete=\"incomplete_$i\"
       _techo "Incomplete backup: ${realincomplete}"
       if [ "${DELETE_INCOMPLETE}" = "yes" ]; then
          _techo "Deleting ${realincomplete} ..."
-         $pcmd rm $VVERBOSE -rf "${ddir}/${realincomplete}" || \
+         pcmd rm $VVERBOSE -rf "${ddir}/${realincomplete}" || \
             _exit_err "Removing ${realincomplete} failed."
       fi
-   done < "${TMP}"
-
+   done
 
    #
    # check if maximum number of backups is reached, if so remove
    # use grep and ls -p so we only look at directories
    #
-   count=$($pcmd cd "${ddir}" && $pcmd ls -p1 | grep "^${INTERVAL}\..*/\$" | wc -l \
+   count=$(pcmd ls -p1 "${ddir}" | grep "^${INTERVAL}\..*/\$" | wc -l \
       | sed 's/^ *//g')  || _exit_err "Counting backups failed"
 
    _techo "Existing backups: ${count} Total keeping backups: ${c_interval}"
@@ -478,14 +479,21 @@ while [ "${i}" -lt "${no_sources}" ]; do
       remove=$((${count} - ${substract}))
       _techo "Removing ${remove} backup(s)..."
 
-      ( $pcmd cd "${ddir}" 2>/dev/null && $pcmd ls -p1 | grep "^${INTERVAL}\..*/\$" | \
-        sort -n | head -n "${remove}" ) > "${TMP}"
+      pcmd ls -p1 "$ddir" | grep "^${INTERVAL}\..*/\$" | \
+        sort -n | head -n "${remove}" > "${TMP}"
 
+      i=0
       while read to_remove; do
-         _techo "Removing ${to_remove} ..."
-         $pcmd rm ${VVERBOSE} -rf "${ddir}/${to_remove}" || \
-            _exit_err "Removing ${to_remove} failed."
+         eval remove_$i=\"${to_remove}\"
+         i=$(($i+1))
       done < "${TMP}"
+
+      while [ $i -gt 0 ]; do
+         eval to_remove=\"remove_$i\"
+         _techo "Removing ${to_remove} ..."
+         pcmd echo rm ${VVERBOSE} -rf "${to_remove}" || \
+            _exit_err "Removing ${to_remove} failed."
+      done
    fi
 
 
@@ -495,55 +503,47 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # Use ls -1c instead of -1t, because last modification maybe the same on all
    # and metadate update (-c) is updated by rsync locally.
    #
-   rel_last_dir="$($pcmd cd "${ddir}" && $pcmd ls -tcp1 | grep '/$' | head -n 1)" || \
+   last_dir="$(pcmd ls -tcp1 "${ddir}" | grep '/$' | head -n 1)" || \
       _exit_err "Failed to list contents of ${ddir}."
    
    #
    # clone from old backup, if existing
    #
-   if [ "${rel_last_dir}" ]; then
-      last_dir="${ddir}/${rel_last_dir}"
-      # must be absolute, otherwise rsync uses it relative to
-      # the destination directory. See rsync(1).
-      abs_last_dir="$(cd "${last_dir}" && pwd -P)" || \
-         _exit_err "Could not change to last dir ${last_dir}."
-      set -- "$@" "--link-dest=${abs_last_dir}"
-      _techo "Hard linking from ${rel_last_dir}"
+   if [ "${last_dir}" ]; then
+      set -- "$@" "--link-dest=${last_dir}"
+      _techo "Hard linking from ${last_dir}"
    fi
       
 
    # set time when we really begin to backup, not when we began to remove above
    destination_date=$(${CDATE})
-   destination_dir="${c_dest}/${INTERVAL}.${destination_date}.$$"
+   destination_dir="${ddir}/${INTERVAL}.${destination_date}.$$"
+   destination_full="${destination}/${INTERVAL}.${destination_date}.$$"
 
    # give some info
    _techo "Beginning to backup, this may take some time..."
 
    _techo "Creating ${destination_dir} ..."
-   mkdir ${VVERBOSE} "${destination_dir}" || \
+   pcmd mkdir ${VVERBOSE} "${destination_dir}" || \
       _exit_err "Creating ${destination_dir} failed. Skipping."
-
-   # absulte now, it's existing
-   abs_destination_dir="$(cd "${destination_dir}" && pwd -P)" || \
-      _exit_err "Changing to newly created ${destination_dir} failed. Skipping."
 
    #
    # added marking in 0.6 (and remove it, if successful later)
    #
-   touch "${abs_destination_dir}.${c_marker}"
+   pcmd touch "${destination_dir}.${c_marker}"
 
    #
    # the rsync part
    #
 
    _techo "Transferring files..."
-   rsync "$@" "${source}" "${abs_destination_dir}"; ret=$?
+   rsync "$@" "${source}" "${destination_full}"; ret=$?
 
    #
    # remove marking here
    #
-   rm "${abs_destination_dir}.${c_marker}" || \
-      _exit_err "Removing ${abs_destination_dir}/${c_marker} failed."
+   pcmd rm "${destination_dir}.${c_marker}" || \
+      _exit_err "Removing ${destination_dir}/${c_marker} failed."
 
    _techo "Finished backup (rsync return code: $ret)."
    if [ "${ret}" -ne 0 ]; then
