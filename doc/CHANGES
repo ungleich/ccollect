@@ -1,9 +1,13 @@
 0.6.2 to 0.7.0:
+   * Added tools/report_success.sh (try it out!)
+   * Added ccollect_analyse_logs.sh (see ccollect_analyse_logs(1))
    * Add capability to backup to a host
-      - updated documentation
-   * Changed "destination" format (use ... to convert pre 0.7.x configurations)
-   * Renamed tools to begin with "ccollect_"
+      - Also updated documentation
+   * Changed "destination" format
+      - Use tools/config-pre-0.7-to-0.7.sh to convert pre 0.7.x configurations
+   * Renamed all tools to begin with "ccollect_"
    * Updated ccollect_add_source.sh and added manpage
+   * Updated todos
    * Changed license to GPLv3
 
 
