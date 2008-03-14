@@ -1,0 +1,35 @@
+      to Local                            to Remote
+      backup destination is exiting
+      pre/postexec runs locally
+      --link-dest?
+      /delete_incomplete - can chech ddir
+
+      can check destination dir
+         -> dooooooo it before!
+
+                                             
+                                             remote_host!
+                                             => rddir_ls:
+                                                incomplete: ls -1 "${INTERVAL}"*".${c_marker}"
+
+                                                host support?
+                                                ssh-host-support?
+
+                                                   => ssh_host => save to host
+                                                      execute commands there!
+
+                                                rm!
+
+                                                --link-dest?
+
+                                                --link-dest=DIR
+                                                   => remote dirs, rsync remote
+                                                      =>  works!!!!
+
+   local_destination
+   remote_destination
+      => remote_*
+
+      both
+         configuration is local (what to where)
+
