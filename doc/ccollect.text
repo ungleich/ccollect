@@ -1,7 +1,7 @@
 ccollect - Installing, Configuring and Using
 ============================================
 Nico Schottelius <nico-ccollect__@__schottelius.org>
-0.6, for ccollect 0.6 - 0.6.2, Initial Version from 2006-01-13
+0.7, for ccollect 0.7.0, Initial Version from 2006-01-13
 :Author Initials: NS
 
 
@@ -21,7 +21,7 @@ Supported and tested operating systems and architectures
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 `ccollect` was successfully tested on the following platforms:
 
-- GNU/Linux on amd64/hppa/i386
+- GNU/Linux on amd64/hppa/i386/ppc
 - NetBSD    on amd64/i386/sparc/sparc64
 - OpenBSD   on amd64
 
@@ -29,12 +29,17 @@ It *should* run on any Unix that supports `rsync` and has a POSIX-compatible
 bourne shell. If your platform is not listed above and you have it successfully
 running, please drop me a mail.
 
-Why you can only backup from remote hosts, not to them
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Why you COULD only backup from remote hosts, not to them
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 While considering the design of ccollect, I thought about enabling
 backup to *remote* hosts. Though this sounds like a nice feature
 ('Backup my notebook to the server now.'), in my opinion it is a
 bad idea to backup to a remote host.
+
+But as more and more people requested this feature, it was implemented,
+so you have the choice whether you want to use it or not.
+
 
 Reason
 ^^^^^^
@@ -49,19 +54,33 @@ Your backup server will be compromised, too.
 
 And the attacker will have access to all data on the other webservers.
 
+
 Doing it securely
 ^^^^^^^^^^^^^^^^^
 Think of it the other way round: The backup server (now behind a
-firewall using NAT and strong firewall rules) connects to the
+firewall, not accessable from outside) connects to the
 webservers and pulls the data *from* them. If someone gets access to one
 of the webservers, this person will perhaps not even see your machine. If
-the attacker does see connections from a host to the compromised
-machine, he/she will not be able to log in on the backup machine.
+the attacker sees connections from a host to the compromised
+machine, she will not be able to log in on the backup machine.
 All other backups are still secure.
 
 
 Incompatibilities
 ~~~~~~~~~~~~~~~~~
+
+
+Versions 0.6 and 0.7
+^^^^^^^^^^^^^^^^^^^^^
+.The format of `destination` changed:
+- Before 0.7 it was a (link to a) directory
+- As of 0.7 it is a textfile containing the destination
+
+You can update your configuration using `tools/config-pre-0.7-to-0.7.sh`.
+
+.Added 'remote_host'
+- As of 0.7 it is possible to backup *to* hosts (see section remote_host below).
+
 
 Versions 0.5 and 0.6
 ^^^^^^^^^^^^^^^^^^^^^
@@ -69,7 +88,7 @@ Versions 0.5 and 0.6
 - Before 0.6 it was whitespace delimeted
 - As of 0.6 it is newline seperated (so you can pass whitespaces to `rsync`)
 
-You can update your configuration using `tools/config-pre-0.6-to-0.6.sub.sh`.
+You can update your configuration using `tools/config-pre-0.6-to-0.6.sh`.
 
 .The name of the backup directories changed:
 - Before 0.6: "date +%Y-%m-%d-%H%M"
@@ -89,6 +108,7 @@ Not a real incompatibilty, but seems to fit in this section:
 - bc
 
 anymore!
+
 
 Versions < 0.4 and 0.4
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -119,10 +139,10 @@ For those who do not want to read the whole long document:
 --------------------------------------------------------------------------------
 # get latest ccollect tarball from http://unix.schottelius.org/ccollect/
 # replace value for CCV with the current version
-export CCV=0.6
+export CCV=0.7.0
 
 #
-# replace 'wget' with fetch on bsd
+# replace 'wget' with 'fetch' on bsd
 #
 holen=wget
 "$holen" http://unix.schottelius.org/ccollect/ccollect-${CCV}.tar.bz2
@@ -134,7 +154,7 @@ cd ccollect-${CCV}
 # create mini-configuration
 # first create directory structure
 mkdir -p miniconfig/defaults/intervals
-mkdir miniconfig/sources
+mkdir    miniconfig/sources
 
 # create sample intervals
 echo 2 > miniconfig/defaults/intervals/testinterval
@@ -145,9 +165,13 @@ mkdir ~/DASI
 
 # create sample source, which will be saved
 mkdir miniconfig/sources/testsource
+
 # We will save '/bin' to the directory '~/DASI'
 echo '/bin' > miniconfig/sources/testsource/source
-ln -s ~/DASI miniconfig/sources/testsource/destination
+
+# configure ccollect to use ~/DASI as destination
+echo ~/DASI > miniconfig/sources/testsource/destination
+
 # We want to see what happens and also a small summary at the end
 touch miniconfig/sources/testsource/verbose
 touch miniconfig/sources/testsource/summary
@@ -168,6 +192,9 @@ CCOLLECT_CONF=./miniconfig ./ccollect.sh testinterval2 testsource
 
 echo "Let's see how much space we used with two backups and compare it to /bin"
 du -s ~/DASI /bin
+
+# report success
+echo "Please report success using ./tools/report_success.sh"
 
 --------------------------------------------------------------------------------
 
@@ -204,9 +231,14 @@ $PATH and execute 'chmod *0755* /path/to/ccollect.sh'. If you would
 like to use the new management scripts (available since 0.6), copy
 the following scripts to a directory in $PATH:
 
-- `tools/add_ccollect_source.sh`
-- `tools/list_ccollect_intervals.sh`
-- `tools/delete_ccollect_source.sh`
+- `tools/ccollect_add_source.sh`
+- `tools/ccollect_analyse_logs.sh.sh`
+- `tools/ccollect_delete_source.sh`
+- `tools/ccollect_list_intervals.sh`
+- `tools/ccollect_logwrapper.sh`
+
+After having installed and used ccollect, report success using
+'./tools/report_success.sh'.
 
 
 Configuring
@@ -225,12 +257,13 @@ $ ( setenv CCOLLECT_CONF /your/config/dir ; ccollect.sh ... )
 --------------------------------------------------------------------------------
 
 When you start `ccollect`, you have to specify in which interval
-to backup (daily, weekly, yearly; you can specify the names yourself, see below) and which sources to backup (or -a to backup all sources).
+to backup (daily, weekly, yearly; you can specify the names yourself, see below)
+and which sources to backup (or -a to backup all sources).
 
 The interval specifies how many backups are kept.
 
-There are also some self-explanatory parameters you can pass to ccollect, simply use
-`ccollect.sh --help` for info.
+There are also some self-explanatory parameters you can pass to ccollect,
+simply use `ccollect.sh --help` for info.
 
 
 General configuration
@@ -297,7 +330,7 @@ The name you choose for the subdirectory describes the source.
 Each source contains at least the following files:
 
    - `source`       (a text file containing the `rsync` compatible path to backup)
-   - `destination`  (a link to the directory we should backup to)
+   - `destination`  (a text file containing the directory we should backup to)
 
 Additionally a source may have the following files:
 
@@ -312,6 +345,7 @@ Additionally a source may have the following files:
    - `post_exec`           program to execute after backing up *this* source
    
    - `delete_incomplete`   delete incomplete backups
+   - `remote_host`         host to backup to
 
 
 Example:
@@ -346,6 +380,35 @@ To use the `rsync` protocol without the `ssh`-tunnel, use
 of `rsync`(1).
  
 
+Detailed description of "destination"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+`destination` must be a text file containing the destination directory.
+`destination` *USED* to be a link to the destination directory in
+earlier versions, so do not be confused if you see such examples.
+
+
+Example:
+--------------------------------------------------------------------------------
+   [11:36] zaphodbeeblebrox:ccollect-0.2% cat conf/sources/testsource2/destination 
+   /home/nico/backupdir
+--------------------------------------------------------------------------------
+
+
+Detailed description of "remote_host"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+`remote_host` must be a text file containing the destination host.
+If this file is existing, you are backing up your data *TO* this host
+and *not* to you local host.
+
+Example:
+--------------------------------------------------------------------------------
+   [10:17] denkbrett:ccollect-0.7.0% cat conf/sources/remote1/remote_host
+   home.schottelius.org
+--------------------------------------------------------------------------------
+
+It may contain all the ssh-specific values like 'myuser@yourhost.ch'.
+
+
 Detailed description of "verbose"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 `verbose` tells `ccollect` that the log should contain verbose messages.
@@ -375,7 +438,6 @@ Example:
 
 Detailed description of "summary"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 If you create the file `summary` in the source definition,
 `ccollect` will present you a nice summary at the end.
 
@@ -416,6 +478,7 @@ Detailed description of "exclude"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 `exclude` specifies a list of paths to exclude. The entries are seperated by a newline (\n).
 
+
 Example:
 --------------------------------------------------------------------------------
    [11:35] zaphodbeeblebrox:ccollect-0.2% cat conf/sources/testsource2/exclude 
@@ -424,22 +487,6 @@ Example:
    etwas mit leerzeichenli
    something with spaces is not a problem
 --------------------------------------------------------------------------------
-
-
-Detailed description of "destination"
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-`destination` must be a link to the destination directory.
-
-
-Example:
---------------------------------------------------------------------------------
-   [11:36] zaphodbeeblebrox:ccollect-0.2% ls -l conf/sources/testsource2/destination 
-   lrwxrwxrwx  1 nico users 20 2005-11-17 16:44 conf/sources/testsource2/destination -> /home/nico/backupdir
---------------------------------------------------------------------------------
-
-To tell the truth, this is not fully correct. `ccollect` will also backup
-your data if `destination` is a directory. But do you really want to have
-a backup in /etc?
 
 
 Detailed description of "intervals/"
@@ -499,6 +546,7 @@ df -h
 # Show whats free after
 df -h
 --------------------------------------------------------------------------------
+
 
 Detailed description of "delete_incomplete"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -592,6 +640,7 @@ When you exclude "/proc" or "/mnt" from your backup, you may run into
 trouble when you restore your backup. When you use "/proc/\*" or "/mnt/\*"
 instead, `ccollect` will backup empty directories.
 
+
 [NOTE]
 ===========================================
 When those directories contain hidden files
@@ -605,7 +654,8 @@ Re-using already created rsync-backups
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 If you used `rsync` directly before you use `ccollect`, you can
 use this old backup as initial backup for `ccollect`: You
-simply move it into a subdirectory named "'interval'.0".
+simply move it into a directory below the destination directory
+and name it "'interval'.0".
 
 
 Example:
@@ -626,15 +676,23 @@ Now you can use /home/backup/web1 as the `destination` for the backup.
 
 [NOTE]
 ===============================================================================
-Do *not* name the first backup something like "daily.initial", but use
-the "*0*" (or some number that is lower than the current year)
-as extension. `ccollect` uses `sort` to find the latest backup. `ccollect`
-itself uses 'interval.YEARMONTHDAY-HOURMINUTE.PID'. This notation will
-*always* be before "daily.initial", as numbers are earlier in the list
-which is produced by `sort`. So, if you have a directory named "daily.initial",
-`ccollect` will always diff against this backup and transfer and delete
+It does not matter anymore how you name your directory, as `ccollect` uses
+the -c option from `ls` to find out which directory to clone from.
+===============================================================================
+
+
+[NOTE]
+===============================================================================
+Older versions (pre 0.6, iirc) had a problem, if you named the first backup
+something like "daily.initial". It was needed to use the "*0*" (or some
+number that is lower than the current year) as extension. `ccollect`
+used `sort` to find the latest backup. `ccollect` itself uses
+'interval.YEARMONTHDAY-HOURMINUTE.PID'. This notation was *always* before
+"daily.initial", as numbers are earlier in the list
+which is produced by `sort`. So, if you had a directory named "daily.initial",
+`ccollect` always diffed against this backup and transfered and deleted
 files which where deleted in previous backups. This means you simply
-waste resources, but your backup will be complete.
+wasted resources, but your backup had beer complete anyway.
 ===============================================================================
 
 
@@ -680,7 +738,8 @@ This leads to
 
 If the whole `ccollect` process was interrupted, `ccollect` (since 0.6) can
 detect that and remove the incomplete backups, so you can clone from a complete
-backup instead.
+backup instead
+
 
 When backing up from localhost the destination is also included. Is this a bug?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -775,7 +834,7 @@ srwali01:/etc/ccollect/sources/local-root# cat > exclude << EOF
 > /sys
 > /mnt
 > EOF
-srwali01:/etc/ccollect/sources/local-root# ln -s /mnt/hdbackup/local-root destination
+srwali01:/etc/ccollect/sources/local-root# echo /mnt/hdbackup/local-root > destination
 srwali01:/etc/ccollect/sources/local-root# mkdir /mnt/hdbackup/local-root
 srwali01:/etc/ccollect/sources/local-root# ccollect.sh taeglich local-root
 /o> ccollect.sh: Beginning backup using interval taeglich
@@ -809,7 +868,7 @@ srwali01:/etc/ccollect/sources/srwali03# cat > exclude << EOF
 > /home
 > EOF
 srwali01:/etc/ccollect/sources/srwali03# echo 'root@10.103.2.3:/' > source
-srwali01:/etc/ccollect/sources/srwali03# ln -s /mnt/hdbackup/srwali03 destination
+srwali01:/etc/ccollect/sources/srwali03# echo /mnt/hdbackup/srwali03 > destination
 srwali01:/etc/ccollect/sources/srwali03# mkdir /mnt/hdbackup/srwali03
 --------------------------------------------------------------------------------
 
@@ -881,7 +940,6 @@ the hardlinks allocate.
 
 A collection of backups on the backup server
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 All the data of my important hosts is backuped to eiche into
 /mnt/schwarzesloch/backup:
 
