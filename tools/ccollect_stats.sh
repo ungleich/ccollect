@@ -11,15 +11,15 @@
 
 if [ ! -e /tmp/ccollect-stats.lock ] 
 then
-	touch /tmp/ccollect-stats.lock
-	find /etc/ccollect/sources/ -type l | while read line
-	do
-		backupname=$(basename $(readlink $line))
-		echo "====[Backup: $backupname]====" | tee -a /var/log/backup.log
-		du -sh $line/* | tee -a /var/log/backup.log
-	done
-	rm /tmp/ccollect-stats.lock
+   touch /tmp/ccollect-stats.lock
+
+   # changes after license clearify
+   #  for dest in /etc/ccollect/sources/ -type f -name destination | while read line
+
+   find /etc/ccollect/sources/ -type l | while read line
+   d=$(basename $(readlink $line))
+      echo "====[Backup: $backupname]====" | tee -a /var/log/backup.log
+      du -sh $line/* | tee -a /var/log/backup.log
+   done
+   rm /tmp/ccollect-stats.lock
 fi
-
-
-

@@ -17,6 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with ccollect. If not, see <http://www.gnu.org/licenses/>.
 #
+# Helper script
+# 
 
 if [ $# -ne 1 ]; then
    echo "$0: destination-file"

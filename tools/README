@@ -1,0 +1,19 @@
+Files and their tasks / destinations:
+
+ccollect_add_source.sh: bin
+ccollect_analyse_logs.sh: bin
+ccollect_create_source2.sh: ???
+ccollect_create_source.sh: ???
+ccollect_delete_source.sh: bin
+ccollect_list_intervals.sh: bin
+ccollect_logwrapper.sh: bin
+ccollect-stats.sh: ???
+config-pre-0.4-to-0.4.BUGS: only to be used for converting
+config-pre-0.4-to-0.4.sh: only to be used for converting
+config-pre-0.4-to-0.4.sub.sh: only to be used for converting
+config-pre-0.6-to-0.6.sh: only to be used for converting
+config-pre-0.6-to-0.6.sub.sh: only to be used for converting
+config-pre-0.7-to-0.7.sh: only to be used for converting
+config-pre-0.7-to-0.7.sub.sh: only to be used for converting
+gnu-du-backup-size-compare.sh
+README

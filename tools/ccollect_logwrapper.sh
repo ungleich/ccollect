@@ -20,6 +20,7 @@
 # Written for Netstream (www.netstream.ch) on  Fr 8. Jun 10:30:24 CEST 2007
 #
 # Call the log-wrapper instead of ccollect.sh and it will create nice logs
+#
 
 #
 # where to find our configuration and temporary file

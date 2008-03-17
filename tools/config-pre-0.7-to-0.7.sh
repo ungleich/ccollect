@@ -17,7 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with ccollect. If not, see <http://www.gnu.org/licenses/>.
 #
-# Convert configuration to 0.6 layout
+# Convert configuration to 0.7 layout
+#
 
 if [ $# -ne 1 ]; then
    echo "$0: ccollect-configuration directory"

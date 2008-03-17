@@ -19,7 +19,8 @@
 #
 # Written for Netstream (www.netstream.ch) on Di 21. Aug 17:10:15 CEST 2007
 #
-# Analyse existing logs
+# Analyse logs
+#
 
 version=0.1
 date=2007-08-24
