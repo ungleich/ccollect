@@ -8,7 +8,7 @@
    * Renamed all tools to begin with "ccollect_"
    * Updated ccollect_add_source.sh and added manpage
    * Updated todos
-   * Changed license to GPLv3
+   * Changed license to GPLv3 (from GPLv2)
 
 
 0.6.1 to 0.6.2:
