@@ -482,7 +482,8 @@ while [ "${i}" -lt "${no_sources}" ]; do
       _techo "Removing ${remove} backup(s)..."
 
       pcmd ls -p1 "$ddir" | grep "^${INTERVAL}\..*/\$" | \
-        sort -n | head -n "${remove}" > "${TMP}"
+        sort -n | head -n "${remove}" > "${TMP}"      || \
+        _exit_err "Listing old backups failed"
 
       i=0
       while read to_remove; do
