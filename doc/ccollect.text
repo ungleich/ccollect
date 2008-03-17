@@ -243,6 +243,10 @@ After having installed and used ccollect, report success using
 
 Configuring
 -----------
+For configuration aid have a look at the above mentioned tools, which can assist
+you quite well. When you are successfully using `ccollect`, report success using
+`tools/report_success.sh`.
+
 
 Runtime options
 ~~~~~~~~~~~~~~~

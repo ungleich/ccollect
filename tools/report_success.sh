@@ -29,7 +29,7 @@ software="ccollect"
 author="Nico Schottelius"
 info="$(uname -s -v -r -m)"
 
-echo "Reporting success for $software to ${author}:"
+echo "Reporting success for $software to ${author}"
 echo "-----------------"
 echo -n "Your name (leave free for anonymous): "
 read name
