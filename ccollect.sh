@@ -451,18 +451,20 @@ while [ "${i}" -lt "${no_sources}" ]; do
 
    i=0
    while read incomplete; do
-      eva incomplete_$i=$(echo ${incomplete} | sed "s/\\.${c_marker}\$//")
+      eval incomplete_$i=\"$(echo ${incomplete} | sed "s/\\.${c_marker}\$//")\"
       i=$(($i+1))
    done < "${TMP}"
 
-   while [ $i -gt 0 ]; do
-      eval realincomplete=\"incomplete_$i\"
+   j=0
+   while [ "$j" -lt "$i" ]; do
+      eval realincomplete=\"\$incomplete_$i\"
       _techo "Incomplete backup: ${realincomplete}"
       if [ "${DELETE_INCOMPLETE}" = "yes" ]; then
          _techo "Deleting ${realincomplete} ..."
          pcmd rm $VVERBOSE -rf "${ddir}/${realincomplete}" || \
             _exit_err "Removing ${realincomplete} failed."
       fi
+      i=$((i+i))
    done
 
    #
