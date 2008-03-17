@@ -457,7 +457,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
 
    j=0
    while [ "$j" -lt "$i" ]; do
-      eval realincomplete=\"\$incomplete_$i\"
+      eval realincomplete=\"\$incomplete_$j\"
       _techo "Incomplete backup: ${realincomplete}"
       if [ "${DELETE_INCOMPLETE}" = "yes" ]; then
          _techo "Deleting ${realincomplete} ..."
@@ -492,11 +492,12 @@ while [ "${i}" -lt "${no_sources}" ]; do
       done < "${TMP}"
 
       j=0
-      while [ $i -gt 0 ]; do
-         eval to_remove=\"remove_$i\"
+      while [ "$j" -lt "$i" ]; do
+         eval to_remove=\"remove_$j\"
          _techo "Removing ${to_remove} ..."
          pcmd echo rm ${VVERBOSE} -rf "${to_remove}" || \
             _exit_err "Removing ${to_remove} failed."
+         j=$((j+1))
       done
    fi
 
