@@ -464,15 +464,15 @@ while [ "${i}" -lt "${no_sources}" ]; do
          pcmd rm $VVERBOSE -rf "${ddir}/${realincomplete}" || \
             _exit_err "Removing ${realincomplete} failed."
       fi
-      i=$((i+i))
+      j=$((j+1))
    done
 
    #
    # check if maximum number of backups is reached, if so remove
    # use grep and ls -p so we only look at directories
    #
-   count=$(pcmd ls -p1 "${ddir}" | grep "^${INTERVAL}\..*/\$" | wc -l \
-      | sed 's/^ *//g')  || _exit_err "Counting backups failed"
+   count="$(pcmd ls -p1 "${ddir}" | grep "^${INTERVAL}\..*/\$" | wc -l \
+      | sed 's/^ *//g')"  || _exit_err "Counting backups failed"
 
    _techo "Existing backups: ${count} Total keeping backups: ${c_interval}"
    
@@ -490,6 +490,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
          i=$(($i+1))
       done < "${TMP}"
 
+      j=0
       while [ $i -gt 0 ]; do
          eval to_remove=\"remove_$i\"
          _techo "Removing ${to_remove} ..."
