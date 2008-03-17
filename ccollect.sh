@@ -493,9 +493,9 @@ while [ "${i}" -lt "${no_sources}" ]; do
 
       j=0
       while [ "$j" -lt "$i" ]; do
-         eval to_remove=\"remove_$j\"
+         eval to_remove=\"\$remove_$j\"
          _techo "Removing ${to_remove} ..."
-         pcmd echo rm ${VVERBOSE} -rf "${to_remove}" || \
+         pcmd rm ${VVERBOSE} -rf "${ddir}/${to_remove}" || \
             _exit_err "Removing ${to_remove} failed."
          j=$((j+1))
       done
