@@ -31,7 +31,7 @@ CPOSTEXEC="${CDEFAULTS}/post_exec"
 
 TMP=$(mktemp "/tmp/$(basename $0).XXXXXX")
 VERSION=0.7.0
-RELEASE="2008-03-XX"
+RELEASE="2008-03-18"
 HALF_VERSION="ccollect ${VERSION}"
 FULL_VERSION="ccollect ${VERSION} (${RELEASE})"
 
@@ -510,7 +510,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # clone from old backup, if existing
    #
    if [ "${last_dir}" ]; then
-      set -- "$@" "--link-dest=${last_dir}"
+      set -- "$@" "--link-dest=${ddir}/${last_dir}"
       _techo "Hard linking from ${last_dir}"
    fi
       
