@@ -1,0 +1,56 @@
+ccollect_analyse_logs(1)
+========================
+Nico Schottelius <nico-ccollect--@--schottelius.org>
+
+
+NAME
+----
+ccollect_analyse_logs - analyse logs produced by ccollect(1)
+
+
+SYNOPSIS
+--------
+
+'ccollect_analyse_logs.sh' [iwe]
+
+
+DESCRIPTION
+-----------
+ccollect_analyse_logs.sh reads the logfiles from stdin. You have to specify
+at least one of the three loglevels (*i*nformational, *w*arning, *e*rror). Any
+combination of them is allowed.
+
+
+FILES
+-----
+ccollect log files::
+   Are read from stdin
+
+EXAMPLES
+--------
+cat /var/log/ccollect/single/* | ccollect_analyse_logs.sh iw::
+   Displays warnings and informational parts
+ccollect_analyse_logs.sh iw < /var/log/ccollect/all_together::
+   Displays only error messages (useful for the morning mail)
+   
+
+SEE ALSO
+--------
+ccollect(1), ccollect_add_source.sh, ccollect_delete_source(1),
+ccollect_list_intervals(1), ccollect_logwrapper(1),
+
+
+AUTHOR
+------
+Nico Schottelius <mailto:nico-ccollect--@--schottelius.org[]>
+
+
+RESOURCES
+---------
+Main web site: http://unix.schottelius.org/ccollect/[]
+
+
+COPYING
+-------
+Copyright \(C) 2007-2008 Nico Schottelius. Free use of this software is
+granted under the terms of the GNU General Public License Version 3 (GPLv3).
