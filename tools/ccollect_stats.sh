@@ -3,7 +3,7 @@
 # 2007 Daniel Aubry
 # 2008 Nico Schottelius (added minimal header)
 #
-# Copying license unknown
+# Copying license: GPL2-only
 #
 
 # TODO:
