@@ -35,7 +35,7 @@ echo "Working on $file ..."
 
 if [ -L "${file}" ]; then
    echo "Converting ${file} ..."
-   dir="$(cd "${file}" && pwd)"; ret=$?
+   dir="$(cd "${file}" && pwd -P)"; ret=$?
 
    if [ $ret -ne 0 ]; then
       echo "ERROR: $file is a broken link"
