@@ -595,7 +595,7 @@ host mx2.schottelius.org
    Port 2342
 --------------------------------------------------------------------------------
 
-If you only use that port for backup and normally want to use another port,
+If you only use that port for backup only and normally want to use another port,
 you can add 'HostName' and "HostKeyAlias" (if you also have different
 keys on the different ports):
 
@@ -610,7 +610,6 @@ Host bruehe
    Port 22
    HostKeyAlias bruehe.schottelius.org
 --------------------------------------------------------------------------------
-
 
 
 Using source names or interval in pre_/post_exec scripts
@@ -733,6 +732,19 @@ If you have to specify it individually for every host, because
 of different requirements, you can even omit creating
 `/etc/ccollect/default/intervals/daily`.
 
+
+Comparing backups
+~~~~~~~~~~~~~~~~~
+If you want to see what changed between two backups, you can use
+`rsync` directly:
+
+--------------------------------------------------------------------------------
+[12:00] u0255:ddba034.netstream.ch#  rsync -n -a --delete --stats --progress daily.20080324-0313.17841/ daily.20080325-0313.31148/
+--------------------------------------------------------------------------------
+This results in a listing of changes. Because we pass -n to rsync no transfer
+is made (i.e. report only mode)"
+
+This hint was reported by Daniel Aubry.
 
 F.A.Q.
 ------
