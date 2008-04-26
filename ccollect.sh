@@ -30,8 +30,8 @@ CPREEXEC="${CDEFAULTS}/pre_exec"
 CPOSTEXEC="${CDEFAULTS}/post_exec"
 
 TMP=$(mktemp "/tmp/$(basename $0).XXXXXX")
-VERSION=0.7.0
-RELEASE="2008-03-17"
+VERSION=0.7.1
+RELEASE="2008-04-XX"
 HALF_VERSION="ccollect ${VERSION}"
 FULL_VERSION="ccollect ${VERSION} (${RELEASE})"
 
@@ -281,7 +281,8 @@ while [ "${i}" -lt "${no_sources}" ]; do
    c_summary="${backup}/summary"
    c_pre_exec="${backup}/pre_exec"
    c_post_exec="${backup}/post_exec"
-   c_incomplete="${backup}/delete_incomplete"
+   f_incomplete="delete_incomplete"
+   c_incomplete="${backup}/${f_incomplete}"
    c_remote_host="${backup}/remote_host"
 
    #
@@ -396,7 +397,8 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # Check whether to delete incomplete backups
    #
-   if [ -f "${c_incomplete}" ]; then
+   if [ -f "${c_incomplete}" 
+        -o -f "${CDEFAULTS}/${f_incomplete}]; then
       DELETE_INCOMPLETE="yes"
    fi
 
