@@ -140,7 +140,7 @@ For those who do not want to read the whole long document:
 --------------------------------------------------------------------------------
 # get latest ccollect tarball from http://unix.schottelius.org/ccollect/
 # replace value for CCV with the current version
-export CCV=0.7.0
+export CCV=0.7.1
 
 #
 # replace 'wget' with 'fetch' on bsd
@@ -254,7 +254,7 @@ Runtime options
 `ccollect` looks for its configuration in '/etc/ccollect' or, if set, in
 the directory specified by the variable '$CCOLLECT_CONF':
 --------------------------------------------------------------------------------
-# sh-compatible (zsh, mksh, ksh, bash, ...)
+# sh-compatible (dash, zsh, mksh, ksh, bash, ...)
 $ CCOLLECT_CONF=/your/config/dir ccollect.sh ...
 
 # csh
@@ -323,6 +323,13 @@ human readable format before and after the whole backup process:
 [13:01] hydrogenium:~# chmod 0755 /etc/ccollect/defaults/pre_exec
 [13:01] hydrogenium:~# ln -s /etc/ccollect/defaults/pre_exec /etc/ccollect/defaults/post_exec
 -------------------------------------------------------------------------
+
+
+General delete_incomplete
+^^^^^^^^^^^^^^^^^^^^^^^^^
+If you add '$CCOLLECT_CONF/defaults/`delete_incomplete`', this
+option applies for all sources. See below for a longer
+explanation.
 
 
 Source configuration
