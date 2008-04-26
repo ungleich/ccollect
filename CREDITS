@@ -4,6 +4,8 @@ Thanks go to the following people:
    - for testing and debugging (those I mean should know ;-)
 * Alexey Maximov
    - for finding return-value and shell limitation bugs
+* Daniel Aubry
+   - for reporting many hints
 * Markus Meier
    - for finding a really simple solution for choosing the right backup to
      clone from: Make it independent of the interval, simply choose the last
