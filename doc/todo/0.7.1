@@ -1,8 +1,18 @@
-- add global delete_incomplete (/etc/ccollect/defaults/delete_incomplete)
+- remove basename
+   -> include config from cconf! -> standard!
+
+--------------------------------------------------------------------------------
+
+
 - add wrapper, to do logging and analyse
    * output filename in the wrapper, save into variable
+      => mktemp
    * call analyser
-- fix german documentation!
+      => output stdout?
+
+
+done:
+- add global delete_incomplete (/etc/ccollect/defaults/delete_incomplete)
 
 09:31 < Obri> telmich: hab nen kleinen tipp für ccollect
 09:32 < Obri> telmich: ich habe hier hosts die nicht immer online sind, das ist dumm weil so das backup 
@@ -11,3 +21,9 @@
 09:32 < Obri> ping -c1 -q `cat /etc/ccollect/sources/$name/source | cut -d"@" -f2 | cut -d":" -f1`
 09:33 < Obri> telmich: so bricht das backup ab wenn der host nicht erreichbar ist
 09:33 < Obri> ohne dass ein altes backup entsorgt wird
+
+
+
+reject:
+- fix german documentation!
+   => I'm the coder, somebody else can fix it.
