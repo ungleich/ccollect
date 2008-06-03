@@ -397,8 +397,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # Check whether to delete incomplete backups
    #
-   if [ -f "${c_incomplete}" 
-        -o -f "${CDEFAULTS}/${f_incomplete}]; then
+   if [ -f "${c_incomplete}" -o -f "${CDEFAULTS}/${f_incomplete}" ]; then
       DELETE_INCOMPLETE="yes"
    fi
 

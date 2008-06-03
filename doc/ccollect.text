@@ -1,7 +1,7 @@
 ccollect - Installing, Configuring and Using
 ============================================
 Nico Schottelius <nico-ccollect__@__schottelius.org>
-0.7, for ccollect 0.7.0, Initial Version from 2006-01-13
+0.7.1, for ccollect 0.7.1, Initial Version from 2006-01-13
 :Author Initials: NS
 
 
@@ -745,6 +745,29 @@ This results in a listing of changes. Because we pass -n to rsync no transfer
 is made (i.e. report only mode)"
 
 This hint was reported by Daniel Aubry.
+
+
+Testing for host reachabilty
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+If you want to test whether the host you try to backup is reachable, you can use
+the following script as source specific pre-exec:
+
+--------------------------------------------------------------------------------
+#!/bin/sh
+# ping -c1 -q `cat "/etc/ccollect/sources/$name/source" | cut -d"@" -f2 | cut -d":" -f1`
+--------------------------------------------------------------------------------
+
+This hint was reported by Daniel Aubry.
+
+
+Easy check for errors
+~~~~~~~~~~~~~~~~~~~~~
+If you want to see whether there have been any errors while doing the backup,
+you can run `ccollect` together with `ccollect_analyse_logs.sh`:
+--------------------------------------------------------------------------------
+$ ccollect | ccollect_analyse_logs.sh e
+--------------------------------------------------------------------------------
+
 
 F.A.Q.
 ------
