@@ -472,7 +472,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
          pcmd rm $VVERBOSE -rf "${ddir}/${realincomplete}" || \
             _exit_err "Removing ${realincomplete} failed."
       fi
-      j=$((j+1))
+      j=$(($j+1))
    done
 
    #
@@ -505,7 +505,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
          _techo "Removing ${to_remove} ..."
          pcmd rm ${VVERBOSE} -rf "${ddir}/${to_remove}" || \
             _exit_err "Removing ${to_remove} failed."
-         j=$((j+1))
+         j=$(($j+1))
       done
    fi
 
