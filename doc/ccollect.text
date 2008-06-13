@@ -757,6 +757,8 @@ the following script as source specific pre-exec:
 # ping -c1 -q `cat "/etc/ccollect/sources/$name/source" | cut -d"@" -f2 | cut -d":" -f1`
 --------------------------------------------------------------------------------
 
+This prevents the deletion of old backups, if the host is not reachable.
+
 This hint was reported by Daniel Aubry.
 
 
