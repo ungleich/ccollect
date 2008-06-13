@@ -22,8 +22,8 @@
 # Analyse logs
 #
 
-version=0.1
-date=2007-08-24
+version=0.2
+date=2008-06-13
 fullversion="${version} (${date})"
 args=iwe
 
