@@ -69,6 +69,7 @@ if [ "$search_err" ]; then
    set -- "$@" "-e" 'cannot send long-named file "'
    set -- "$@" "-e" 'ERROR: .* failed verification -- update discarded.$'
    set -- "$@" "-e" 'Host key verification failed.'
+   set -- "$@" "-e" 'ssh: connect to host .*: Connection timed out'
    set -- "$@" "-e" 'rsync error: unexplained error (code 255)'
    set -- "$@" "-e" 'rsync: connection unexpectedly closed'
 fi
