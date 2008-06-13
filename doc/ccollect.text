@@ -412,6 +412,12 @@ Detailed description of "remote_host"
 If this file is existing, you are backing up your data *TO* this host
 and *not* to you local host.
 
+*Warning*: You need to have `ssh` access to the remote host. `rsync` and
+`ccollect` will connect to that host via `ssh`. `ccollect` needs the shell
+access, because it needs to find out how many backups exist on the remote
+host and to be able to delete them.
+
+
 Example:
 --------------------------------------------------------------------------------
    [10:17] denkbrett:ccollect-0.7.0% cat conf/sources/remote1/remote_host
