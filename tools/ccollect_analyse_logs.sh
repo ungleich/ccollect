@@ -68,6 +68,9 @@ if [ "$search_err" ]; then
    set -- "$@" "-e" 'rsync: .*: Input/output error (5)$'
    set -- "$@" "-e" 'cannot send long-named file "'
    set -- "$@" "-e" 'ERROR: .* failed verification -- update discarded.$'
+   set -- "$@" "-e" 'Host key verification failed.'
+   set -- "$@" "-e" 'rsync error: unexplained error (code 255)'
+   set -- "$@" "-e" 'rsync: connection unexpectedly closed'
 fi
 
 # known error strings:
@@ -77,6 +80,11 @@ fi
 #[zrha165.netstream.ch] Read from remote host zrha165.netstream.ch: Connection reset by peer
 #[ddba017.netstream.ch] receiving file list ... cannot send long-named file "/usr/local/www/apache22/cgi-bin/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/ backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/bac kup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup /backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/ba ckup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backu p/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/backup/back"
 #[ddba033.netstream.ch] ERROR: usr/local/inetpub2/netstream/adsl.netstream.ch/mrtg/lbswiss.rrd failed verification -- update discarded.
+# [ddba034.netstream.ch] Host key verification failed.
+# [ddba034.netstream.ch] rsync error: unexplained error (code 255) at io.c(454) [receiver=2.6.9]
+# [ddba034.netstream.ch] rsync: connection unexpectedly closed (0 bytes received so far) [receiver]
+
+
 
 
 #
