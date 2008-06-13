@@ -21,6 +21,13 @@
 # Date: Mon Nov 14 11:45:11 CET 2005
 
 #
+# Standard variables (stolen from cconf)
+#
+__pwd="$(pwd -P)"
+__mydir="${0%/*}"; __abs_mydir="$(cd "$__mydir" && pwd -P)"
+__myname=${0##*/}; __abs_myname="$__abs_mydir/$__myname"
+
+#
 # where to find our configuration and temporary file
 #
 CCOLLECT_CONF=${CCOLLECT_CONF:-/etc/ccollect}
@@ -29,7 +36,7 @@ CDEFAULTS=${CCOLLECT_CONF}/defaults
 CPREEXEC="${CDEFAULTS}/pre_exec"
 CPOSTEXEC="${CDEFAULTS}/post_exec"
 
-TMP=$(mktemp "/tmp/$(basename $0).XXXXXX")
+TMP=$(mktemp "/tmp/${__myname}.XXXXXX")
 VERSION=0.7.1
 RELEASE="2008-04-XX"
 HALF_VERSION="ccollect ${VERSION}"
@@ -98,7 +105,7 @@ display_version()
 #
 usage()
 {
-   echo "$(basename $0): <interval name> [args] <sources to backup>"
+   echo "${__myname}: <interval name> [args] <sources to backup>"
    echo ""
    echo "   ccollect creates (pseudo) incremental backups"
    echo ""
