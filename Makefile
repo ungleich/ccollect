@@ -113,6 +113,24 @@ install-manlink: install-man
 	${INSTALL} -d -m 0755 ${manlink}
 	for man in ${mandest}/*; do ${LN} $$man ${manlink}; done
 
+#
+# Tools
+#
+TOOLS=ccollect_add_source.sh 		\
+		ccollect_analyse_logs.sh	\
+		ccollect_delete_source.sh	\
+		ccollect_logwrapper.sh		\
+		ccollect_list_intervals.sh
+
+TOOLSMAN1 = $(subst ccollect,doc/man/ccollect,$(TOOLS))
+TOOLSMAN = $(subst .sh,.text,$(TOOLSMAN1))
+
+TOOLSFP = $(subst ccollect,tools/ccollect,$(TOOLS)) 
+
+#t2: $(TOOLSMAN)
+t2:
+	echo $(TOOLS) - $(TOOLSMAN) - $(TOOLSFP)
+	
 
 # docbook gets .htm, asciidoc directly .html
 %.htm: %.docbook
