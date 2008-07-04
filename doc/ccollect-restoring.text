@@ -1,0 +1,23 @@
+ccollect - Restoring backups
+============================
+Nico Schottelius <nico-ccollect__@__schottelius.org>
+0.1, for all ccollect version, Initial Version from 2008-07-04
+:Author Initials: NS
+
+
+Having backups is half the way to success on a failure.
+Knowing how to restore the systems is the other half.
+
+
+Introduction
+------------
+You made your backup and now you want to restore
+
+Example recoveries
+------------------
+
+Restoring a complete FreeBSD system
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Restoring a complete Linux system
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
