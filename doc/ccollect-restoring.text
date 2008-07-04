@@ -11,13 +11,30 @@ Knowing how to restore the systems is the other half.
 
 Introduction
 ------------
-You made your backup and now you want to restore
+You made your backup and now you want to restore your
+data. If you backuped only parts of a computer and need
+only to restore them, it is pretty easy to achieve.
+Restoring a whole system is a little bit more
+difficult and needs some knowledge of the operating system.
 
-Example recoveries
-------------------
+Restoring parts of a system
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Log into your backupserver. Change into the 
+backup directory you want to restore from
+(the one named source.intervall.datetime, like
+...).
+Do 
 
 Restoring a complete FreeBSD system
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Restoring a complete Linux system
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Future
+------
+I think about automating full system recoveries in the future.
+I think it could be easily done and here are some hints for
+people who would like to implement it.
+
+
