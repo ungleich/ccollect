@@ -159,6 +159,30 @@ If everything is fixed, let us finish the restore:
 
 Restoring a complete Linux system
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Knoppix
+   knoppix 2 at boot prompt
+
+   rootdir=/ccollect
+   dev=/dev/hda
+   rootdev="${dev}1"
+   fs=jfs
+   tar
+
+   # create the needed partitions
+   cfdisk $dev
+
+   mkfs.$fs $rootdev
+
+   mkdir $rootdir
+
+   mount $rootdev $rootdir
+
+   cd $rootdir
+
+   pump
+   ifconfig
+
+
 TO BE DONE
 
 Future
