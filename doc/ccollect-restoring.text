@@ -17,16 +17,138 @@ only to restore them, it is pretty easy to achieve.
 Restoring a whole system is a little bit more
 difficult and needs some knowledge of the operating system.
 
+
 Restoring parts of a system
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Log into your backupserver. Change into the 
-backup directory you want to restore from
-(the one named source.intervall.datetime, like
-...).
-Do 
+backup directory you want to restore from.
+Do `rsync -av './files/to/be/recovered/' 'sourcehost:/files/to/be/recovered/'.
+
+Restoring a complete system (general)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Boot the system to be rescued from a media that contains low level tools
+for your OS (like partitioning, formatting) and the necessary tools
+(ssh, tar or rsync).
+Use 
+- create the necessary partition table (or however it is called
+
+Get a live-cd, that ships with
+- rsync / tar
+- ssh (d) -> from backupserver
+- support for the filesystems
+
+
 
 Restoring a complete FreeBSD system
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Get a FreeBSD-live-cd (I used the FreeBSD 7.0 live CD,
+but FreeSBIE (http://www.freesbie.org/),
+Frenzy (http://frenzy.org.ua/en/) or the
+FreeBSD LiveCD (http://livecd.sourceforge.net/)
+may also be helpful. The following way uses the FreeBSD 7.0
+live cd.
+
+So boot it up, select your language. After that select
+*Custom* then *Partition*. Create the slice like you want
+to have it. Then let the installer write into the MBR,
+select *BootMgr*.
+
+After that create the necessary labels, select *Label* and
+make sure "Newfs" flag is set to "Y".
+
+Finally, select *Commit* and choose an installation type
+that must fail, because we want the installer only to write
+the partitions and labels, but not to install anything on it.
+
+At this point we have created the base for restoring the whole
+system. Move back to the main menu and select *Fixit*, then
+*CDROM/DVD*. This starts a shell on TTY4, which can be reached
+by pressing *ALT+F4*. Then enter the following data:
+
+--------------------------------------------------------------------------------
+   rootdir=/ccollect
+   rootdev=/dev/ad0s1a
+   backupserver=192.42.23.5
+
+   # create destination directory
+   mkdir "$rootdir"
+
+   # mount root; add other mounts if you created more labels
+   mount "$rootdev" "$rootdir"
+
+   # find out which network devices exist
+   ifconfig
+
+   # create the directory, because dhclient needs it
+   mkdir /var/db
+
+   # retrieve an ip address
+   dhclient fxp0
+
+   # test connection
+   ssh "$backupserver"
+
+   # go back
+   backupserver% exit
+--------------------------------------------------------------------------------
+
+Now we've prepared everything for the real backup. The next problem maybe,
+that we cannot (should not) be able to login as root to the backup server.
+Additionally the system to be restored may not reachable from the backup server,
+because it is behind a firewall or nat.
+Thus I describe a way, that is a little bit more complicated for those, that
+do not have these limitations, but works in both scenarios.
+
+I just start netcat on the local machine, pipe its output to tar and put
+both into the background. Then I create a ssh tunnel to the backupserver,
+which is then able to connect to my netcat "directly".
+--------------------------------------------------------------------------------
+   # user to connect to the backupserver
+   myuser=nico
+
+   # our name in the backup
+   restorehost=server1
+
+   # the instance to be used
+   backup="weekly.20080718-2327.23053"
+
+   # Need to setup lo0 first, the livecd did not do it for me
+   ifconfig lo0 127.0.0.1 up
+
+   # change to the destination directory
+   cd "$rootdir"
+   
+   # start listener
+   ( nc -l 127.0.0.1 4242 | tar xvf - ) &
+
+   # verify that it runs correctly
+   sockstat -4l
+
+   # connect as a normal user to the backupserver
+   ssh -R4242:127.0.0.1:4242 "$myuser@$backupserver"
+
+   # become root
+   backupserver% su -
+
+   # change to the source directory
+   backupserver# cd /home/server/backup/$restorehost/$backup
+
+   # begin the backup
+   backup # tar cf - . | nc 127.0.0.1 4242
+
+   # wait until it finishes, press ctrl-c to kill netcat
+   # logoff the backupserver
+   backupserver# exit
+   backupserver% exit
+
+   # maybe fix fstab: /dev/twed0s1a may not be present in 
+   # maybe fix network devices, may have other name
+   umount
+   reboot # hope the best!
+   I cannot connet
+
+
+Partition table
 
 Restoring a complete Linux system
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
