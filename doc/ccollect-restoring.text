@@ -37,8 +37,6 @@ Get a live-cd, that ships with
 - ssh (d) -> from backupserver
 - support for the filesystems
 
-
-
 Restoring a complete FreeBSD system
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Get a FreeBSD-live-cd (I used the FreeBSD 7.0 live CD,
@@ -102,6 +100,7 @@ do not have these limitations, but works in both scenarios.
 I just start netcat on the local machine, pipe its output to tar and put
 both into the background. Then I create a ssh tunnel to the backupserver,
 which is then able to connect to my netcat "directly".
+
 --------------------------------------------------------------------------------
    # user to connect to the backupserver
    myuser=nico
@@ -140,23 +139,30 @@ which is then able to connect to my netcat "directly".
    # logoff the backupserver
    backupserver# exit
    backupserver% exit
+--------------------------------------------------------------------------------
 
-   # maybe fix fstab: /dev/twed0s1a may not be present in 
-   # maybe fix network devices, may have other name
-   umount
-   reboot # hope the best!
-   I cannot connet
+Now we are just right next to be finished. Still, we have to take care about
+some things:
 
+- Do the block devices still have the same names? If not, correct /etc/fstab.
+- Do the network devices still have the same names? If not, correct /etc/rc.conf.
 
-Partition table
+If everything is fixed, let us finish the restore:
+
+--------------------------------------------------------------------------------
+   # cleanly umount it
+   umount "$rootdir"
+   
+   # reboot, remove the cd and bootup the restored system
+   reboot
+--------------------------------------------------------------------------------
 
 Restoring a complete Linux system
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TO BE DONE
 
 Future
 ------
 I think about automating full system recoveries in the future.
 I think it could be easily done and here are some hints for
 people who would like to implement it.
-
-
