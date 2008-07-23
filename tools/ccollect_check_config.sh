@@ -24,3 +24,17 @@ __pwd="$(pwd -P)"
 __mydir="${0%/*}"; __abs_mydir="$(cd "$__mydir" && pwd -P)"
 __myname=${0##*/}; __abs_myname="$__abs_mydir/$__myname"
 
+
+################################################################################
+# ccollect standard vars
+CCOLLECT_CONF="${CCOLLECT_CONF:-/etc/ccollect}"
+CDEFAULTS="${CCOLLECT_CONF}/defaults"
+CLOGDIR="${CDEFAULTS}/logdir"
+CRONTAB="${CRONTAB:-/etc/crontab}"
+
+# Parameters:
+# -c, --crontab
+# -f, --fix
+# -l, --logs
+
+
