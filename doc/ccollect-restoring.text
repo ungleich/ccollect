@@ -182,6 +182,10 @@ Knoppix
    pump
    ifconfig
 
+   # start listener (from now on it is the same as 
+   ( nc -l 127.0.0.1 4242 | tar xvf - ) &
+
+
 
 TO BE DONE
 
