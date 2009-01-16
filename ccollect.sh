@@ -398,7 +398,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # check for existence / use real name
    #
-   pcmd cd "$ddir" || _exit_err "Cannot change to ${ddir}. Skipping."
+   ( pcmd cd "$ddir" ) || _exit_err "Cannot change to ${ddir}. Skipping."
 
 
    #
