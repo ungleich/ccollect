@@ -44,7 +44,7 @@ path_destination=${path_dir}/${CCOLLECT_DEST}
 
 # where to publish
 host=home.schottelius.org
-dir=www/org/schottelius/unix/www/ccollect/
+dir=/home/server/www/nico/unix.schottelius.org/www/ccollect/
 docdir=${dir}/doc
 
 #
