@@ -119,6 +119,7 @@ install-manlink: install-man
 TOOLS=ccollect_add_source.sh 		\
 		ccollect_analyse_logs.sh	\
 		ccollect_delete_source.sh	\
+		ccollect_list_intervals.sh \
 		ccollect_logwrapper.sh		\
 		ccollect_list_intervals.sh
 
