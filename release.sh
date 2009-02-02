@@ -20,38 +20,39 @@
 # Standard release script for dummies like me
 #
 
-if [ $# -ne 1 ]; then
-   echo "$0: ccollect dir"
+if [ $# -ne 2 ]; then
+   echo "$0: version description"
    exit 23
 fi
 
 echo "Did you change version and date information in the script?"
 read bla
 
-NAME=$1
+VERSION="$1"; shift
+DESCRIPTION="$1"; shift
+NAME=ccollect-${VERSION}
 TARNAME=${NAME}.tar.bz2
-
+TARLOCAL=../${TARNAME}
 DHOST=nico@home.schottelius.org
-DDIR=www/org/schottelius/unix/www/ccollect/
+DDIR=www/unix.schottelius.org/www/ccollect/
 DESTINATION="$DHOST:$DDIR"
 
-# create documentation for the end user
-(
-   cd "$NAME"
-   make dist
-   make publish-doc
-)
+set -e
+set -x
+git tag -m "$DESCRIPTION" "$VERSION"
+git push --mirror
+git archive --prefix="${NAME}/" "$VERSION" | bzip2 > "$TARLOCAL"
+scp "${TARLOCAL}" "$DESTINATION"
 
-tar cvfj "$TARNAME" \
-   --exclude=.git \
-   --exclude="conf/sources/*/destination/*" "$NAME"
+# create & publish documentation for the end user
+make publish-doc
 
-scp "${TARNAME}" "$DESTINATION"
 
-ssh "$DHOST" "( cd $DDIR; tar xfj \"$TARNAME\" )"
+ssh "$DHOST" "( cd "$DDIR" &&; tar xfj \"$TARNAME\" )"
 
 echo "setting paranoid permissions to public..."
-ssh "$DHOST" "( cd $DDIR; find -type d -exec chmod 0755 {} \; )"
-ssh "$DHOST" "( cd $DDIR; find -type f -exec chmod 0644 {} \; )"
+ssh "$DHOST" "( cd "$DDIR" && find -type d -exec chmod 0755 {} \; )"
+ssh "$DHOST" "( cd "$DDIR" &&; find -type f -exec chmod 0644 {} \; )"
 
-cat "${NAME}/doc/release-checklist"
+cat "doc/release-checklist"
+exit 0
