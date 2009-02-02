@@ -1,6 +1,6 @@
 #!/bin/sh
 # 
-# 2005-2008 Nico Schottelius (nico-ccollect at schottelius.org)
+# 2005-2009 Nico Schottelius (nico-ccollect at schottelius.org)
 # 
 # This file is part of ccollect.
 #
@@ -38,7 +38,7 @@ CPOSTEXEC="${CDEFAULTS}/post_exec"
 
 TMP=$(mktemp "/tmp/${__myname}.XXXXXX")
 VERSION=0.7.1
-RELEASE="2008-04-XX"
+RELEASE="2009-XX-XX"
 HALF_VERSION="ccollect ${VERSION}"
 FULL_VERSION="ccollect ${VERSION} (${RELEASE})"
 
@@ -79,7 +79,7 @@ _exit_err()
 
 add_name()
 {
-   sed "s:^:\[${name}\] :"
+   awk "{ print \"[${name}] \" \$0 }"
 }
 
 pcmd()
