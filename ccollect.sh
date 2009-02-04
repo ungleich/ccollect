@@ -561,6 +561,9 @@ while [ "${i}" -lt "${no_sources}" ]; do
    _techo "Finished backup (rsync return code: $ret)."
    if [ "${ret}" -ne 0 ]; then
       _techo "Warning: rsync exited non-zero, the backup may be broken (see rsync errors)."
+   else
+      [ -e "${destination}/${INTERVAL}.current" ] && rm -f "${destination}/${INTERVAL}.current"
+      ln -s "$(basename "${destination_full}")" "${destination}/${INTERVAL}.current"
    fi
 
    #
