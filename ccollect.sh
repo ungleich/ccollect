@@ -368,8 +368,11 @@ while [ "${i}" -lt "${no_sources}" ]; do
          _exit_err "Source ${c_source} is not readable. Skipping."
       fi
    fi
+
+   #
    # Verify source is up and accepting connections before deleting any old backups
-   rsync "$source" >/dev/null || _exit_err "Source ${source} is not readable. Skipping."
+   #
+   rsync "${source}" >/dev/null || _exit_err "Source ${source} is not readable. Skipping."
 
    #
    # Destination is a path
