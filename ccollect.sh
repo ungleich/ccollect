@@ -45,9 +45,11 @@ FULL_VERSION="ccollect ${VERSION} (${RELEASE})"
 #
 # CDATE: how we use it for naming of the archives
 # DDATE: how the user should see it in our output (DISPLAY)
+# TSORT: how to sort: tc = ctime, t = mtime
 #
 CDATE="date +%Y%m%d-%H%M"
 DDATE="date +%Y-%m-%d-%H:%M:%S"
+TSORT="tc"
 
 #
 # unset parallel execution
@@ -491,8 +493,8 @@ while [ "${i}" -lt "${no_sources}" ]; do
       remove=$((${count} - ${substract}))
       _techo "Removing ${remove} backup(s)..."
 
-      pcmd ls -p1 "$ddir" | grep "^${INTERVAL}\..*/\$" | \
-        sort -n | head -n "${remove}" > "${TMP}"      || \
+      pcmd ls -${TSORT}p1r "$ddir" | grep "^${INTERVAL}\..*/\$" | \
+        head -n "${remove}" > "${TMP}"      || \
         _exit_err "Listing old backups failed"
 
       i=0
@@ -518,7 +520,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # Use ls -1c instead of -1t, because last modification maybe the same on all
    # and metadate update (-c) is updated by rsync locally.
    #
-   last_dir="$(pcmd ls -tcp1 "${ddir}" | grep '/$' | head -n 1)" || \
+   last_dir="$(pcmd ls -${TSORT}p1 "${ddir}" | grep '/$' | head -n 1)" || \
       _exit_err "Failed to list contents of ${ddir}."
    
    #
