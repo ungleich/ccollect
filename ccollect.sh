@@ -149,8 +149,12 @@ i=1
 no_sources=0
 
 #
-# Create source "array"
+# Capture options and create source "array"
 #
+WE=""
+ALL=""
+VERBOSE=""
+NO_MORE_ARGS=""
 while [ "$#" -ge 1 ]; do
    eval arg=\"\$1\"; shift
 
