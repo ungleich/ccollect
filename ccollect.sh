@@ -283,16 +283,15 @@ while [ "${i}" -lt "${no_sources}" ]; do
    backup="${CSOURCES}/${name}"
    c_source="${backup}/source"
    c_dest="${backup}/destination"
-   c_exclude="${backup}/exclude"
-   c_verbose="${backup}/verbose"
-   c_vverbose="${backup}/very_verbose"
-   c_rsync_extra="${backup}/rsync_options"
-   c_summary="${backup}/summary"
    c_pre_exec="${backup}/pre_exec"
    c_post_exec="${backup}/post_exec"
-   f_incomplete="delete_incomplete"
-   c_incomplete="${backup}/${f_incomplete}"
-   c_remote_host="${backup}/remote_host"
+   for opt in exclude verbose very_verbose rsync_options summary delete_incomplete remote_host ; do
+      if [ -f "${backup}/$opt" -o -f "${backup}/no_$opt"  ]; then
+         eval c_$opt=\"${backup}/$opt\"
+      else
+         eval c_$opt=\"${CDEFAULTS}/$opt\"
+      fi
+   done
 
    #
    # Marking backups: If we abort it's not removed => Backup is broken
@@ -307,12 +306,8 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # unset possible options
    #
-   EXCLUDE=""
-   RSYNC_EXTRA=""
-   SUMMARY=""
    VERBOSE=""
    VVERBOSE=""
-   DELETE_INCOMPLETE=""
 
    _techo "Beginning to backup"
 
@@ -408,13 +403,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
    ( pcmd cd "$ddir" ) || _exit_err "Cannot change to ${ddir}. Skipping."
 
 
-   #
-   # Check whether to delete incomplete backups
-   #
-   if [ -f "${c_incomplete}" -o -f "${CDEFAULTS}/${f_incomplete}" ]; then
-      DELETE_INCOMPLETE="yes"
-   fi
-
    # NEW method as of 0.6:
    # - insert ccollect default parameters
    # - insert options
@@ -444,7 +432,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # Verbosity for rsync
    #
-   if [ -f "${c_vverbose}" ]; then
+   if [ -f "${c_very_verbose}" ]; then
       set -- "$@" "-vv"
    elif [ -f "${c_verbose}" ]; then
       set -- "$@" "-v"
@@ -453,10 +441,10 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # extra options for rsync provided by the user
    #
-   if [ -f "${c_rsync_extra}" ]; then
+   if [ -f "${c_rsync_options}" ]; then
       while read line; do
          set -- "$@" "$line"
-      done < "${c_rsync_extra}"
+      done < "${c_rsync_options}"
    fi
 
    #
@@ -474,7 +462,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    while [ "$j" -lt "$i" ]; do
       eval realincomplete=\"\$incomplete_$j\"
       _techo "Incomplete backup: ${realincomplete}"
-      if [ "${DELETE_INCOMPLETE}" = "yes" ]; then
+      if [ -f "${c_delete_incomplete}" ]; then
          _techo "Deleting ${realincomplete} ..."
          pcmd rm $VVERBOSE -rf "${ddir}/${realincomplete}" || \
             _exit_err "Removing ${realincomplete} failed."
