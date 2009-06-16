@@ -442,24 +442,16 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # Check for incomplete backups
    #
-   pcmd ls -1 "$ddir/${INTERVAL}"*".${c_marker}" > "${TMP}" 2>/dev/null
-
-   i=0
-   while read incomplete; do
-      eval incomplete_$i=\"$(echo ${incomplete} | sed "s/\\.${c_marker}\$//")\"
-      i=$(($i+1))
-   done < "${TMP}"
-
-   j=0
-   while [ "$j" -lt "$i" ]; do
-      eval realincomplete=\"\$incomplete_$j\"
-      _techo "Incomplete backup: ${realincomplete}"
+   pcmd ls -1 "$ddir/${INTERVAL}"*".${c_marker}" 2>/dev/null | while read marker; do
+      incomplete="$(echo ${marker} | sed "s/\\.${c_marker}\$//")"
+      _techo "Incomplete backup: ${incomplete}"
       if [ -f "${c_delete_incomplete}" ]; then
-         _techo "Deleting ${realincomplete} ..."
-         pcmd rm $VVERBOSE -rf "${ddir}/${realincomplete}" || \
-            _exit_err "Removing ${realincomplete} failed."
+         _techo "Deleting ${incomplete} ..."
+         pcmd rm $VVERBOSE -rf "${incomplete}" || \
+            _exit_err "Removing ${incomplete} failed."
+         pcmd rm $VVERBOSE -f "${marker}" || \
+            _exit_err "Removing ${marker} failed."
       fi
-      j=$(($j+1))
    done
 
    #
