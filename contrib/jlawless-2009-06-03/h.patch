@@ -1,0 +1,18 @@
+# A line in my f.patch was missing needed quotation marks.
+# This fixes that.
+#
+--- ccollect-g.sh	2009-06-03 14:32:03.000000000 -0700
++++ ccollect-h.sh	2009-06-03 14:32:19.000000000 -0700
+@@ -412,11 +412,11 @@
+    fi
+ 
+    #
+    # interval definition: First try source specific, fallback to default
+    #
+-   if [ ${INTERVAL} = "AUTO" ] ; then
++   if [ "${INTERVAL}" = "AUTO" ] ; then
+       auto_interval
+       _techo "Selected interval: '$INTERVAL'"
+    fi
+    c_interval="$(cat "${backup}/intervals/${INTERVAL}" 2>/dev/null)"
+ 

@@ -1,0 +1,35 @@
+--- ccollect-0.7.1-b.sh	2009-05-24 21:32:00.000000000 -0700
++++ ccollect-0.7.1-c.sh	2009-05-24 21:39:43.000000000 -0700
+@@ -40,10 +40,13 @@
+ VERSION=0.7.1
+ RELEASE="2009-02-02"
+ HALF_VERSION="ccollect ${VERSION}"
+ FULL_VERSION="ccollect ${VERSION} (${RELEASE})"
+ 
++#TSORT="tc" ; NEWER="cnewer"
++TSORT="t" ; NEWER="newer"
++
+ #
+ # CDATE: how we use it for naming of the archives
+ # DDATE: how the user should see it in our output (DISPLAY)
+ #
+ CDATE="date +%Y%m%d-%H%M"
+@@ -513,14 +516,14 @@
+ 
+ 
+    #
+    # Check for backup directory to clone from: Always clone from the latest one!
+    #
+-   # Use ls -1c instead of -1t, because last modification maybe the same on all
+-   # and metadate update (-c) is updated by rsync locally.
+-   #
+-   last_dir="$(pcmd ls -tcp1 "${ddir}" | grep '/$' | head -n 1)" || \
++   # Depending on your file system, you may want to sort on: 
++   #   1. mtime (modification time) with TSORT=t, or
++   #   2. ctime (last change time, usually) with TSORT=tc
++   last_dir="$(pcmd ls -${TSORT}p1 "${ddir}" | grep '/$' | head -n 1)" || \
+       _exit_err "Failed to list contents of ${ddir}."
+    
+    #
+    # clone from old backup, if existing
+    #

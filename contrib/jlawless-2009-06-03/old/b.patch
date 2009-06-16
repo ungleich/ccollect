@@ -1,0 +1,15 @@
+--- ccollect-0.7.1-a.sh	2009-05-24 21:30:38.000000000 -0700
++++ ccollect-0.7.1-b.sh	2009-05-24 21:32:00.000000000 -0700
+@@ -551,10 +551,12 @@
+    # the rsync part
+    #
+ 
+    _techo "Transferring files..."
+    rsync "$@" "${source}" "${destination_full}"; ret=$?
++   # Correct the modification time:
++   pcmd touch "${destination_dir}"
+ 
+    #
+    # remove marking here
+    #
+    pcmd rm "${destination_dir}.${c_marker}" || \
