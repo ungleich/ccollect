@@ -311,7 +311,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # unset possible options
    #
    VERBOSE=""
-   VVERBOSE=""
 
    _techo "Beginning to backup"
 
@@ -434,10 +433,12 @@ while [ "${i}" -lt "${no_sources}" ]; do
    fi
 
    #
-   # Verbosity for rsync
+   # Verbosity for rsync, rm, and mkdir
    #
+   VVERBOSE=""
    if [ -f "${c_very_verbose}" ]; then
       set -- "$@" "-vv"
+      VVERBOSE="-v"
    elif [ -f "${c_verbose}" ]; then
       set -- "$@" "-v"
    fi
