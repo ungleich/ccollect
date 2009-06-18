@@ -1,0 +1,17 @@
+--- ccollect-0.7.1-c.sh	2009-05-24 21:39:43.000000000 -0700
++++ ccollect-0.7.1-d.sh	2009-05-24 21:47:09.000000000 -0700
+@@ -492,12 +492,12 @@
+    if [ "${count}" -ge "${c_interval}" ]; then
+       substract=$((${c_interval} - 1))
+       remove=$((${count} - ${substract}))
+       _techo "Removing ${remove} backup(s)..."
+ 
+-      pcmd ls -p1 "$ddir" | grep "^${INTERVAL}\..*/\$" | \
+-        sort -n | head -n "${remove}" > "${TMP}"      || \
++      pcmd ls -${TSORT}p1r "$ddir" | grep "^${INTERVAL}\..*/\$" | \
++        head -n "${remove}" > "${TMP}"      || \
+         _exit_err "Listing old backups failed"
+ 
+       i=0
+       while read to_remove; do
+          eval remove_$i=\"${to_remove}\"

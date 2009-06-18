@@ -1,0 +1,134 @@
+# I have many sources that use the same options so I put those
+# options in the defaults directory.  I found that ccollect was
+# ignoring most of them.  I thought that this was a bug so I wrote
+# some code to correct this:
+#
+# >   for opt in exclude verbose very_verbose rsync_options summary delete_incomplete remote_host ; do
+# >      if [ -f "${backup}/$opt" -o -f "${backup}/no_$opt"  ]; then
+# >         eval c_$opt=\"${backup}/$opt\"
+# >      else
+# >         eval c_$opt=\"${CDEFAULTS}/$opt\"
+# >      fi
+# >   done
+#
+# This also adds a new feature: if some option, say verbose, is
+# specified in the defaults directory, it can be turned off for
+# particular sources by specifying no_verbose as a source option.
+#
+# A side effect of this approach is that it forces script variable
+# names to be consistent with option file names.  Thus, there are
+# several changes such as:
+#
+# <   if [ -f "${c_rsync_extra}" ]; then
+# >   if [ -f "${c_rsync_options}" ]; then
+#
+# and
+#
+# <   if [ -f "${c_vverbose}" ]; then
+# >   if [ -f "${c_very_verbose}" ]; then
+#
+# After correcting the bug and adding the "no_" feature, the code is
+# 12 lines shorter.
+#
+--- ccollect-h.sh	2009-06-01 15:59:11.000000000 -0700
++++ ccollect-i.sh	2009-06-03 14:27:58.000000000 -0700
+@@ -336,20 +336,19 @@
+    # Configuration
+    #
+    backup="${CSOURCES}/${name}"
+    c_source="${backup}/source"
+    c_dest="${backup}/destination"
+-   c_exclude="${backup}/exclude"
+-   c_verbose="${backup}/verbose"
+-   c_vverbose="${backup}/very_verbose"
+-   c_rsync_extra="${backup}/rsync_options"
+-   c_summary="${backup}/summary"
+    c_pre_exec="${backup}/pre_exec"
+    c_post_exec="${backup}/post_exec"
+-   f_incomplete="delete_incomplete"
+-   c_incomplete="${backup}/${f_incomplete}"
+-   c_remote_host="${backup}/remote_host"
++   for opt in exclude verbose very_verbose rsync_options summary delete_incomplete remote_host ; do
++      if [ -f "${backup}/$opt" -o -f "${backup}/no_$opt"  ]; then
++         eval c_$opt=\"${backup}/$opt\"
++      else
++         eval c_$opt=\"${CDEFAULTS}/$opt\"
++      fi
++   done
+ 
+    #
+    # Marking backups: If we abort it's not removed => Backup is broken
+    #
+    c_marker=".ccollect-marker"
+@@ -360,16 +359,12 @@
+    begin_s=$(date +%s)
+ 
+    #
+    # unset possible options
+    #
+-   EXCLUDE=""
+-   RSYNC_EXTRA=""
+-   SUMMARY=""
+    VERBOSE=""
+    VVERBOSE=""
+-   DELETE_INCOMPLETE=""
+ 
+    _techo "Beginning to backup"
+ 
+    #
+    # Standard configuration checks
+@@ -462,17 +457,10 @@
+    # check for existence / use real name
+    #
+    ( pcmd cd "$ddir" ) || _exit_err "Cannot change to ${ddir}. Skipping."
+ 
+ 
+-   #
+-   # Check whether to delete incomplete backups
+-   #
+-   if [ -f "${c_incomplete}" -o -f "${CDEFAULTS}/${f_incomplete}" ]; then
+-      DELETE_INCOMPLETE="yes"
+-   fi
+-
+    # NEW method as of 0.6:
+    # - insert ccollect default parameters
+    # - insert options
+    # - insert user options
+    
+@@ -498,32 +486,32 @@
+    fi
+ 
+    #
+    # Verbosity for rsync
+    #
+-   if [ -f "${c_vverbose}" ]; then
++   if [ -f "${c_very_verbose}" ]; then
+       set -- "$@" "-vv"
+    elif [ -f "${c_verbose}" ]; then
+       set -- "$@" "-v"
+    fi
+ 
+    #
+    # extra options for rsync provided by the user
+    #
+-   if [ -f "${c_rsync_extra}" ]; then
++   if [ -f "${c_rsync_options}" ]; then
+       while read line; do
+          set -- "$@" "$line"
+-      done < "${c_rsync_extra}"
++      done < "${c_rsync_options}"
+    fi
+ 
+    #
+    # Check for incomplete backups
+    #
+    pcmd ls -1 "$ddir/${INTERVAL}"*".${c_marker}" 2>/dev/null | while read marker; do
+       incomplete="$(echo ${marker} | sed "s/\\.${c_marker}\$//")"
+       _techo "Incomplete backup: ${incomplete}"
+-      if [ "${DELETE_INCOMPLETE}" = "yes" ]; then
++      if [ -f "${c_delete_incomplete}" ]; then
+          _techo "Deleting ${incomplete} ..."
+          pcmd rm $VVERBOSE -rf "${incomplete}" || \
+             _exit_err "Removing ${incomplete} failed."
+          pcmd rm $VVERBOSE -f "${marker}" || \
+             _exit_err "Removing ${marker} failed."

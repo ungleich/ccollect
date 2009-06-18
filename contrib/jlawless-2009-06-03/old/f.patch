@@ -1,0 +1,119 @@
+--- ccollect-0.7.1-e.sh	2009-05-24 22:18:16.000000000 -0700
++++ ccollect-0.7.1-f.sh	2009-05-24 22:19:50.000000000 -0700
+@@ -124,10 +124,64 @@
+    echo "   Retrieve latest ccollect at http://unix.schottelius.org/ccollect/"
+    exit 0
+ }
+ 
+ #
++# Select interval if AUTO
++#
++# For this to work nicely, you have to choose interval names that sort nicely
++# such as int1, int2, int3 or a_daily, b_weekly, c_monthly, etc.
++#
++auto_interval()
++{
++   if [ -d "${backup}/intervals" -a -n "$(ls "${backup}/intervals" 2>/dev/null)" ] ; then
++      intervals_dir="${backup}/intervals"
++   elif [ -d "${CDEFAULTS}/intervals" -a -n "$(ls "${CDEFAULTS}/intervals" 2>/dev/null)" ] ; then
++      intervals_dir="${CDEFAULTS}/intervals"
++   else
++      _exit_err "No intervals are defined.  Skipping."
++   fi
++   echo intervals_dir=${intervals_dir}
++
++   trial_interval="$(ls -1r "${intervals_dir}/" | head -n 1)" || \
++      _exit_err "Failed to list contents of ${intervals_dir}/."
++   _techo "Considering interval ${trial_interval}"
++   most_recent="$(pcmd ls -${TSORT}p1 "${ddir}" | grep "^${trial_interval}.*/$" | head -n 1)" || \
++      _exit_err "Failed to list contents of ${ddir}/."
++   _techo "   Most recent ${trial_interval}: '${most_recent}'"
++   if [ -n "${most_recent}" ]; then
++       no_intervals="$(ls -1 "${intervals_dir}/" | wc -l)"
++       n=1
++       while [ "${n}" -le "${no_intervals}" ]; do
++          trial_interval="$(ls -p1 "${intervals_dir}/" | tail -n+${n} | head -n 1)"
++          _techo "Considering interval '${trial_interval}'"
++          c_interval="$(cat "${intervals_dir}/${trial_interval}" 2>/dev/null)"
++          m=$((${n}+1))
++          set --  "${ddir}" -maxdepth 1
++          while [ "${m}" -le "${no_intervals}" ]; do
++             interval_m="$(ls -1 "${intervals_dir}/" | tail -n+${m} | head -n 1)"
++             most_recent="$(pcmd ls -${TSORT}p1 "${ddir}" | grep "^${interval_m}\..*/$" | head -n 1)"
++             _techo "   Most recent ${interval_m}: '${most_recent}'"
++             if [ -n "${most_recent}" ] ; then
++                set -- "$@" -$NEWER "${ddir}/${most_recent}"
++             fi
++             m=$((${m}+1))
++          done
++          count=$(pcmd find "$@" -iname "${trial_interval}*" | wc -l)
++          _techo "   Found $count more recent backups of ${trial_interval} (limit: ${c_interval})"
++          if [ "$count" -lt "${c_interval}" ] ; then
++             break
++          fi
++          n=$((${n}+1))
++       done
++   fi
++   export INTERVAL="${trial_interval}"
++   D_FILE_INTERVAL="${intervals_dir}/${INTERVAL}"
++   D_INTERVAL=$(cat "${D_FILE_INTERVAL}" 2>/dev/null)
++}
++
++#
+ # need at least interval and one source or --all
+ #
+ if [ $# -lt 2 ]; then
+    if [ "$1" = "-V" -o "$1" = "--version" ]; then
+       display_version
+@@ -344,12 +398,28 @@
+          _exit_err "${c_pre_exec} failed. Skipping."
+       fi
+    fi
+ 
+    #
++   # Destination is a path
++   #
++   if [ ! -f "${c_dest}" ]; then
++      _exit_err "Destination ${c_dest} is not a file. Skipping."
++   else
++      ddir=$(cat "${c_dest}"); ret="$?"
++      if [ "${ret}" -ne 0 ]; then
++         _exit_err "Destination ${c_dest} is not readable. Skipping."
++      fi
++   fi
++
++   #
+    # interval definition: First try source specific, fallback to default
+    #
++   if [ ${INTERVAL} = "AUTO" ] ; then
++      auto_interval
++      _techo "Selected interval: '$INTERVAL'"
++   fi
+    c_interval="$(cat "${backup}/intervals/${INTERVAL}" 2>/dev/null)"
+ 
+    if [ -z "${c_interval}" ]; then
+       c_interval="${D_INTERVAL}"
+ 
+@@ -371,22 +441,10 @@
+    fi
+    # Verify source is up and accepting connections before deleting any old backups
+    rsync "$source" >/dev/null || _exit_err "Source ${source} is not readable. Skipping."
+ 
+    #
+-   # Destination is a path
+-   #
+-   if [ ! -f "${c_dest}" ]; then
+-      _exit_err "Destination ${c_dest} is not a file. Skipping."
+-   else
+-      ddir=$(cat "${c_dest}"); ret="$?"
+-      if [ "${ret}" -ne 0 ]; then
+-         _exit_err "Destination ${c_dest} is not readable. Skipping."
+-      fi
+-   fi
+-
+-   #
+    # do we backup to a remote host? then set pre-cmd
+    #
+    if [ -f "${c_remote_host}" ]; then
+       # adjust ls and co
+       remote_host=$(cat "${c_remote_host}"); ret="$?"

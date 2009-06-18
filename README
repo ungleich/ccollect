@@ -20,30 +20,30 @@ using ccollect.
 A small try to visualize the differences in a table:
 
 +---------------+-------------------------------------------------------------+
-|     What?     |         rsnapshot            |         ccollect             | 
+|     What?     |         rsnapshot            |         ccollect             |
 +---------------+-------------------------------------------------------------+
-| Configuration | tab separated, needs         |     plain cconfig-style      | 
-|               | parsing                      |                              | 
+| Configuration | tab separated, needs         |     plain cconfig-style      |
+|               | parsing                      |                              |
 +---------------+-------------------------------------------------------------+
-| Per source    |                              |                              | 
-| post-/pre-    |            no                |            yes               | 
-| execution     |                              |                              | 
+| Per source    |                              |                              |
+| post-/pre-    |            no                |            yes               |
+| execution     |                              |                              |
 +---------------+-------------------------------------------------------------+
-| Per source    |                              |                              | 
-| exclude lists |            no                |            yes               | 
+| Per source    |                              |                              |
+| exclude lists |            no                |            yes               |
 +---------------+-------------------------------------------------------------+
-| Parallel      |                              |                              | 
-| execution     |                              |                              | 
-| of multiple   |            no                |            yes               | 
-| backups       |                              |                              | 
+| Parallel      |                              |                              |
+| execution     |                              |                              |
+| of multiple   |            no                |            yes               |
+| backups       |                              |                              |
 +---------------+-------------------------------------------------------------+
-| Programming   |            perl              |            sh                | 
-| language      |                              |      (posix compatible)      | 
+| Programming   |            perl              |            sh                |
+| language      |                              |      (posix compatible)      |
 +---------------+-------------------------------------------------------------+
-| Lines of code |  6772 (5353 w/o comments,    |  546 (375 w/o comments,      | 
-| (2006-10-25)  |        4794 w/o empty lines) |       288 w/o empty lines)   | 
+| Lines of code |  6772 (5353 w/o comments,    |  546 (375 w/o comments,      |
+| (2006-10-25)  |        4794 w/o empty lines) |       288 w/o empty lines)   |
 +---------------+-------------------------------------------------------------+
-|    Age        |  Available since 2002/2003   |    Written at 2005-11-14     | 
+|    Age        |  Available since 2002/2003   |    Written at 2005-11-14     |
 +---------------+-------------------------------------------------------------+
 
 Included documentation:

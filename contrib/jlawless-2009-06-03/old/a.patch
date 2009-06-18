@@ -1,0 +1,15 @@
+--- ccollect-0.7.1.sh	2009-02-02 03:39:42.000000000 -0800
++++ ccollect-0.7.1-a.sh	2009-05-24 21:30:38.000000000 -0700
+@@ -364,10 +364,12 @@
+       source=$(cat "${c_source}"); ret="$?"
+       if [ "${ret}" -ne 0 ]; then
+          _exit_err "Source ${c_source} is not readable. Skipping."
+       fi
+    fi
++   # Verify source is up and accepting connections before deleting any old backups
++   rsync "$source" >/dev/null || _exit_err "Source ${source} is not readable. Skipping."
+ 
+    #
+    # Destination is a path
+    #
+    if [ ! -f "${c_dest}" ]; then

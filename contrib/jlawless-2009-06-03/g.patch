@@ -1,0 +1,74 @@
+# I found that ccollect was not deleting incomplete backups despite the
+# delete_incomplete option being specified.  I traced the problem to:
+#
+# < pcmd rm $VVERBOSE -rf "${ddir}/${realincomplete}" || \
+#
+# which, at least on all the systems I tested, should read:
+#
+# > pcmd rm $VVERBOSE -rf "${realincomplete}" || \
+#
+# Also, the marker file is not deleted.  I didn't see any reason to keep
+# those files around (what do you think?), so I deleted them also:
+#
+# > pcmd rm $VVERBOSE -rf "${ddir}/${realincomplete}" || \
+# >     _exit_err "Removing ${realincomplete} failed."
+#
+# As long as I was messing with the delete incomplete code and therefore need
+# to test it, I took the liberty of simplifying it.  The v0.7.1 code uses
+# multiple loops with multiple loop counters and creates many variables.  I
+# simplified that to a single loop:
+#
+# >  pcmd ls -1 "$ddir/${INTERVAL}"*".${c_marker}" 2>/dev/null | while read marker; do
+# >     incomplete="$(echo ${marker} | sed "s/\\.${c_marker}\$//")"
+# >     _techo "Incomplete backup: ${incomplete}"
+# >     if [ "${DELETE_INCOMPLETE}" = "yes" ]; then
+# >        _techo "Deleting ${incomplete} ..."
+# >        pcmd rm $VVERBOSE -rf "${incomplete}" || \
+# >           _exit_err "Removing ${incomplete} failed."
+# >        pcmd rm $VVERBOSE -f "${marker}" || \
+# >           _exit_err "Removing ${marker} failed."
+# >     fi
+# >  done
+#
+# The final code (a) fixes the delete bug, (b) also deletes the marker, and
+# (c) is eight lines shorter than the original.
+#
+--- ccollect-f.sh	2009-05-12 12:49:28.000000000 -0700
++++ ccollect-g.sh	2009-06-03 14:32:03.000000000 -0700
+@@ -516,28 +516,20 @@
+    fi
+ 
+    #
+    # Check for incomplete backups
+    #
+-   pcmd ls -1 "$ddir/${INTERVAL}"*".${c_marker}" > "${TMP}" 2>/dev/null
+-
+-   i=0
+-   while read incomplete; do
+-      eval incomplete_$i=\"$(echo ${incomplete} | sed "s/\\.${c_marker}\$//")\"
+-      i=$(($i+1))
+-   done < "${TMP}"
+-
+-   j=0
+-   while [ "$j" -lt "$i" ]; do
+-      eval realincomplete=\"\$incomplete_$j\"
+-      _techo "Incomplete backup: ${realincomplete}"
++   pcmd ls -1 "$ddir/${INTERVAL}"*".${c_marker}" 2>/dev/null | while read marker; do
++      incomplete="$(echo ${marker} | sed "s/\\.${c_marker}\$//")"
++      _techo "Incomplete backup: ${incomplete}"
+       if [ "${DELETE_INCOMPLETE}" = "yes" ]; then
+-         _techo "Deleting ${realincomplete} ..."
+-         pcmd rm $VVERBOSE -rf "${ddir}/${realincomplete}" || \
+-            _exit_err "Removing ${realincomplete} failed."
++         _techo "Deleting ${incomplete} ..."
++         pcmd rm $VVERBOSE -rf "${incomplete}" || \
++            _exit_err "Removing ${incomplete} failed."
++         pcmd rm $VVERBOSE -f "${marker}" || \
++            _exit_err "Removing ${marker} failed."
+       fi
+-      j=$(($j+1))
+    done
+ 
+    #
+    # check if maximum number of backups is reached, if so remove
+    # use grep and ls -p so we only look at directories

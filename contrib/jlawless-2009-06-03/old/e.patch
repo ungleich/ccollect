@@ -1,0 +1,19 @@
+--- ccollect-0.7.1-d.sh	2009-05-24 21:47:09.000000000 -0700
++++ ccollect-0.7.1-e.sh	2009-05-24 22:18:16.000000000 -0700
+@@ -560,12 +560,14 @@
+    pcmd touch "${destination_dir}"
+ 
+    #
+    # remove marking here
+    #
+-   pcmd rm "${destination_dir}.${c_marker}" || \
+-      _exit_err "Removing ${destination_dir}/${c_marker} failed."
++   if [ "$ret" -ne 12 ] ; then
++      pcmd rm "${destination_dir}.${c_marker}" || \
++         _exit_err "Removing ${destination_dir}/${c_marker} failed."
++   fi
+ 
+    _techo "Finished backup (rsync return code: $ret)."
+    if [ "${ret}" -ne 0 ]; then
+       _techo "Warning: rsync exited non-zero, the backup may be broken (see rsync errors)."
+    fi
