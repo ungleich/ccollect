@@ -6,6 +6,8 @@ Thanks go to the following people (sorted by alphabet):
    - for testing and debugging (those I mean should know ;-)
 * Daniel Aubry
    - for reporting many hints
+* John Lawless
+   - A lot of patches and some very interesting discussions.
 * Markus Meier
    - for finding a really simple solution for choosing the right backup to
      clone from: Make it independent of the interval, simply choose the last
