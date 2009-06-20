@@ -1,0 +1,37 @@
+Hello Hacker,
+
+I really appreciate your interest in hacking this software, but
+I am kind of critical when seeing patches. Thus I created this
+file to give you some hints of my thinking quirks.
+
+
+Submitting patches
+------------------
+Make my life easier, make your life easier, use a version control system (vcs).
+For this software the preferred vcs is git. Clone the latest repo, create
+a new local branch (git checkout -b <branchname>) write down your ideas.
+
+When you're done, push all your stuff out to some public repo and drop a
+mail to the mailinglist, what you did and where to get it.
+
+
+Introduce a feature or change behaviour
+---------------------------------------
+Uhh, fancy! You have had a great idea, then it's time to change
+the major version, so others know that something changed.
+
+If the configuration format is changed, add a script to tools/
+to allow users upgrade their configuration to this major version.
+
+And now comes the most difficult part: Add documentation. Nobody
+benefits from your cool feature, if it is not known. I know, writing
+documentation is not so much fun, but you also expect good documentation
+for this software, don't you?
+
+
+If you think my thinking quirks must be corrected
+-------------------------------------------------
+See above ("Submitting patches") and submit a patch to this file.
+
+
+Thanks for reading.
