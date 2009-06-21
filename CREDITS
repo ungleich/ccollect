@@ -1,11 +1,15 @@
-Thanks go to the following people:
+Thanks go to the following people (sorted by alphabet):
 
-* the whole #cLinux channel
-   - for testing and debugging (those I mean should know ;-)
 * Alexey Maximov
    - for finding return-value and shell limitation bugs
+* #cLinux IRC channel on irc.freenode.org
+   - for testing and debugging (those I mean should know ;-)
 * Daniel Aubry
    - for reporting many hints
+* Jens-Christoph Brendel
+   - Added automatic backup manager (contrib/jbrendel-autobackup)
+* John Lawless
+   - A lot of patches and some very interesting discussions.
 * Markus Meier
    - for finding a really simple solution for choosing the right backup to
      clone from: Make it independent of the interval, simply choose the last

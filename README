@@ -17,6 +17,8 @@ ccollect was inspired by rsnapshot [1], which has some problems:
 Please use tools/report_success.sh to report success, if you are successfully
 using ccollect.
 
+Have a look at doc/HACKING, if you plan to change ccollect.
+
 A small try to visualize the differences in a table:
 
 +---------------+-------------------------------------------------------------+

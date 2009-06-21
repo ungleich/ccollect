@@ -149,8 +149,11 @@ i=1
 no_sources=0
 
 #
-# Create source "array"
+# Capture options and create source "array"
 #
+WE=""
+ALL=""
+NO_MORE_ARGS=""
 while [ "$#" -ge 1 ]; do
    eval arg=\"\$1\"; shift
 
@@ -166,7 +169,7 @@ while [ "$#" -ge 1 ]; do
             ALL=1
             ;;
          -v|--verbose)
-            VERBOSE=1
+            set -x
             ;;
          -p|--parallel)
             PARALLEL=1
@@ -189,13 +192,6 @@ done
 
 # also export number of sources
 export no_sources
-
-#
-# be really, really, really verbose
-#
-if [ "${VERBOSE}" = 1 ]; then
-   set -x
-fi
 
 #
 # Look, if we should take ALL sources
@@ -283,16 +279,15 @@ while [ "${i}" -lt "${no_sources}" ]; do
    backup="${CSOURCES}/${name}"
    c_source="${backup}/source"
    c_dest="${backup}/destination"
-   c_exclude="${backup}/exclude"
-   c_verbose="${backup}/verbose"
-   c_vverbose="${backup}/very_verbose"
-   c_rsync_extra="${backup}/rsync_options"
-   c_summary="${backup}/summary"
    c_pre_exec="${backup}/pre_exec"
    c_post_exec="${backup}/post_exec"
-   f_incomplete="delete_incomplete"
-   c_incomplete="${backup}/${f_incomplete}"
-   c_remote_host="${backup}/remote_host"
+   for opt in exclude verbose very_verbose rsync_options summary delete_incomplete remote_host ; do
+      if [ -f "${backup}/$opt" -o -f "${backup}/no_$opt"  ]; then
+         eval c_$opt=\"${backup}/$opt\"
+      else
+         eval c_$opt=\"${CDEFAULTS}/$opt\"
+      fi
+   done
 
    #
    # Marking backups: If we abort it's not removed => Backup is broken
@@ -303,16 +298,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # Times
    #
    begin_s=$(date +%s)
-
-   #
-   # unset possible options
-   #
-   EXCLUDE=""
-   RSYNC_EXTRA=""
-   SUMMARY=""
-   VERBOSE=""
-   VVERBOSE=""
-   DELETE_INCOMPLETE=""
 
    _techo "Beginning to backup"
 
@@ -408,13 +393,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
    ( pcmd cd "$ddir" ) || _exit_err "Cannot change to ${ddir}. Skipping."
 
 
-   #
-   # Check whether to delete incomplete backups
-   #
-   if [ -f "${c_incomplete}" -o -f "${CDEFAULTS}/${f_incomplete}" ]; then
-      DELETE_INCOMPLETE="yes"
-   fi
-
    # NEW method as of 0.6:
    # - insert ccollect default parameters
    # - insert options
@@ -442,10 +420,12 @@ while [ "${i}" -lt "${no_sources}" ]; do
    fi
 
    #
-   # Verbosity for rsync
+   # Verbosity for rsync, rm, and mkdir
    #
-   if [ -f "${c_vverbose}" ]; then
+   VVERBOSE=""
+   if [ -f "${c_very_verbose}" ]; then
       set -- "$@" "-vv"
+      VVERBOSE="-v"
    elif [ -f "${c_verbose}" ]; then
       set -- "$@" "-v"
    fi
@@ -453,33 +433,25 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # extra options for rsync provided by the user
    #
-   if [ -f "${c_rsync_extra}" ]; then
+   if [ -f "${c_rsync_options}" ]; then
       while read line; do
          set -- "$@" "$line"
-      done < "${c_rsync_extra}"
+      done < "${c_rsync_options}"
    fi
 
    #
    # Check for incomplete backups
    #
-   pcmd ls -1 "$ddir/${INTERVAL}"*".${c_marker}" > "${TMP}" 2>/dev/null
-
-   i=0
-   while read incomplete; do
-      eval incomplete_$i=\"$(echo ${incomplete} | sed "s/\\.${c_marker}\$//")\"
-      i=$(($i+1))
-   done < "${TMP}"
-
-   j=0
-   while [ "$j" -lt "$i" ]; do
-      eval realincomplete=\"\$incomplete_$j\"
-      _techo "Incomplete backup: ${realincomplete}"
-      if [ "${DELETE_INCOMPLETE}" = "yes" ]; then
-         _techo "Deleting ${realincomplete} ..."
-         pcmd rm $VVERBOSE -rf "${ddir}/${realincomplete}" || \
-            _exit_err "Removing ${realincomplete} failed."
+   pcmd ls -1 "$ddir/${INTERVAL}"*".${c_marker}" 2>/dev/null | while read marker; do
+      incomplete="$(echo ${marker} | sed "s/\\.${c_marker}\$//")"
+      _techo "Incomplete backup: ${incomplete}"
+      if [ -f "${c_delete_incomplete}" ]; then
+         _techo "Deleting ${incomplete} ..."
+         pcmd rm $VVERBOSE -rf "${incomplete}" || \
+            _exit_err "Removing ${incomplete} failed."
+         pcmd rm $VVERBOSE -f "${marker}" || \
+            _exit_err "Removing ${marker} failed."
       fi
-      j=$(($j+1))
    done
 
    #
