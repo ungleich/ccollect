@@ -21,7 +21,7 @@ Supported and tested operating systems and architectures
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 `ccollect` was successfully tested on the following platforms:
 
-- GNU/Linux on amd64/hppa/i386/ppc
+- GNU/Linux on amd64/hppa/i386/ppc/ARM
 - FreeBSD   on amd64/i386
 - Mac OS X 10.5
 - NetBSD    on alpha/amd64/i386/sparc/sparc64
