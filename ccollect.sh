@@ -20,6 +20,9 @@
 # Initially written for SyGroup (www.sygroup.ch)
 # Date: Mon Nov 14 11:45:11 CET 2005
 
+# Error upon expanding unset variables:
+set -u
+
 #
 # Standard variables (stolen from cconf)
 #
