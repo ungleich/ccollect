@@ -281,7 +281,8 @@ while [ "${i}" -lt "${no_sources}" ]; do
    c_dest="${backup}/destination"
    c_pre_exec="${backup}/pre_exec"
    c_post_exec="${backup}/post_exec"
-   for opt in exclude verbose very_verbose rsync_options summary delete_incomplete remote_host ; do
+   for opt in exclude verbose very_verbose rsync_options summary delete_incomplete \
+         remote_host rsync_failure_codes ; do
       if [ -f "${backup}/$opt" -o -f "${backup}/no_$opt"  ]; then
          eval c_$opt=\"${backup}/$opt\"
       else
@@ -530,16 +531,31 @@ while [ "${i}" -lt "${no_sources}" ]; do
 
    _techo "Transferring files..."
    rsync "$@" "${source}" "${destination_full}"; ret=$?
-
-   #
-   # remove marking here
-   #
-   pcmd rm "${destination_dir}.${c_marker}" || \
-      _exit_err "Removing ${destination_dir}/${c_marker} failed."
-
    _techo "Finished backup (rsync return code: $ret)."
-   if [ "${ret}" -ne 0 ]; then
-      _techo "Warning: rsync exited non-zero, the backup may be broken (see rsync errors)."
+
+   #
+   # Check if rsync exit code indicates failure.
+   #
+   fail=""
+   if [ -f "$c_rsync_failure_codes" ]; then
+      while read code ; do
+         if [ "$ret" = "$code" ]; then
+            fail=1
+         fi
+      done <"$c_rsync_failure_codes"
+   fi
+
+   #
+   # Remove marking here unless rsync failed.
+   #
+   if [ -z "$fail" ]; then
+      pcmd rm "${destination_dir}.${c_marker}" || \
+         _exit_err "Removing ${destination_dir}/${c_marker} failed."
+      if [ "${ret}" -ne 0 ]; then
+         _techo "Warning: rsync exited non-zero, the backup may be broken (see rsync errors)."
+      fi
+   else
+      _techo "Warning: rsync failed with return code $ret."
    fi
 
    #

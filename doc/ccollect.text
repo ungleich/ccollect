@@ -359,6 +359,7 @@ Additionally a source may have the following files:
    
    - `delete_incomplete`   delete incomplete backups
    - `remote_host`         host to backup to
+   - `rsync_failure_codes` list of rsync exit codes that indicate complete failure
 
 
 Example:
@@ -573,6 +574,15 @@ If you create the file `delete_incomplete` in a source specification directory,
 `ccollect` will look for incomplete backups (when the whole `ccollect` process
 was interrupted) and remove them. Without this file `ccollect` will only warn
 the user.
+
+Detailed description of "rsync_failure_codes"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+If you have the file `rsync_failure_codes` in your source configuration
+directory, it should contain a newline-separated list of numbers representing
+rsync exit codes.  If rsync exits with any code in this list, a marker will
+be left in the destination directory indicating failure of this backup.  If
+you have enabled delete_incomplete, then this backup will be deleted during
+the next ccollect run on the same interval.
 
 
 Hints
