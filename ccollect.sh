@@ -333,19 +333,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
    fi
 
    #
-   # interval definition: First try source specific, fallback to default
-   #
-   c_interval="$(cat "${backup}/intervals/${INTERVAL}" 2>/dev/null)"
-
-   if [ -z "${c_interval}" ]; then
-      c_interval="$(cat "${CDEFAULTS}/intervals/${INTERVAL}" 2>/dev/null)"
-
-      if [ -z "${c_interval}" ]; then
-         _exit_err "No definition for interval \"${INTERVAL}\" found. Skipping."
-      fi
-   fi
-
-   #
    # Source checks
    #
    if [ ! -f "${c_source}" ]; then
@@ -463,6 +450,19 @@ while [ "${i}" -lt "${no_sources}" ]; do
             _exit_err "Removing ${marker} failed."
       fi
    done
+
+   #
+   # interval definition: First try source specific, fallback to default
+   #
+   c_interval="$(cat "${backup}/intervals/${INTERVAL}" 2>/dev/null)"
+
+   if [ -z "${c_interval}" ]; then
+      c_interval="$(cat "${CDEFAULTS}/intervals/${INTERVAL}" 2>/dev/null)"
+
+      if [ -z "${c_interval}" ]; then
+         _exit_err "No definition for interval \"${INTERVAL}\" found. Skipping."
+      fi
+   fi
 
    #
    # check if maximum number of backups is reached, if so remove
