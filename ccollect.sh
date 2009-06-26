@@ -452,7 +452,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # Check for incomplete backups
    #
-   pcmd ls -1 "$ddir/${INTERVAL}"*".${c_marker}" 2>/dev/null | while read marker; do
+   pcmd ls -1 "${ddir}/"*".${c_marker}" 2>/dev/null | while read marker; do
       incomplete="$(echo ${marker} | sed "s/\\.${c_marker}\$//")"
       _techo "Incomplete backup: ${incomplete}"
       if [ -f "${c_delete_incomplete}" ]; then
