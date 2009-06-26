@@ -1,19 +1,19 @@
 #!/bin/sh
-# 
+#
 # 2005-2009 Nico Schottelius (nico-ccollect at schottelius.org)
-# 
+#
 # This file is part of ccollect.
 #
 # ccollect is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # ccollect is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with ccollect. If not, see <http://www.gnu.org/licenses/>.
 #
@@ -163,7 +163,7 @@ while [ "$#" -ge 1 ]; do
    if [ "${NO_MORE_ARGS}" = 1 ]; then
         eval source_${no_sources}=\"${arg}\"
         no_sources=$((${no_sources}+1))
-        
+
         # make variable available for subscripts
         eval export source_${no_sources}
    else
@@ -415,13 +415,13 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # - insert ccollect default parameters
    # - insert options
    # - insert user options
-   
+
    #
    # rsync standard options
    #
 
    set -- "$@" "--archive" "--delete" "--numeric-ids" "--relative"   \
-               "--delete-excluded" "--sparse" 
+               "--delete-excluded" "--sparse"
 
    #
    # exclude list
@@ -480,7 +480,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
       | sed 's/^ *//g')"  || _exit_err "Counting backups failed"
 
    _techo "Existing backups: ${count} Total keeping backups: ${c_interval}"
-   
+
    if [ "${count}" -ge "${c_interval}" ]; then
       substract=$((${c_interval} - 1))
       remove=$((${count} - ${substract}))
@@ -512,7 +512,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    last_dir="$(pcmd ls -${TSORT}p1 "${ddir}" | grep '/$' | head -n 1)" || \
       _exit_err "Failed to list contents of ${ddir}."
-   
+
    #
    # clone from old backup, if existing
    #
@@ -520,7 +520,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
       set -- "$@" "--link-dest=${ddir}/${last_dir}"
       _techo "Hard linking from ${last_dir}"
    fi
-      
+
 
    # set time when we really begin to backup, not when we began to remove above
    destination_date=$(${CDATE})
