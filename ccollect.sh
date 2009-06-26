@@ -285,7 +285,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    c_pre_exec="${backup}/pre_exec"
    c_post_exec="${backup}/post_exec"
    for opt in exclude verbose very_verbose rsync_options summary delete_incomplete \
-         remote_host rsync_failure_codes mtime ; do
+         remote_host rsync_failure_codes mtime quiet_if_down ; do
       if [ -f "${backup}/$opt" -o -f "${backup}/no_$opt"  ]; then
          eval c_$opt=\"${backup}/$opt\"
       else
@@ -368,7 +368,14 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # Verify source is up and accepting connections before deleting any old backups
    #
-   rsync "${source}" >/dev/null || _exit_err "Source ${source} is not readable. Skipping."
+   if ! rsync "${source}" >/dev/null 2>"${TMP}" ; then
+      if [ -f "${c_quiet_if_down}" ]; then
+         _exit_err "Source ${source} is not readable. Skipping."
+      else
+         cat "${TMP}"
+         _exit_err "Error: source ${source} is not readable. Skipping."
+      fi
+   fi
 
    #
    # Destination is a path
