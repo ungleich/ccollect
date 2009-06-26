@@ -285,13 +285,20 @@ while [ "${i}" -lt "${no_sources}" ]; do
    c_pre_exec="${backup}/pre_exec"
    c_post_exec="${backup}/post_exec"
    for opt in exclude verbose very_verbose rsync_options summary delete_incomplete \
-         remote_host rsync_failure_codes ; do
+         remote_host rsync_failure_codes mtime ; do
       if [ -f "${backup}/$opt" -o -f "${backup}/no_$opt"  ]; then
          eval c_$opt=\"${backup}/$opt\"
       else
          eval c_$opt=\"${CDEFAULTS}/$opt\"
       fi
    done
+
+   #
+   # With mtime option, sort backup directories with mtime (default is ctime)
+   #
+   if [ -f "$c_mtime" ] ; then
+      TSORT="t"
+   fi
 
    #
    # Marking backups: If we abort it's not removed => Backup is broken
@@ -495,9 +502,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
 
    #
    # Check for backup directory to clone from: Always clone from the latest one!
-   #
-   # Use ls -1c instead of -1t, because last modification maybe the same on all
-   # and metadate update (-c) is updated by rsync locally.
    #
    last_dir="$(pcmd ls -${TSORT}p1 "${ddir}" | grep '/$' | head -n 1)" || \
       _exit_err "Failed to list contents of ${ddir}."

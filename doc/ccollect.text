@@ -360,6 +360,7 @@ Additionally a source may have the following files:
    - `delete_incomplete`   delete incomplete backups
    - `remote_host`         host to backup to
    - `rsync_failure_codes` list of rsync exit codes that indicate complete failure
+   - `mtime`               Sort backup directories based on their modification time
 
 
 Example:
@@ -584,6 +585,18 @@ be left in the destination directory indicating failure of this backup.  If
 you have enabled delete_incomplete, then this backup will be deleted during
 the next ccollect run on the same interval.
 
+mtime
+^^^^^
+By default, ccollect.sh chooses the most recent backup directory for cloning or
+the oldest for deletion based on the directory's last change time (ctime).
+With this option, the sorting is done based on modification time (mtime).  With
+this version of ccollect.sh, the ctime and mtime of your backups will normally
+be the same and this option has no effect.  However, if you, for example, move
+your backups to another hard disk using cp -a or rsync -a, you should use this
+option because the ctimes are not preserved during such operations.
+
+If you have any backups in your repository made with ccollect version 0.7.1 or
+earlier, do not use this option and do not move your repository.
 
 Hints
 -----
