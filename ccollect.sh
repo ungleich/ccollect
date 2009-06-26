@@ -238,14 +238,6 @@ if [ -x "${CPREEXEC}" ]; then
 fi
 
 #
-# check default configuration
-#
-
-D_FILE_INTERVAL="${CDEFAULTS}/intervals/${INTERVAL}"
-D_INTERVAL=$(cat "${D_FILE_INTERVAL}" 2>/dev/null)
-
-
-#
 # Let's do the backup
 #
 i=0
@@ -346,7 +338,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    c_interval="$(cat "${backup}/intervals/${INTERVAL}" 2>/dev/null)"
 
    if [ -z "${c_interval}" ]; then
-      c_interval="${D_INTERVAL}"
+      c_interval="$(cat "${CDEFAULTS}/intervals/${INTERVAL}" 2>/dev/null)"
 
       if [ -z "${c_interval}" ]; then
          _exit_err "No definition for interval \"${INTERVAL}\" found. Skipping."
