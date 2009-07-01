@@ -33,14 +33,14 @@ __myname=${0##*/}; __abs_myname="$__abs_mydir/$__myname"
 #
 # where to find our configuration and temporary file
 #
-CCOLLECT_CONF=${CCOLLECT_CONF:-/etc/ccollect}
-CSOURCES=${CCOLLECT_CONF}/sources
-CDEFAULTS=${CCOLLECT_CONF}/defaults
+CCOLLECT_CONF="${CCOLLECT_CONF:-/etc/ccollect}"
+CSOURCES="${CCOLLECT_CONF}/sources"
+CDEFAULTS="${CCOLLECT_CONF}/defaults"
 CPREEXEC="${CDEFAULTS}/pre_exec"
 CPOSTEXEC="${CDEFAULTS}/post_exec"
 
 TMP=$(mktemp "/tmp/${__myname}.XXXXXX")
-VERSION=0.8
+VERSION="0.8"
 RELEASE="2009-XX-XX"
 HALF_VERSION="ccollect ${VERSION}"
 FULL_VERSION="ccollect ${VERSION} (${RELEASE})"
@@ -96,8 +96,8 @@ add_name()
 #
 pcmd()
 {
-   if [ "$remote_host" ]; then
-      ssh "$remote_host" "$@"
+   if [ "${remote_host}" ]; then
+      ssh "${remote_host}" "$@"
    else
       "$@"
    fi
@@ -232,7 +232,7 @@ fi
 #
 
 D_FILE_INTERVAL="${CDEFAULTS}/intervals/${INTERVAL}"
-D_INTERVAL=$(cat "${D_FILE_INTERVAL}" 2>/dev/null)
+D_INTERVAL="$(cat "${D_FILE_INTERVAL}" 2>/dev/null)"
 
 
 #
@@ -275,7 +275,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    c_pre_exec="${backup}/pre_exec"
    c_post_exec="${backup}/post_exec"
    for opt in exclude verbose very_verbose rsync_options summary delete_incomplete remote_host ; do
-      if [ -f "${backup}/$opt" -o -f "${backup}/no_$opt"  ]; then
+      if [ -f "${backup}/${opt}" -o -f "${backup}/no_${opt}"  ]; then
          eval c_$opt=\"${backup}/$opt\"
       else
          eval c_$opt=\"${CDEFAULTS}/$opt\"
@@ -290,7 +290,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # Times
    #
-   begin_s=$(date +%s)
+   begin_s="$(date +%s)"
 
    _techo "Beginning to backup"
 
@@ -309,8 +309,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    fi
 
    #
-   # first execute pre_exec, which may generate destination or other
-   # parameters
+   # first execute pre_exec, which may generate destination or other parameters
    #
    if [ -x "${c_pre_exec}" ]; then
       _techo "Executing ${c_pre_exec} ..."
@@ -358,18 +357,17 @@ while [ "${i}" -lt "${no_sources}" ]; do
    if [ ! -f "${c_dest}" ]; then
       _exit_err "Destination ${c_dest} is not a file. Skipping."
    else
-      ddir=$(cat "${c_dest}"); ret="$?"
+      ddir="$(cat "${c_dest}")"; ret="$?"
       if [ "${ret}" -ne 0 ]; then
          _exit_err "Destination ${c_dest} is not readable. Skipping."
       fi
    fi
 
    #
-   # do we backup to a remote host? then set pre-cmd
+   # Set pre-cmd, if we backup to a remote host.
    #
    if [ -f "${c_remote_host}" ]; then
-      # adjust ls and co
-      remote_host=$(cat "${c_remote_host}"); ret="$?"
+      remote_host="$(cat "${c_remote_host}")"; ret="$?"
       if [ "${ret}" -ne 0 ]; then
          _exit_err "Remote host file ${c_remote_host} exists, but is not readable. Skipping."
       fi
@@ -385,7 +383,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    ( pcmd cd "$ddir" ) || _exit_err "Cannot change to ${ddir}. Skipping."
 
-
    # NEW method as of 0.6:
    # - insert ccollect default parameters
    # - insert options
@@ -394,7 +391,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # rsync standard options
    #
-
    set -- "$@" "--archive" "--delete" "--numeric-ids" "--relative"   \
                "--delete-excluded" "--sparse" 
 
@@ -435,7 +431,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # Check for incomplete backups
    #
-   pcmd ls -1 "$ddir/${INTERVAL}"*".${c_marker}" 2>/dev/null | while read marker; do
+   pcmd ls -1 "${ddir}/${INTERVAL}"*".${c_marker}" 2>/dev/null | while read marker; do
       incomplete="$(echo ${marker} | sed "s/\\.${c_marker}\$//")"
       _techo "Incomplete backup: ${incomplete}"
       if [ -f "${c_delete_incomplete}" ]; then
@@ -457,30 +453,29 @@ while [ "${i}" -lt "${no_sources}" ]; do
    _techo "Existing backups: ${count} Total keeping backups: ${c_interval}"
    
    if [ "${count}" -ge "${c_interval}" ]; then
-      substract=$((${c_interval} - 1))
-      remove=$((${count} - ${substract}))
+      substract="$((${c_interval} - 1))"
+      remove="$((${count} - ${substract}))"
       _techo "Removing ${remove} backup(s)..."
 
-      pcmd ls -${TSORT}p1r "$ddir" | grep "^${INTERVAL}\..*/\$" | \
+      pcmd ls -${TSORT}p1r "${ddir}" | grep "^${INTERVAL}\..*/\$" | \
         head -n "${remove}" > "${TMP}"      || \
         _exit_err "Listing old backups failed"
 
       i=0
       while read to_remove; do
          eval remove_$i=\"${to_remove}\"
-         i=$(($i+1))
+         i="$(($i+1))"
       done < "${TMP}"
 
       j=0
-      while [ "$j" -lt "$i" ]; do
+      while [ "${j}" -lt "${i}" ]; do
          eval to_remove=\"\$remove_$j\"
          _techo "Removing ${to_remove} ..."
          pcmd rm ${VVERBOSE} -rf "${ddir}/${to_remove}" || \
             _exit_err "Removing ${to_remove} failed."
-         j=$(($j+1))
+         j="$(($j+1))"
       done
    fi
-
 
    #
    # Check for backup directory to clone from: Always clone from the latest one!
@@ -501,7 +496,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
       
 
    # set time when we really begin to backup, not when we began to remove above
-   destination_date=$(${CDATE})
+   destination_date="$(${CDATE})"
    destination_dir="${ddir}/${INTERVAL}.${destination_date}.$$"
    destination_full="${destination}/${INTERVAL}.${destination_date}.$$"
 
@@ -543,19 +538,19 @@ while [ "${i}" -lt "${no_sources}" ]; do
       "${c_post_exec}"; ret=$?
       _techo "Finished ${c_post_exec}."
 
-      if [ ${ret} -ne 0 ]; then
+      if [ "${ret}" -ne 0 ]; then
          _exit_err "${c_post_exec} failed."
       fi
    fi
 
    # Calculation
-   end_s=$(date +%s)
+   end_s="$(date +%s)"
 
-   full_seconds=$((${end_s} - ${begin_s}))
-   hours=$((${full_seconds} / 3600))
-   seconds=$((${full_seconds} - (${hours} * 3600)))
-   minutes=$((${seconds} / 60))
-   seconds=$((${seconds} - (${minutes} * 60)))
+   full_seconds="$((${end_s} - ${begin_s}))"
+   hours="$((${full_seconds} / 3600))"
+   seconds="$((${full_seconds} - (${hours} * 3600)))"
+   minutes="$((${seconds} / 60))"
+   seconds="$((${seconds} - (${minutes} * 60)))"
 
    _techo "Backup lasted: ${hours}:${minutes}:${seconds} (h:m:s)"
 
@@ -578,7 +573,7 @@ if [ -x "${CPOSTEXEC}" ]; then
    "${CPOSTEXEC}"; ret=$?
    _techo "Finished ${CPOSTEXEC} (return code: ${ret})."
 
-   if [ ${ret} -ne 0 ]; then
+   if [ "${ret}" -ne 0 ]; then
       _techo "${CPOSTEXEC} failed."
    fi
 fi
