@@ -179,12 +179,12 @@ while [ "$#" -ge 1 ]; do
    if [ -z "$INTERVAL" ]; then
       INTERVAL="$arg"
    else
-        eval source_${no_sources}=\"${arg}\"
-        no_sources="$((${no_sources}+1))"
-        
-        # make variable available for subscripts
-        eval export source_${no_sources}
-   fi
+     eval source_${no_sources}=\"${arg}\"
+     no_sources="$((${no_sources}+1))"
+     
+     # make variable available for subscripts
+     eval export source_${no_sources}
+fi
 done
 
 #
