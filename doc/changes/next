@@ -1,3 +1,4 @@
 * Introduce consistenst time sorting (John Lawless)
 * Check for source connectivity before trying backup (John Lawless)
 * Defensive programming patch (John Lawless)
+* Some code cleanups (argument parsing, usage) (Nico Schottelius)
