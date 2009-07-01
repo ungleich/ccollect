@@ -2,3 +2,4 @@
 * Check for source connectivity before trying backup (John Lawless)
 * Defensive programming patch (John Lawless)
 * Some code cleanups (argument parsing, usage) (Nico Schottelius)
+* Only consider directories as sources when using -a (Nico Schottelius)
