@@ -57,7 +57,7 @@ MANDOCS  = doc/man/ccollect.text 			\
 	doc/man/ccollect_logwrapper.text			\
 	doc/man/ccollect_list_intervals.text
 
-DOCS     = ${MANDOCS} doc/ccollect.text doc/ccollect-DE.text
+DOCS     = ${MANDOCS} doc/ccollect.text
 
 #
 # Doku
