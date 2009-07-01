@@ -53,9 +53,6 @@ Included documentation:
 doc/ccollect.text          Manual in text format
 doc/ccollect.html          Manual in xhtml (generated)
 
-doc/ccollect-DE.text       German manual in text format (externally maintained)
-doc/ccollect-DE.html       German manual in xhtml (generated)
-
 doc/man/ccollect.text      Manpage in text format
 doc/man/ccollect.man       Manpage in manpage format (generated)
 
