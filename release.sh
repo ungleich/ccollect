@@ -33,8 +33,10 @@ DESCRIPTION="$1"; shift
 NAME=ccollect-${VERSION}
 TARNAME=${NAME}.tar.bz2
 TARLOCAL=../${TARNAME}
-DHOST=nico@home.schottelius.org
-DDIR=www/unix.schottelius.org/www/ccollect/
+#DHOST=nico@home.schottelius.org
+DHOST=nico@localhost
+#DDIR=www/unix.schottelius.org/www/ccollect/
+DDIR=/home/users/nico/privat/computer/net/netzseiten/www.nico.schottelius.org/src/software/ccollect
 DESTINATION="$DHOST:$DDIR"
 
 set -e

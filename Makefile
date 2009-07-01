@@ -43,8 +43,8 @@ path_dir=/usr/local/bin
 path_destination=${path_dir}/${CCOLLECT_DEST}
 
 # where to publish
-host=home.schottelius.org
-dir=/home/server/www/nico/unix.schottelius.org/www/ccollect/
+host=localhost
+dir=/home/users/nico/privat/computer/net/netzseiten/www.nico.schottelius.org/src/software/ccollect
 docdir=${dir}/doc
 
 #
