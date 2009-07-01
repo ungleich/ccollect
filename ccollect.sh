@@ -40,8 +40,8 @@ CPREEXEC="${CDEFAULTS}/pre_exec"
 CPOSTEXEC="${CDEFAULTS}/post_exec"
 
 TMP=$(mktemp "/tmp/${__myname}.XXXXXX")
-VERSION=0.7.1
-RELEASE="2009-02-02"
+VERSION=0.8
+RELEASE="2009-XX-XX"
 HALF_VERSION="ccollect ${VERSION}"
 FULL_VERSION="ccollect ${VERSION} (${RELEASE})"
 
@@ -55,9 +55,13 @@ DDATE="date +%Y-%m-%d-%H:%M:%S"
 TSORT="tc"
 
 #
-# unset parallel execution
+# unset values
 #
 PARALLEL=""
+USE_ALL=""
+export INTERVAL=""
+export no_sources=0
+
 
 #
 # catch signals
@@ -87,6 +91,9 @@ add_name()
    awk "{ print \"[${name}] \" \$0 }"
 }
 
+#
+# Execute on remote host, if backing up to a remote host
+#
 pcmd()
 {
    if [ "$remote_host" ]; then
@@ -96,21 +103,15 @@ pcmd()
    fi
 }
 
-#
-# Version
-#
 display_version()
 {
    echo "${FULL_VERSION}"
    exit 0
 }
 
-#
-# Tell how to use us
-#
 usage()
 {
-   echo "${__myname}: <interval name> [args] <sources to backup>"
+   echo "${__myname}: [args] <interval name> <sources to backup>"
    echo ""
    echo "   ccollect creates (pseudo) incremental backups"
    echo ""
@@ -128,16 +129,38 @@ usage()
 }
 
 #
-# need at least interval and one source or --all
+# Parse options
 #
+while [ "$#" -ge 1 ]; do
+   case "$1" in
+      -a|--all)
+         USE_ALL=1
+         ;;
+      -v|--verbose)
+         set -x
+         ;;
+      -p|--parallel)
+         PARALLEL=1
+         ;;
+      -h|--help)
+         usage
+         ;;
+      -V|--version)
+         display_version
+         ;;
+      -h|--help|-*)
+         usage
+         ;;
+      --)
+         break
+         ;;
+      *)
+         break
+         ;;
+   esac
+   shift
+done
 
-if [ $# -lt 2 ]; then
-   if [ "$1" = "-V" -o "$1" = "--version" ]; then
-      display_version
-   else
-      usage
-   fi
-fi
 
 #
 # check for configuraton directory
@@ -146,68 +169,32 @@ fi
    "\"${CCOLLECT_CONF}\" (is \$CCOLLECT_CONF properly set?)"
 
 #
-# Filter arguments
+# Capture sources in an "array"
 #
-export INTERVAL="$1"; shift
-i=1
-no_sources=0
-
-#
-# Capture options and create source "array"
-#
-WE=""
-ALL=""
-NO_MORE_ARGS=""
 while [ "$#" -ge 1 ]; do
    eval arg=\"\$1\"; shift
 
-   if [ "${NO_MORE_ARGS}" = 1 ]; then
+   if [ -z "$INTERVAL" ]; then
+      INTERVAL="$arg"
+   else
         eval source_${no_sources}=\"${arg}\"
-        no_sources=$((${no_sources}+1))
+        no_sources="$((${no_sources}+1))"
         
         # make variable available for subscripts
         eval export source_${no_sources}
-   else
-      case "${arg}" in
-         -a|--all)
-            ALL=1
-            ;;
-         -v|--verbose)
-            set -x
-            ;;
-         -p|--parallel)
-            PARALLEL=1
-            ;;
-         -h|--help)
-            usage
-            ;;
-         --)
-            NO_MORE_ARGS=1
-            ;;
-         *)
-            eval source_${no_sources}=\"$arg\"
-            no_sources=$(($no_sources+1))
-            ;;
-      esac
    fi
-
-   i=$(($i+1))
 done
-
-# also export number of sources
-export no_sources
 
 #
 # Look, if we should take ALL sources
 #
-if [ "${ALL}" = 1 ]; then
-   # reset everything specified before
-   no_sources=0
+if [ "${USE_ALL}" = 1 ]; then
+   no_sources="0"
 
    #
    # get entries from sources
    #
-   cwd=$(pwd -P)
+   cwd="$(pwd -P)"
    ( cd "${CSOURCES}" && ls > "${TMP}" ); ret=$?
 
    [ "${ret}" -eq 0 ] || _exit_err "Listing of sources failed. Aborting."
@@ -221,7 +208,7 @@ fi
 #
 # Need at least ONE source to backup
 #
-if [ "${no_sources}" -lt 1 ]; then
+if [ "${no_sources}" -lt 1 -o -z "${INTERVAL}" ]; then
    usage
 else
    _techo "${HALF_VERSION}: Beginning backup using interval ${INTERVAL}"
@@ -595,4 +582,4 @@ if [ -x "${CPOSTEXEC}" ]; then
 fi
 
 rm -f "${TMP}"
-_techo "Finished ${WE}"
+_techo "Finished"
