@@ -111,20 +111,22 @@ display_version()
 
 usage()
 {
-   echo "${__myname}: [args] <interval name> <sources to backup>"
-   echo ""
-   echo "   ccollect creates (pseudo) incremental backups"
-   echo ""
-   echo "   -h, --help:          Show this help screen"
-   echo "   -p, --parallel:      Parallelise backup processes"
-   echo "   -a, --all:           Backup all sources specified in ${CSOURCES}"
-   echo "   -v, --verbose:       Be very verbose (uses set -x)"
-   echo "   -V, --version:       Print version information"
-   echo ""
-   echo "   This is version ${VERSION}, released on ${RELEASE}"
-   echo "   (the first version was written on 2005-12-05 by Nico Schottelius)."
-   echo ""
-   echo "   Retrieve latest ccollect at http://www.nico.schottelius.org/software/ccollect/"
+   cat << eof
+${__myname}: [args] <interval name> <sources to backup>
+
+   ccollect creates (pseudo) incremental backups
+
+   -h, --help:          Show this help screen
+   -p, --parallel:      Parallelise backup processes
+   -a, --all:           Backup all sources specified in ${CSOURCES}
+   -v, --verbose:       Be very verbose (uses set -x)
+   -V, --version:       Print version information
+
+   This is version ${VERSION}, released on ${RELEASE}
+   (the first version was written on 2005-12-05 by Nico Schottelius).
+
+   Retrieve latest ccollect at http://www.nico.schottelius.org/software/ccollect/
+eof
    exit 0
 }
 
