@@ -365,7 +365,7 @@ Example:
 --------------------------------------------------------------------------------
    [10:47] zaphodbeeblebrox:ccollect-0.2% ls -l  conf/sources/testsource2
    insgesamt 12
-   lrwxrwxrwx  1 nico users   20 2005-11-17 16:44 destination -> /home/nico/backupdir
+   lrwxrwxrwx  1 nico users   20 2005-11-17 16:44 destination
    -rw-r--r--  1 nico users   62 2005-12-07 17:43 exclude
    drwxr-xr-x  2 nico users 4096 2005-12-07 17:38 intervals
    -rw-r--r--  1 nico users   15 2005-11-17 16:44 source
@@ -905,12 +905,12 @@ srwali01:~# cd /etc/ccollect/sources
 srwali01:/etc/ccollect/sources# mkdir windos-wl6
 srwali01:/etc/ccollect/sources# cd windos-wl6/
 srwali01:/etc/ccollect/sources/windos-wl6# echo /mnt/win/SYS/WL6 > source
-srwali01:/etc/ccollect/sources/windos-wl6# ln -s /mnt/hdbackup/wl6 destination
+srwali01:/etc/ccollect/sources/windos-wl6# echo /mnt/hdbackup/wl6 > destination
 srwali01:/etc/ccollect/sources/windos-wl6# mkdir /mnt/hdbackup/wl6
 srwali01:/etc/ccollect/sources/windos-wl6# cd ..
 srwali01:/etc/ccollect/sources# mkdir windos-daten
 srwali01:/etc/ccollect/sources/windos-daten# echo /mnt/win/Daten > source
-srwali01:/etc/ccollect/sources/windos-daten# ln -s /mnt/hdbackup/windos-daten destination
+srwali01:/etc/ccollect/sources/windos-daten# echo /mnt/hdbackup/windos-daten > destination
 srwali01:/etc/ccollect/sources/windos-daten# mkdir /mnt/hdbackup/windos-daten
 
 # Now add some remote source
