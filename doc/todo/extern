@@ -21,3 +21,6 @@ to have. This means I won't code them, so somebody can code them.
       x intervalls
       x pre-/post exec
    o (X)dialog based
+
+- add option ("run_only_once") to prevent ccollect to run twice
+  (per source/general)
