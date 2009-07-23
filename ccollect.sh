@@ -165,6 +165,15 @@ while [ "$#" -ge 1 ]; do
    shift
 done
 
+#
+# Setup interval
+#
+if [ $# -ge 1 ]; then
+   export INTERVAL="$1"
+   shift
+else
+   usage
+fi
 
 #
 # check for configuraton directory
