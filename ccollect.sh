@@ -181,22 +181,6 @@ fi
 [ -d "${CCOLLECT_CONF}" ] || _exit_err "No configuration found in " \
    "\"${CCOLLECT_CONF}\" (is \$CCOLLECT_CONF properly set?)"
 
-#
-# Capture sources in an "array"
-#
-while [ "$#" -ge 1 ]; do
-   eval arg=\"\$1\"; shift
-
-   if [ -z "$INTERVAL" ]; then
-      INTERVAL="$arg"
-   else
-     eval source_${no_sources}=\"${arg}\"
-     no_sources="$((${no_sources}+1))"
-     
-     # make variable available for subscripts
-     eval export source_${no_sources}
-fi
-done
 
 #
 # Look, if we should take ALL sources
@@ -204,6 +188,7 @@ done
 if [ "${USE_ALL}" = 1 ]; then
    no_sources="0"
 
+if [ "${USE_ALL}" = 1 ]; then
    #
    # get entries from sources
    #
@@ -215,6 +200,19 @@ if [ "${USE_ALL}" = 1 ]; then
       eval source_${no_sources}=\"${tmp}\"
       no_sources=$((${no_sources}+1))
    done < "${TMP}"
+else
+   #
+   # Get sources from command line
+   #
+   while [ "$#" -ge 1 ]; do
+      eval arg=\"\$1\"; shift
+
+      eval source_${no_sources}=\"${arg}\"
+      no_sources="$((${no_sources}+1))"
+     
+      # make variable available for subscripts
+      eval export source_${no_sources}
+   done
 fi
 
 #
