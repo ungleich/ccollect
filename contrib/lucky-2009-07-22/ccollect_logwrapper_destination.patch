@@ -1,0 +1,14 @@
+31c31,41
+< logdir="${LOGCONF}/destination"
+---
+> c_dest="${LOGCONF}/destination"
+> 
+> if [ ! -f ${c_dest} ]; then
+>     _exit_err "Destination ${c_dest} is not a file. Skipping."
+> else 
+>     logdir=$(cat "${c_dest}"); ret="$?"
+>     if [ "${ret}" -ne 0 ]; then
+>         _exit_err "Destination ${c_dest} is not readable. Skipping."
+>     fi
+> fi
+> 
