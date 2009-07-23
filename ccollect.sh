@@ -192,7 +192,7 @@ if [ "${USE_ALL}" = 1 ]; then
    #
    # get entries from sources
    #
-   ( cd "${CSOURCES}" && ls -p1 | grep '/$' > "${TMP}" ); ret=$?
+   ( cd "${CSOURCES}" && ls -1 > "${TMP}" ); ret=$?
 
    [ "${ret}" -eq 0 ] || _exit_err "Listing of sources failed. Aborting."
 
