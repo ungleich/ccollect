@@ -282,13 +282,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
    c_dest="${backup}/destination"
    c_pre_exec="${backup}/pre_exec"
    c_post_exec="${backup}/post_exec"
-   for opt in exclude verbose very_verbose rsync_options summary delete_incomplete remote_host ; do
-      if [ -f "${backup}/${opt}" -o -f "${backup}/no_${opt}"  ]; then
-         eval c_$opt=\"${backup}/$opt\"
-      else
-         eval c_$opt=\"${CDEFAULTS}/$opt\"
-      fi
-   done
 
    #
    # Marking backups: If we abort it's not removed => Backup is broken
@@ -315,6 +308,17 @@ while [ "${i}" -lt "${no_sources}" ]; do
    if [ ! -d "${backup}" ]; then
       _exit_err "\"${name}\" is not a cconfig-directory. Skipping."
    fi
+
+   #
+   # Read possible options
+   #
+   for opt in exclude verbose very_verbose rsync_options summary delete_incomplete remote_host ; do
+      if [ -f "${backup}/${opt}" -o -f "${backup}/no_${opt}"  ]; then
+         eval c_$opt=\"${backup}/$opt\"
+      else
+         eval c_$opt=\"${CDEFAULTS}/$opt\"
+      fi
+   done
 
    #
    # first execute pre_exec, which may generate destination or other parameters
