@@ -198,8 +198,7 @@ if [ "${USE_ALL}" = 1 ]; then
    #
    # get entries from sources
    #
-   cwd="$(pwd -P)"
-   ( cd "${CSOURCES}" && ls -p1 > "${TMP}" | grep '/$' ); ret=$?
+   ( cd "${CSOURCES}" && ls -p1 | grep '/$' > "${TMP}" ); ret=$?
 
    [ "${ret}" -eq 0 ] || _exit_err "Listing of sources failed. Aborting."
 
