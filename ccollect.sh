@@ -154,6 +154,8 @@ while [ "$#" -ge 1 ]; do
          usage
          ;;
       --)
+         # ignore the -- itself
+         shift
          break
          ;;
       *)
