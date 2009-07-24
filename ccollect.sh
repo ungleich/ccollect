@@ -41,7 +41,7 @@ CPOSTEXEC="${CDEFAULTS}/post_exec"
 
 TMP=$(mktemp "/tmp/${__myname}.XXXXXX")
 VERSION="0.8"
-RELEASE="2009-XX-XX"
+RELEASE="2009-08-XX"
 HALF_VERSION="ccollect ${VERSION}"
 FULL_VERSION="ccollect ${VERSION} (${RELEASE})"
 
@@ -59,9 +59,6 @@ TSORT="tc"
 #
 PARALLEL=""
 USE_ALL=""
-export INTERVAL=""
-export no_sources=0
-
 
 #
 # catch signals
@@ -176,28 +173,27 @@ else
 fi
 
 #
-# check for configuraton directory
+# Check for configuraton directory
 #
 [ -d "${CCOLLECT_CONF}" ] || _exit_err "No configuration found in " \
    "\"${CCOLLECT_CONF}\" (is \$CCOLLECT_CONF properly set?)"
 
 
 #
-# Look, if we should take ALL sources
+# Create (portable!) source "array"
 #
-if [ "${USE_ALL}" = 1 ]; then
-   no_sources="0"
+export no_sources=0
 
 if [ "${USE_ALL}" = 1 ]; then
    #
-   # get entries from sources
+   # Get sources from source configuration
    #
    ( cd "${CSOURCES}" && ls -1 > "${TMP}" ); ret=$?
 
    [ "${ret}" -eq 0 ] || _exit_err "Listing of sources failed. Aborting."
 
    while read tmp; do
-      eval source_${no_sources}=\"${tmp}\"
+      eval export source_${no_sources}=\"${tmp}\"
       no_sources=$((${no_sources}+1))
    done < "${TMP}"
 else
@@ -218,7 +214,7 @@ fi
 #
 # Need at least ONE source to backup
 #
-if [ "${no_sources}" -lt 1 -o -z "${INTERVAL}" ]; then
+if [ "${no_sources}" -lt 1 ]; then
    usage
 else
    _techo "${HALF_VERSION}: Beginning backup using interval ${INTERVAL}"
@@ -248,7 +244,6 @@ D_INTERVAL="$(cat "${D_FILE_INTERVAL}" 2>/dev/null)"
 #
 i=0
 while [ "${i}" -lt "${no_sources}" ]; do
-
    #
    # Get current source
    #
@@ -506,7 +501,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
       _techo "Hard linking from ${last_dir}"
    fi
       
-
    # set time when we really begin to backup, not when we began to remove above
    destination_date="$(${CDATE})"
    destination_dir="${ddir}/${INTERVAL}.${destination_date}.$$"
@@ -527,7 +521,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # the rsync part
    #
-
    _techo "Transferring files..."
    rsync "$@" "${source}" "${destination_full}"; ret=$?
 
