@@ -3,3 +3,4 @@
 * Defensive programming patch (John Lawless)
 * Some code cleanups (argument parsing, usage) (Nico Schottelius)
 * Only consider directories as sources when using -a (Nico Schottelius)
+* Fix general parsing problem with -a (Nico Schottelius)
