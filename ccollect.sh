@@ -1,19 +1,19 @@
 #!/bin/sh
-# 
+#
 # 2005-2009 Nico Schottelius (nico-ccollect at schottelius.org)
-# 
+#
 # This file is part of ccollect.
 #
 # ccollect is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # ccollect is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with ccollect. If not, see <http://www.gnu.org/licenses/>.
 #
@@ -178,7 +178,6 @@ fi
 [ -d "${CCOLLECT_CONF}" ] || _exit_err "No configuration found in " \
    "\"${CCOLLECT_CONF}\" (is \$CCOLLECT_CONF properly set?)"
 
-
 #
 # Create (portable!) source "array"
 #
@@ -232,14 +231,6 @@ if [ -x "${CPREEXEC}" ]; then
 fi
 
 #
-# check default configuration
-#
-
-D_FILE_INTERVAL="${CDEFAULTS}/intervals/${INTERVAL}"
-D_INTERVAL="$(cat "${D_FILE_INTERVAL}" 2>/dev/null)"
-
-
-#
 # Let's do the backup
 #
 i=0
@@ -277,6 +268,21 @@ while [ "${i}" -lt "${no_sources}" ]; do
    c_dest="${backup}/destination"
    c_pre_exec="${backup}/pre_exec"
    c_post_exec="${backup}/post_exec"
+   for opt in exclude verbose very_verbose rsync_options summary delete_incomplete \
+         remote_host rsync_failure_codes mtime quiet_if_down ; do
+      if [ -f "${backup}/$opt" -o -f "${backup}/no_$opt"  ]; then
+         eval c_$opt=\"${backup}/$opt\"
+      else
+         eval c_$opt=\"${CDEFAULTS}/$opt\"
+      fi
+   done
+
+   #
+   # With mtime option, sort backup directories with mtime (default is ctime)
+   #
+   if [ -f "$c_mtime" ] ; then
+      TSORT="t"
+   fi
 
    #
    # Marking backups: If we abort it's not removed => Backup is broken
@@ -329,19 +335,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
    fi
 
    #
-   # interval definition: First try source specific, fallback to default
-   #
-   c_interval="$(cat "${backup}/intervals/${INTERVAL}" 2>/dev/null)"
-
-   if [ -z "${c_interval}" ]; then
-      c_interval="${D_INTERVAL}"
-
-      if [ -z "${c_interval}" ]; then
-         _exit_err "No definition for interval \"${INTERVAL}\" found. Skipping."
-      fi
-   fi
-
-   #
    # Source checks
    #
    if [ ! -f "${c_source}" ]; then
@@ -356,7 +349,14 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # Verify source is up and accepting connections before deleting any old backups
    #
-   rsync "${source}" >/dev/null || _exit_err "Source ${source} is not readable. Skipping."
+   if ! rsync "${source}" >/dev/null 2>"${TMP}" ; then
+      if [ -f "${c_quiet_if_down}" ]; then
+         _exit_err "Source ${source} is not readable. Skipping."
+      else
+         cat "${TMP}"
+         _exit_err "Error: source ${source} is not readable. Skipping."
+      fi
+   fi
 
    #
    # Destination is a path
@@ -394,12 +394,12 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # - insert ccollect default parameters
    # - insert options
    # - insert user options
-   
+
    #
    # rsync standard options
    #
    set -- "$@" "--archive" "--delete" "--numeric-ids" "--relative"   \
-               "--delete-excluded" "--sparse" 
+               "--delete-excluded" "--sparse"
 
    #
    # exclude list
@@ -438,7 +438,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # Check for incomplete backups
    #
-   pcmd ls -1 "${ddir}/${INTERVAL}"*".${c_marker}" 2>/dev/null | while read marker; do
+   pcmd ls -1 "${ddir}/"*".${c_marker}" 2>/dev/null | while read marker; do
       incomplete="$(echo ${marker} | sed "s/\\.${c_marker}\$//")"
       _techo "Incomplete backup: ${incomplete}"
       if [ -f "${c_delete_incomplete}" ]; then
@@ -451,6 +451,19 @@ while [ "${i}" -lt "${no_sources}" ]; do
    done
 
    #
+   # interval definition: First try source specific, fallback to default
+   #
+   c_interval="$(cat "${backup}/intervals/${INTERVAL}" 2>/dev/null)"
+
+   if [ -z "${c_interval}" ]; then
+      c_interval="$(cat "${CDEFAULTS}/intervals/${INTERVAL}" 2>/dev/null)"
+
+      if [ -z "${c_interval}" ]; then
+         _exit_err "No definition for interval \"${INTERVAL}\" found. Skipping."
+      fi
+   fi
+
+   #
    # check if maximum number of backups is reached, if so remove
    # use grep and ls -p so we only look at directories
    #
@@ -458,7 +471,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
       | sed 's/^ *//g')"  || _exit_err "Counting backups failed"
 
    _techo "Existing backups: ${count} Total keeping backups: ${c_interval}"
-   
+
    if [ "${count}" -ge "${c_interval}" ]; then
       substract="$((${c_interval} - 1))"
       remove="$((${count} - ${substract}))"
@@ -487,12 +500,9 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # Check for backup directory to clone from: Always clone from the latest one!
    #
-   # Use ls -1c instead of -1t, because last modification maybe the same on all
-   # and metadate update (-c) is updated by rsync locally.
-   #
    last_dir="$(pcmd ls -${TSORT}p1 "${ddir}" | grep '/$' | head -n 1)" || \
       _exit_err "Failed to list contents of ${ddir}."
-   
+
    #
    # clone from old backup, if existing
    #
@@ -500,7 +510,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
       set -- "$@" "--link-dest=${ddir}/${last_dir}"
       _techo "Hard linking from ${last_dir}"
    fi
-      
+
    # set time when we really begin to backup, not when we began to remove above
    destination_date="$(${CDATE})"
    destination_dir="${ddir}/${INTERVAL}.${destination_date}.$$"
@@ -523,16 +533,36 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    _techo "Transferring files..."
    rsync "$@" "${source}" "${destination_full}"; ret=$?
-
-   #
-   # remove marking here
-   #
-   pcmd rm "${destination_dir}.${c_marker}" || \
-      _exit_err "Removing ${destination_dir}/${c_marker} failed."
-
    _techo "Finished backup (rsync return code: $ret)."
-   if [ "${ret}" -ne 0 ]; then
-      _techo "Warning: rsync exited non-zero, the backup may be broken (see rsync errors)."
+
+   #
+   # Set modification time (mtime) to current time
+   #
+   pcmd touch "${destination_dir}"
+
+   #
+   # Check if rsync exit code indicates failure.
+   #
+   fail=""
+   if [ -f "$c_rsync_failure_codes" ]; then
+      while read code ; do
+         if [ "$ret" = "$code" ]; then
+            fail=1
+         fi
+      done <"$c_rsync_failure_codes"
+   fi
+
+   #
+   # Remove marking here unless rsync failed.
+   #
+   if [ -z "$fail" ]; then
+      pcmd rm "${destination_dir}.${c_marker}" || \
+         _exit_err "Removing ${destination_dir}/${c_marker} failed."
+      if [ "${ret}" -ne 0 ]; then
+         _techo "Warning: rsync exited non-zero, the backup may be broken (see rsync errors)."
+      fi
+   else
+      _techo "Warning: rsync failed with return code $ret."
    fi
 
    #
