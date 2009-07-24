@@ -191,5 +191,4 @@ dist: distclean documentation
 
 test: ccollect.sh documentation
 	mkdir -p /tmp/ccollect
-	CCOLLECT_CONF=./conf ./ccollect.sh daily "source with spaces"
-	CCOLLECT_CONF=./conf ./ccollect.sh normal 'local1&with-ampersand'
+	CCOLLECT_CONF=./conf ./ccollect.sh -a daily
