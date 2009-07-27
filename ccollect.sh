@@ -278,13 +278,14 @@ while [ "${i}" -lt "${no_sources}" ]; do
    fi
 
    #
-   # Read Configuration
+   # Read / create configuration
    #
    backup="${CSOURCES}/${name}"
    c_source="${backup}/source"
    c_dest="${backup}/destination"
    c_pre_exec="${backup}/pre_exec"
    c_post_exec="${backup}/post_exec"
+   c_marker=".ccollect-marker"
    for opt in exclude verbose very_verbose rsync_options summary delete_incomplete \
          remote_host rsync_failure_codes mtime quiet_if_down ; do
     if [ -f "${backup}/${opt}" -o -f "${backup}/no_${opt}"  ]; then
@@ -302,11 +303,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
    fi
 
    #
-   # Marking backups: If we abort it's not removed => Backup is broken
-   #
-   c_marker=".ccollect-marker"
-
-   #
    # First execute pre_exec, which may generate destination or other parameters
    #
    if [ -x "${c_pre_exec}" ]; then
@@ -320,7 +316,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    fi
 
    #
-   # Source checks
+   # Source configuration checks
    #
    if [ ! -f "${c_source}" ]; then
       _exit_err "Source description \"${c_source}\" is not a file. Skipping."
@@ -329,16 +325,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
       if [ "${ret}" -ne 0 ]; then
          _exit_err "Source ${c_source} is not readable. Skipping."
       fi
-   fi
-
-   #
-   # Verify source is up and accepting connections before deleting any old backups
-   #
-   if ! rsync "${source}" >/dev/null 2>"${TMP}" ; then
-      if [ ! -f "${c_quiet_if_down}" ]; then
-         cat "${TMP}"
-      fi
-      _exit_err "Source ${source} is not readable. Skipping."
    fi
 
    #
@@ -369,22 +355,17 @@ while [ "${i}" -lt "${no_sources}" ]; do
    export remote_host
 
    #
-   # check for existence / use real name
-   #
-   ( pcmd cd "$ddir" ) || _exit_err "Cannot change to ${ddir}. Skipping."
-
-   #
    # Parameters: ccollect defaults, configuration options, user options
    #
 
    #
-   # rsync standard options
+   # Rsync standard options
    #
    set -- "$@" "--archive" "--delete" "--numeric-ids" "--relative"   \
                "--delete-excluded" "--sparse"
 
    #
-   # exclude list
+   # Exclude list
    #
    if [ -f "${c_exclude}" ]; then
       set -- "$@" "--exclude-from=${c_exclude}"
@@ -409,7 +390,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    fi
 
    #
-   # extra options for rsync provided by the user
+   # Extra options for rsync provided by the user
    #
    if [ -f "${c_rsync_options}" ]; then
       while read line; do
@@ -418,7 +399,22 @@ while [ "${i}" -lt "${no_sources}" ]; do
    fi
 
    #
-   # Check for incomplete backups
+   # Check: source is up and accepting connections (before deleting old backups!)
+   #
+   if ! rsync "${source}" >/dev/null 2>"${TMP}" ; then
+      if [ ! -f "${c_quiet_if_down}" ]; then
+         cat "${TMP}"
+      fi
+      _exit_err "Source ${source} is not readable. Skipping."
+   fi
+
+   #
+   # Check: destination exists?
+   #
+   ( pcmd cd "${ddir}" ) || _exit_err "Cannot change to ${ddir}. Skipping."
+
+   #
+   # Check: incomplete backups?
    #
    pcmd ls -1 "${ddir}/"*".${c_marker}" 2>/dev/null | while read marker; do
       incomplete="$(echo ${marker} | sed "s/\\.${c_marker}\$//")"
