@@ -189,6 +189,16 @@ distclean: clean
 #
 dist: distclean documentation
 
-test: ccollect.sh documentation
+#test: ccollect.sh documentation
+test: ccollect.sh
 	mkdir -p /tmp/ccollect
-	CCOLLECT_CONF=./conf ./ccollect.sh -a daily
+	CCOLLECT_CONF=./conf ./ccollect.sh daily from-remote
+	CCOLLECT_CONF=./conf ./ccollect.sh daily local
+	CCOLLECT_CONF=./conf ./ccollect.sh daily "local-with&ampersand"
+	CCOLLECT_CONF=./conf ./ccollect.sh daily source-without-destination
+	CCOLLECT_CONF=./conf ./ccollect.sh daily "source with spaces and interval"
+	CCOLLECT_CONF=./conf ./ccollect.sh daily to-remote
+	CCOLLECT_CONF=./conf ./ccollect.sh daily with_exec
+	CCOLLECT_CONF=./conf ./ccollect.sh daily no-source-must-fail
+#	for s in $$(ls ./conf/sources); do CCOLLECT_CONF=./conf echo ./ccollect.sh daily $$s; done
+#	CCOLLECT_CONF=./conf ./ccollect.sh -a daily
