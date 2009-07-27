@@ -335,12 +335,10 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # Verify source is up and accepting connections before deleting any old backups
    #
    if ! rsync "${source}" >/dev/null 2>"${TMP}" ; then
-      if [ -f "${c_quiet_if_down}" ]; then
-         _exit_err "Source ${source} is not readable. Skipping."
-      else
+      if [ ! -f "${c_quiet_if_down}" ]; then
          cat "${TMP}"
-         _exit_err "Error: source ${source} is not readable. Skipping."
       fi
+      _exit_err "Source ${source} is not readable. Skipping."
    fi
 
    #
@@ -375,10 +373,9 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    ( pcmd cd "$ddir" ) || _exit_err "Cannot change to ${ddir}. Skipping."
 
-   # NEW method as of 0.6:
-   # - insert ccollect default parameters
-   # - insert options
-   # - insert user options
+   #
+   # Parameters: ccollect defaults, configuration options, user options
+   #
 
    #
    # rsync standard options
