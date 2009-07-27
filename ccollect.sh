@@ -202,11 +202,8 @@ else
    while [ "$#" -ge 1 ]; do
       eval arg=\"\$1\"; shift
 
-      eval source_${no_sources}=\"${arg}\"
+      eval export source_${no_sources}=\"${arg}\"
       no_sources="$((${no_sources}+1))"
-
-      # make variable available for subscripts
-      eval export source_${no_sources}
    done
 fi
 
@@ -261,7 +258,27 @@ while [ "${i}" -lt "${no_sources}" ]; do
    exec 2>&1
 
    #
-   # Configuration
+   # Record start of backup: internal and for the user
+   #
+   begin_s="$(date +%s)"
+   _techo "Beginning to backup"
+
+   #
+   # Standard configuration checks
+   #
+   if [ ! -e "${backup}" ]; then
+      _exit_err "Source does not exist."
+   fi
+
+   #
+   # Configuration _must_ be a directory (cconfig style)
+   #
+   if [ ! -d "${backup}" ]; then
+      _exit_err "\"${name}\" is not a cconfig-directory. Skipping."
+   fi
+
+   #
+   # Read Configuration
    #
    backup="${CSOURCES}/${name}"
    c_source="${backup}/source"
@@ -270,7 +287,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    c_post_exec="${backup}/post_exec"
    for opt in exclude verbose very_verbose rsync_options summary delete_incomplete \
          remote_host rsync_failure_codes mtime quiet_if_down ; do
-      if [ -f "${backup}/$opt" -o -f "${backup}/no_$opt"  ]; then
+      if [ -f "${backup}/${opt}" -o -f "${backup}/no_${opt}"  ]; then
          eval c_$opt=\"${backup}/$opt\"
       else
          eval c_$opt=\"${CDEFAULTS}/$opt\"
@@ -288,27 +305,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # Marking backups: If we abort it's not removed => Backup is broken
    #
    c_marker=".ccollect-marker"
-
-   #
-   # Times
-   #
-   begin_s="$(date +%s)"
-
-   _techo "Beginning to backup"
-
-   #
-   # Standard configuration checks
-   #
-   if [ ! -e "${backup}" ]; then
-      _exit_err "Source does not exist."
-   fi
-
-   #
-   # configuration _must_ be a directory
-   #
-   if [ ! -d "${backup}" ]; then
-      _exit_err "\"${name}\" is not a cconfig-directory. Skipping."
-   fi
 
    #
    # Read possible options
