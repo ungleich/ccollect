@@ -429,7 +429,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    done
 
    #
-   # interval definition: First try source specific, fallback to default
+   # Interval definition: First try source specific, fallback to default
    #
    c_interval="$(cat "${backup}/intervals/${INTERVAL}" 2>/dev/null)"
 
@@ -442,8 +442,8 @@ while [ "${i}" -lt "${no_sources}" ]; do
    fi
 
    #
-   # check if maximum number of backups is reached, if so remove
-   # use grep and ls -p so we only look at directories
+   # Check: maximum number of backups is reached?
+   # If so remove. Use grep and ls -p so we only look at directories
    #
    count="$(pcmd ls -p1 "${ddir}" | grep "^${INTERVAL}\..*/\$" | wc -l \
       | sed 's/^ *//g')"  || _exit_err "Counting backups failed"
