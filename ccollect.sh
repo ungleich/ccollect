@@ -48,11 +48,9 @@ FULL_VERSION="ccollect ${VERSION} (${RELEASE})"
 #
 # CDATE: how we use it for naming of the archives
 # DDATE: how the user should see it in our output (DISPLAY)
-# TSORT: how to sort: tc = ctime, t = mtime
 #
 CDATE="date +%Y%m%d-%H%M"
 DDATE="date +%Y-%m-%d-%H:%M:%S"
-TSORT="tc"
 
 #
 # unset values
@@ -296,10 +294,12 @@ while [ "${i}" -lt "${no_sources}" ]; do
    done
 
    #
-   # With mtime option, sort backup directories with mtime (default is ctime)
+   # Sort by ctime (default) or mtime (configuration option)
    #
    if [ -f "$c_mtime" ] ; then
       TSORT="t"
+   else
+      TSORT="tc"
    fi
 
    #
