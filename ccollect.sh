@@ -39,7 +39,7 @@ CDEFAULTS="${CCOLLECT_CONF}/defaults"
 CPREEXEC="${CDEFAULTS}/pre_exec"
 CPOSTEXEC="${CDEFAULTS}/post_exec"
 
-TMP=$(mktemp "/tmp/${__myname}.XXXXXX")
+export TMP=$(mktemp "/tmp/${__myname}.XXXXXX")
 VERSION="0.8"
 RELEASE="2009-08-XX"
 HALF_VERSION="ccollect ${VERSION}"
