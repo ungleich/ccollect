@@ -98,6 +98,18 @@ pcmd()
    fi
 }
 
+delete_from_file()
+{
+   #
+   # ssh-"feature": we cannot do '... read ...; ssh  ...; < file',
+   # because ssh reads stdin! -n does not work -> does not ask for password
+   #
+   file="$1"; shift
+   while read to_remove; do set -- "$@" "${ddir}/${to_remove}"; done < "${file}"
+   _techo "Removing $@ ..."
+   pcmd rm ${VVERBOSE} -rf "$@" || _exit_err "Removing $@ failed."
+}
+
 display_version()
 {
    echo "${FULL_VERSION}"
@@ -283,7 +295,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    c_dest="${backup}/destination"
    c_pre_exec="${backup}/pre_exec"
    c_post_exec="${backup}/post_exec"
-   c_marker=".ccollect-marker"
+   c_marker="ccollect-marker"
    for opt in exclude verbose very_verbose rsync_options summary delete_incomplete \
          remote_host rsync_failure_codes mtime quiet_if_down ; do
     if [ -f "${backup}/${opt}" -o -f "${backup}/no_${opt}"  ]; then
@@ -414,19 +426,19 @@ while [ "${i}" -lt "${no_sources}" ]; do
    ( pcmd cd "${ddir}" ) || _exit_err "Cannot change to ${ddir}. Skipping."
 
    #
-   # Check: incomplete backups?
+   # Check: incomplete backups? (needs echo to remove newlines)
    #
-   pcmd ls -1 "${ddir}/"*".${c_marker}" 2>/dev/null | while read marker; do
-      incomplete="$(echo ${marker} | sed "s/\\.${c_marker}\$//")"
-      _techo "Incomplete backup: ${incomplete}"
+   incomplete="$(echo \
+      $(pcmd ls -1 "${ddir}/" | \
+      awk "/\.${c_marker}\$/ { print \$0; gsub(\"\.${c_marker}\$\",\"\",\$0); print \$0 }" | \
+      tee "${TMP}"))"
+
+   if [ "${incomplete}" ]; then
+      _techo "Incomplete backups: ${incomplete}"
       if [ -f "${c_delete_incomplete}" ]; then
-         _techo "Deleting ${incomplete} ..."
-         pcmd rm $VVERBOSE -rf "${incomplete}" || \
-            _exit_err "Removing ${incomplete} failed."
-         pcmd rm $VVERBOSE -f "${marker}" || \
-            _exit_err "Removing ${marker} failed."
+         delete_from_file "${TMP}"
       fi
-   done
+   fi
 
    #
    # Interval definition: First try source specific, fallback to default
@@ -459,16 +471,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
         head -n "${remove}" > "${TMP}"      || \
         _exit_err "Listing old backups failed"
 
-      #
-      # ssh-"feature": we cannot do '... read ...; ssh  ...; < file',
-      # because ssh reads stdin! -n does not work -> does not ask for password
-      #
-      (
-         set -- ""
-         while read to_remove; do set -- "$@" "${ddir}/${to_remove}"; done < "${TMP}"
-         _techo "Removing $@ ..."
-         pcmd rm ${VVERBOSE} -rf "$@"
-      ) ||  _exit_err "Removing $@ failed."
+      delete_from_file "${TMP}"
    fi
 
    #
@@ -531,7 +534,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    if [ -z "$fail" ]; then
       pcmd rm "${destination_dir}.${c_marker}" || \
-         _exit_err "Removing ${destination_dir}/${c_marker} failed."
+         _exit_err "Removing ${destination_dir}.${c_marker} failed."
       if [ "${ret}" -ne 0 ]; then
          _techo "Warning: rsync exited non-zero, the backup may be broken (see rsync errors)."
       fi
