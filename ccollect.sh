@@ -51,6 +51,7 @@ FULL_VERSION="ccollect ${VERSION} (${RELEASE})"
 #
 CDATE="date +%Y%m%d-%H%M"
 DDATE="date +%Y-%m-%d-%H:%M:%S"
+SDATE="date +%s"
 
 #
 # unset values
@@ -271,7 +272,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # Record start of backup: internal and for the user
    #
-   begin_s="$(date +%s)"
+   begin_s="$(${SDATE})"
    _techo "Beginning to backup"
 
    #
@@ -556,7 +557,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    fi
 
    # Calculation
-   end_s="$(date +%s)"
+   end_s="$(${SDATE})"
 
    full_seconds="$((${end_s} - ${begin_s}))"
    hours="$((${full_seconds} / 3600))"
