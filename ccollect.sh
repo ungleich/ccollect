@@ -250,6 +250,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
 # Start subshell for easy log editing
 #
 (
+   backup="${CSOURCES}/${name}"
    #
    # Stderr to stdout, so we can produce nice logs
    #
@@ -278,7 +279,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # Read / create configuration
    #
-   backup="${CSOURCES}/${name}"
    c_source="${backup}/source"
    c_dest="${backup}/destination"
    c_pre_exec="${backup}/pre_exec"
@@ -459,20 +459,16 @@ while [ "${i}" -lt "${no_sources}" ]; do
         head -n "${remove}" > "${TMP}"      || \
         _exit_err "Listing old backups failed"
 
-      i=0
-      while read to_remove; do
-         eval remove_$i=\"${to_remove}\"
-         i="$(($i+1))"
-      done < "${TMP}"
-
-      j=0
-      while [ "${j}" -lt "${i}" ]; do
-         eval to_remove=\"\$remove_$j\"
-         _techo "Removing ${to_remove} ..."
-         pcmd rm ${VVERBOSE} -rf "${ddir}/${to_remove}" || \
-            _exit_err "Removing ${to_remove} failed."
-         j="$(($j+1))"
-      done
+      #
+      # ssh-"feature": we cannot do '... read ...; ssh  ...; < file',
+      # because ssh reads stdin! -n does not work -> does not ask for password
+      #
+      (
+         set -- ""
+         while read to_remove; do set -- "$@" "${ddir}/${to_remove}"; done < "${TMP}"
+         _techo "Removing $@ ..."
+         pcmd rm ${VVERBOSE} -rf "$@"
+      ) ||  _exit_err "Removing $@ failed."
    fi
 
    #
