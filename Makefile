@@ -200,6 +200,8 @@ test: ccollect.sh
 	CCOLLECT_CONF=./conf ./ccollect.sh daily to-remote
 	CCOLLECT_CONF=./conf ./ccollect.sh daily with_exec
 	CCOLLECT_CONF=./conf ./ccollect.sh daily very_verbose
+	touch /tmp/ccollect/$$(ls /tmp/ccollect | head -n1).ccollect-marker
+	CCOLLECT_CONF=./conf ./ccollect.sh daily delete_incomplete
 	CCOLLECT_CONF=./conf ./ccollect.sh daily no-source-must-fail
 #	for s in $$(ls ./conf/sources); do CCOLLECT_CONF=./conf echo ./ccollect.sh daily $$s; done
 #	CCOLLECT_CONF=./conf ./ccollect.sh -a daily
