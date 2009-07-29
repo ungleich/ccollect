@@ -1,7 +1,7 @@
 ccollect - Installing, Configuring and Using
 ============================================
 Nico Schottelius <nico-ccollect__@__schottelius.org>
-0.7.1, for ccollect 0.7.1, Initial Version from 2006-01-13
+0.8, for ccollect 0.8, Initial Version from 2006-01-13
 :Author Initials: NS
 
 
@@ -159,7 +159,7 @@ For those who do not want to read the whole long document:
 --------------------------------------------------------------------------------
 # get latest ccollect tarball from http://www.nico.schottelius.org/software/ccollect/
 # replace value for CCV with the current version
-export CCV=0.7.1
+export CCV=0.8
 
 #
 # replace 'wget' with 'fetch' on bsd
