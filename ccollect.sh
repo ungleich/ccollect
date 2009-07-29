@@ -297,9 +297,10 @@ while [ "${i}" -lt "${no_sources}" ]; do
    c_pre_exec="${backup}/pre_exec"
    c_post_exec="${backup}/post_exec"
    c_marker="ccollect-marker"
-   for opt in exclude verbose very_verbose rsync_options summary delete_incomplete \
-         remote_host rsync_failure_codes mtime quiet_if_down ; do
-    if [ -f "${backup}/${opt}" -o -f "${backup}/no_${opt}"  ]; then
+   for opt in verbose very_verbose summary exclude rsync_options \
+              delete_incomplete remote_host rsync_failure_codes  \
+              mtime quiet_if_down ; do
+      if [ -f "${backup}/${opt}" -o -f "${backup}/no_${opt}"  ]; then
          eval c_$opt=\"${backup}/$opt\"
       else
          eval c_$opt=\"${CDEFAULTS}/$opt\"
