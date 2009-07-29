@@ -36,7 +36,7 @@ Why you COULD only backup from remote hosts, not to them
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 While considering the design of ccollect, I thought about enabling
 backup to *remote* hosts. Though this sounds like a nice feature
-('Backup my notebook to the server now.'), in my opinion it is a
+('"Backup my notebook to the server now."'), in my opinion it is a
 bad idea to backup to a remote host.
 
 But as more and more people requested this feature, it was implemented,
@@ -68,9 +68,27 @@ machine, she will not be able to log in on the backup machine.
 All other backups are still secure.
 
 
-Incompatibilities
-~~~~~~~~~~~~~~~~~
+Incompatibilities and changes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
+Versions 0.7 and 0.8
+^^^^^^^^^^^^^^^^^^^^^
+
+.The argument order changed:
+- Old: "<interval name> [args] <sources to backup>"
+- New: "[args] <interval name> <sources to backup>"
+
+If you did not use arguments (most people do not), nothing will
+change for you.
+
+.Deletion of incomplete backups using the 'delete_incomplete' option
+- Old: Only incomplete backups from the current interval have been removed
+- New: All incomplete backups are deleted
+
+.Support for standard values
+- Old: no support
+- New: Options in $CCOLLECT_CONF/defaults are used as defaults (see below)
 
 Versions 0.6 and 0.7
 ^^^^^^^^^^^^^^^^^^^^^
