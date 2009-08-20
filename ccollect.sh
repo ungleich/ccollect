@@ -515,9 +515,9 @@ while [ "${i}" -lt "${no_sources}" ]; do
    _techo "Finished backup (rsync return code: $ret)."
 
    #
-   # Set modification time (mtime) to current time
+   # Set modification time (mtime) to current time, if sorting by mtime is enabled
    #
-   pcmd touch "${destination_dir}"
+   [ -f "$c_mtime" ] && pcmd touch "${destination_dir}"
 
    #
    # Check if rsync exit code indicates failure.
