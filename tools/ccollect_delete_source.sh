@@ -71,7 +71,6 @@ while [ $# -gt 0 ]; do
             _exit_err "Unknown option: $1" 
             ;;
       esac
-
    fi
 
    # Reached here? So there are no more parameters.
@@ -97,13 +96,13 @@ while [ $# -gt 0 ]; do
 
    if [ "$backups" ]; then
       ddir="$(cat "${fullname}/destination")"
-      addir="$(cd && pwd -P)" || _exit_err "Cannot change to ${ddir}"
-      _echo "Deleting ${addir} ..."
-      rm -r $force "${addir}"
+      absdir="$(cd "${ddir}" && pwd -P)" || _exit_err "Cannot change to ${ddir}"
+      _echo "Deleting ${absdir} ..."
+      echo rm -r $force "${absdir}"
    fi
 
    _echo "Deleting ${fullname} ..."
-   rm -r $force "${fullname}"
+   echo rm -r $force "${fullname}"
 done
 
 exit 0
