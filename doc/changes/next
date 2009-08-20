@@ -11,3 +11,4 @@
 * Add support for quiet operation for dead devices (quiet_if_down) (John Lawless)
 * Add smart option parsing, including support for default values (John Lawless)
 * Updated and cleaned up documentation (Nico Schottelius)
+* Fixed bug "removal of current directory" in ccollect_delete_source.sh (Found by Günter Stöhr, fixed by Nico Schottelius)
