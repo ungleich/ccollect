@@ -415,7 +415,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # Check: source is up and accepting connections (before deleting old backups!)
    #
-   if ! rsync "${source}" >/dev/null 2>"${TMP}" ; then
+   if ! rsync "$@" "${source}" >/dev/null 2>"${TMP}" ; then
       if [ ! -f "${c_quiet_if_down}" ]; then
          cat "${TMP}"
       fi
