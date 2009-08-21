@@ -620,6 +620,7 @@ If you create the file `delete_incomplete` in a source specification directory,
 was interrupted) and remove them. Without this file `ccollect` will only warn
 the user.
 
+
 Detailed description of "rsync_failure_codes"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 If you have the file `rsync_failure_codes` in your source configuration
@@ -628,6 +629,7 @@ rsync exit codes.  If rsync exits with any code in this list, a marker will
 be left in the destination directory indicating failure of this backup.  If
 you have enabled delete_incomplete, then this backup will be deleted during
 the next ccollect run on the same interval.
+
 
 Detailed description of "mtime"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -641,6 +643,7 @@ option because the ctimes are not preserved during such operations.
 
 If you have any backups in your repository made with ccollect version 0.7.1 or
 earlier, do not use this option.
+
 
 Detailed description of "quiet_if_down"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -825,7 +828,7 @@ If you want to see what changed between two backups, you can use
 [12:00] u0255:ddba034.netstream.ch#  rsync -n -a --delete --stats --progress daily.20080324-0313.17841/ daily.20080325-0313.31148/
 --------------------------------------------------------------------------------
 This results in a listing of changes. Because we pass -n to rsync no transfer
-is made (i.e. report only mode)"
+is made (i.e. report only mode).
 
 This hint was reported by Daniel Aubry.
 
