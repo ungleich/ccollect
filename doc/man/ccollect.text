@@ -10,7 +10,7 @@ ccollect - (pseudo) incremental backup with different exclude lists using hardli
 
 SYNOPSIS
 --------
-'ccollect.sh' <interval name> [args] <sources to backup>
+'ccollect.sh' [args] <interval name> <sources to backup>
 
 
 DESCRIPTION
@@ -36,7 +36,10 @@ OPTIONS
    Backup all sources specified in /etc/ccollect/sources
 
 -v, --verbose::
-   Be very verbose (uses set -x).
+   Be very verbose (uses set -x)
+
+-V, --version::
+   Show version and exit
 
 
 SEE ALSO
