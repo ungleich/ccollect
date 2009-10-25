@@ -38,7 +38,7 @@ CSOURCES="${CCOLLECT_CONF}/sources"
 CDEFAULTS="${CCOLLECT_CONF}/defaults"
 CPREEXEC="${CDEFAULTS}/pre_exec"
 CPOSTEXEC="${CDEFAULTS}/post_exec"
-CMARKER="ccollect-marker"
+CMARKER=".ccollect-marker"
 
 export TMP=$(mktemp "/tmp/${__myname}.XXXXXX")
 VERSION="0.8"
@@ -427,9 +427,9 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    incomplete="$(echo \
       $(pcmd ls -1 "${ddir}/" | \
-      awk '/\.ENVIRON["CMARKER"]$/ {
+      awk '/ENVIRON["CMARKER"]$/ {
          print $0;
-         gsub("\." ENVIRON["CMARKER"]$","",$0);
+         gsub(ENVIRON["CMARKER"]$,"",$0);
          print $0
       }' | \
       tee "${TMP}"))"
@@ -504,7 +504,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # added marking in 0.6 (and remove it, if successful later)
    #
-   pcmd touch "${destination_dir}.${CMARKER}"
+   pcmd touch "${destination_dir}${CMARKER}"
 
    #
    # the rsync part
@@ -534,8 +534,8 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # Remove marking here unless rsync failed.
    #
    if [ -z "$fail" ]; then
-      pcmd rm "${destination_dir}.${CMARKER}" || \
-         _exit_err "Removing ${destination_dir}.${CMARKER} failed."
+      pcmd rm "${destination_dir}${CMARKER}" || \
+         _exit_err "Removing ${destination_dir}${CMARKER} failed."
       if [ "${ret}" -ne 0 ]; then
          _techo "Warning: rsync exited non-zero, the backup may be broken (see rsync errors)."
       fi
