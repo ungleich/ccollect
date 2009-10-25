@@ -321,9 +321,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
       "${c_pre_exec}"; ret="$?"
       _techo "Finished ${c_pre_exec} (return code ${ret})."
 
-      if [ "${ret}" -ne 0 ]; then
-         _exit_err "${c_pre_exec} failed. Skipping."
-      fi
+      [ "${ret}" -eq 0 ] || _exit_err "${c_pre_exec} failed. Skipping."
    fi
 
    #
@@ -356,7 +354,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    if [ -f "${c_remote_host}" ]; then
       remote_host="$(cat "${c_remote_host}")"; ret="$?"
       if [ "${ret}" -ne 0 ]; then
-         _exit_err "Remote host file ${c_remote_host} exists, but is not readable. Skipping."
+         _exit_err "Remote host file ${c_remote_host} is unreadable. Skipping."
       fi
       destination="${remote_host}:${ddir}"
    else
