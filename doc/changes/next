@@ -1,3 +1,4 @@
  * Fix source-is-up check (Nikita Koshikov)
  * Fix some minor command line parsing issues (Nico Schottelius)
  * Correct output, if configuration is not in cconfig format (Nico Schottelius)
+ * Minor code cleanups and optimisations (Nico Schottelius)
