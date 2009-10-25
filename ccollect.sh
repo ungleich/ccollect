@@ -427,7 +427,11 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    incomplete="$(echo \
       $(pcmd ls -1 "${ddir}/" | \
-      awk "/\.${CMARKER}\$/ { print \$0; gsub(\"\.${CMARKER}\$\",\"\",\$0); print \$0 }" | \
+      awk '/\.ENVIRON["CMARKER"]$/ {
+         print $0;
+         gsub("\." ENVIRON["CMARKER"]$","",$0);
+         print $0
+      }' | \
       tee "${TMP}"))"
 
    if [ "${incomplete}" ]; then
