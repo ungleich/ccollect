@@ -307,7 +307,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # Sort by ctime (default) or mtime (configuration option)
    #
-   if [ -f "$c_mtime" ] ; then
+   if [ -f "${c_mtime}" ] ; then
       TSORT="t"
    else
       TSORT="tc"
@@ -525,7 +525,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
          if [ "$ret" = "$code" ]; then
             fail=1
          fi
-      done <"$c_rsync_failure_codes"
+      done <"${c_rsync_failure_codes}"
    fi
 
    #
