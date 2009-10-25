@@ -125,8 +125,8 @@ ${__myname}: [args] <interval name> <sources to backup>
    ccollect creates (pseudo) incremental backups
 
    -h, --help:          Show this help screen
-   -p, --parallel:      Parallelise backup processes
    -a, --all:           Backup all sources specified in ${CSOURCES}
+   -p, --parallel:      Parallelise backup processes
    -v, --verbose:       Be very verbose (uses set -x)
    -V, --version:       Print version information
 
@@ -146,11 +146,11 @@ while [ "$#" -ge 1 ]; do
       -a|--all)
          USE_ALL=1
          ;;
-      -v|--verbose)
-         set -x
-         ;;
       -p|--parallel)
          PARALLEL=1
+         ;;
+      -v|--verbose)
+         set -x
          ;;
       -V|--version)
          display_version
