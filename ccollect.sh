@@ -283,7 +283,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # Configuration _must_ be a directory (cconfig style)
    #
    if [ ! -d "${backup}" ]; then
-      _exit_err "\"${name}\" is not a cconfig-directory. Skipping."
+      _exit_err "\"${backup}\" is not a cconfig-directory. Skipping."
    fi
 
    #
