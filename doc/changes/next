@@ -1,1 +1,2 @@
 * Fix source-is-up check (Nikita Koshikov)
+* Fix some minor command line parsing issues (Nico Schottelius)
