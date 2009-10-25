@@ -44,7 +44,7 @@ path_destination=${path_dir}/${CCOLLECT_DEST}
 
 # where to publish
 host=localhost
-dir=/home/users/nico/privat/computer/net/netzseiten/www.nico.schottelius.org/src/software/ccollect
+dir=/home/users/nico/privat/rechner/netz/seiten/www.nico.schottelius.org/src/software/ccollect
 docdir=${dir}/doc
 
 #
