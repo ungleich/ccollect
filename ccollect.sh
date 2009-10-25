@@ -152,9 +152,6 @@ while [ "$#" -ge 1 ]; do
       -p|--parallel)
          PARALLEL=1
          ;;
-      -h|--help)
-         usage
-         ;;
       -V|--version)
          display_version
          ;;
