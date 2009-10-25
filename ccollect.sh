@@ -403,7 +403,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    if [ -f "${c_rsync_options}" ]; then
       while read line; do
-         set -- "$@" "$line"
+         set -- "$@" "${line}"
       done < "${c_rsync_options}"
    fi
 
