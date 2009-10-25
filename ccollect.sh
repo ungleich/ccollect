@@ -38,6 +38,7 @@ CSOURCES="${CCOLLECT_CONF}/sources"
 CDEFAULTS="${CCOLLECT_CONF}/defaults"
 CPREEXEC="${CDEFAULTS}/pre_exec"
 CPOSTEXEC="${CDEFAULTS}/post_exec"
+CMARKER="ccollect-marker"
 
 export TMP=$(mktemp "/tmp/${__myname}.XXXXXX")
 VERSION="0.8"
@@ -293,7 +294,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
    c_dest="${backup}/destination"
    c_pre_exec="${backup}/pre_exec"
    c_post_exec="${backup}/post_exec"
-   c_marker="ccollect-marker"
    for opt in verbose very_verbose summary exclude rsync_options \
               delete_incomplete remote_host rsync_failure_codes  \
               mtime quiet_if_down ; do
@@ -429,7 +429,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    incomplete="$(echo \
       $(pcmd ls -1 "${ddir}/" | \
-      awk "/\.${c_marker}\$/ { print \$0; gsub(\"\.${c_marker}\$\",\"\",\$0); print \$0 }" | \
+      awk "/\.${CMARKER}\$/ { print \$0; gsub(\"\.${CMARKER}\$\",\"\",\$0); print \$0 }" | \
       tee "${TMP}"))"
 
    if [ "${incomplete}" ]; then
@@ -502,7 +502,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # added marking in 0.6 (and remove it, if successful later)
    #
-   pcmd touch "${destination_dir}.${c_marker}"
+   pcmd touch "${destination_dir}.${CMARKER}"
 
    #
    # the rsync part
@@ -532,8 +532,8 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # Remove marking here unless rsync failed.
    #
    if [ -z "$fail" ]; then
-      pcmd rm "${destination_dir}.${c_marker}" || \
-         _exit_err "Removing ${destination_dir}.${c_marker} failed."
+      pcmd rm "${destination_dir}.${CMARKER}" || \
+         _exit_err "Removing ${destination_dir}.${CMARKER} failed."
       if [ "${ret}" -ne 0 ]; then
          _techo "Warning: rsync exited non-zero, the backup may be broken (see rsync errors)."
       fi
