@@ -155,13 +155,13 @@ while [ "$#" -ge 1 ]; do
       -V|--version)
          display_version
          ;;
-      -h|--help|-*)
-         usage
-         ;;
       --)
          # ignore the -- itself
          shift
          break
+         ;;
+      -h|--help|-*)
+         usage
          ;;
       *)
          break
