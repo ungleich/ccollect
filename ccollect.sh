@@ -195,9 +195,8 @@ if [ "${USE_ALL}" = 1 ]; then
    #
    # Get sources from source configuration
    #
-   ( cd "${CSOURCES}" && ls -1 > "${TMP}" ); ret=$?
-
-   [ "${ret}" -eq 0 ] || _exit_err "Listing of sources failed. Aborting."
+   ( cd "${CSOURCES}" && ls -1 > "${TMP}" ) || \
+      _exit_err "Listing of sources failed. Aborting."
 
    while read tmp; do
       eval export source_${no_sources}=\"${tmp}\"
@@ -235,8 +234,9 @@ if [ -x "${CPREEXEC}" ]; then
    [ "${ret}" -eq 0 ] || _exit_err "${CPREEXEC} failed. Aborting"
 fi
 
+################################################################################
 #
-# Let's do the backup
+# Let's do the backup - here begins the real stuff
 #
 i=0
 while [ "${i}" -lt "${no_sources}" ]; do
@@ -249,7 +249,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    export name
 
    #
-   # start ourself, if we want parallel execution
+   # Start ourself, if we want parallel execution
    #
    if [ "${PARALLEL}" ]; then
       "$0" "${INTERVAL}" "${name}" &
