@@ -435,8 +435,8 @@ while [ "${i}" -lt "${no_sources}" ]; do
 
    pcmd ls -1 "${ddir}/"*"${CMARKER}" > "${TMP}" 2>/dev/null; ret=$?
 
-   if [ "$ret" -eq 0 ]; then
-      _techo "Incomplete backups: ${incomplete}"
+   if [ "${ret}" -eq 0 ]; then
+      _techo "Incomplete backups: $(echo $(cat "${TMP}"))"
       if [ -f "${c_delete_incomplete}" ]; then
          delete_from_file "${TMP}" "${CMARKER}"
       fi
