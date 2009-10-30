@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Standard Linux: put in /etc/init.d
+# Busybox: put in /opt/etc/init.d
+
+# Add ccollect_mgr job to crontab
+# Syntax reminder from crontab:
+#    minute        0-59
+#    hour          0-23
+#    day of month  1-31
+#    month         1-12 (or names, see below)
+#    day of week   0-7 (0 or 7 is Sun, or use names)
+
+crontab -l | grep -v ccollect_mgr > /tmp/crontab.tmp
+
+# Backup every day at 1 am.
+echo "00 01 * * * /usr/local/sbin/ccollect_mgr.sh -from nas@myemail.net -to me@myemail.net -server relay_or_smtp_server NAS > /usr/local/var/log/ccollect.cron &" >> /tmp/crontab.tmp
+
+crontab /tmp/crontab.tmp
+rm /tmp/crontab.tmp
+

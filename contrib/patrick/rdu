@@ -1,0 +1,65 @@
+#!/bin/sh
+#
+# -------------------------------------------------------------
+# Get the real disk usage for a group of selected files
+#
+# This script counts the size of the files and directories
+# listed, but exclude files that have hard links referenced outside 
+# the list. 
+#
+# The undelying objective of this script is to report the
+# real amount of disk used for backup solutions that are heavily
+# using hard links to save disk space on identical files (I use
+# ccollect, but this likely works with rsnapshot)
+# -------------------------------------------------------------
+# 20091002 - initial release - pdrolet (rdu@drolet.name)
+ 
+# --------------------
+# Parse options
+# --------------------
+# Known problem:
+# - Command line cannot get a directory with a space in it
+#
+kdivider=1
+find_options=""
+while [ "$#" -ge 1 ]; do
+   case "$1" in
+     -m)
+       kdivider=1024
+       ;;
+     -g)
+       kdivider=1048576
+       ;;
+     -h|--help)
+       echo
+       echo $0: \<directories\> \[options below and any \"find\" options\]
+       echo \ \ -m: result in mega bytes \(rounded up\)
+       echo \ \ -g: result in giga bytes \(rounded up\)
+       echo \ \ -h: this help
+       echo
+       exit 0
+       ;;
+     *)
+       find_options="${find_options} $1"
+       ;;
+   esac
+   shift
+done
+
+# ------------------------------------------------------------------------------------------------------
+# Compute the size
+# ------------------------------------------------------------------------------------------------------
+# 1) Find selected files and list link count, inodes, file type and size
+# 2) Sort (sorts on inodes since link count is constant per inode)
+# 3) Merge duplicates using uniq 
+#    (result is occurence count, link count, inode, file type and size)
+# 4) Use awk to sum up the file size of each inodes when the occurence count
+#    and link count are the same.  Use %k for size since awk's printf is 32 bits 
+# 5) Present the result with additional dividers based on command line parameters
+# 
+echo $((( `find ${find_options} -printf '%n %i %y %k \n' \
+       | sort -n \
+       | uniq -c \
+       | awk '{ if (( $1 == $2 ) || ($4 == "d")) { sum += $5; } } END { printf "%u\n",(sum); }'` \
+       + ${kdivider} -1 ) / ${kdivider} )) 
+

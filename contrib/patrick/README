@@ -1,0 +1,47 @@
+[Almost complete Copy of an e-mail from Patrick Drolet]
+
+Hello again,
+
+
+
+I have created a script to better manage  the backups since my
+upload/download ratio and my bandwidth is limited by my ISP, and my hard
+disk space is also somewhat limited.  The script is called
+"ccollect_mgr.sh".
+
+
+
+Provides the following features
+
+1)      Determine the interval (daily/weekly/monthly)
+
+a.       Define when you want weekly and monthly backups.  It takes care of
+the rest
+
+2)      Perform the backups using ccollect
+
+3)      Copy the ccollect log output to the first backup of the set
+
+a.       Keeping the detailed log of each backup is always handy!
+
+4)      Build a periodic report and include the real amount of disk used
+
+a.       Computes the real amount of disk used (eg: no double counting of
+hard links)
+
+b.      Shows the actual amount of data transferred
+
+5)      Send an email if there has been errors or warnings
+
+6)      Send a periodic email to show transfer size, real backup size, etc
+
+a.       Weekly reports are nice.!
+
+[...]
+
+-          rdu (real du), which computes the real amount of disk used (no
+double/triple counting hard links), same code as in ccollect_mgr.sh.
+
+-          S60ccollect_example, an example script to put in etc/init.d to
+add ccollect_mgr to the crontab
+
