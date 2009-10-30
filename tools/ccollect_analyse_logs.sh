@@ -72,6 +72,11 @@ if [ "$search_err" ]; then
    set -- "$@" "-e" 'ssh: connect to host .*: Connection timed out'
    set -- "$@" "-e" 'rsync error: unexplained error (code 255)'
    set -- "$@" "-e" 'rsync: connection unexpectedly closed'
+   set -- "$@" "-e" 'rsync: send_files failed to open'
+   set -- "$@" "-e" 'rsync: readlink_stat .* failed: File name too long'
+   set -- "$@" "-e" 'IO error encountered .* skipping file deletion'
+   set -- "$@" "-e" 'rsync: read error: Connection reset by peer'
+   set -- "$@" "-e" 'rsync error: error in rsync protocol data stream'
 fi
 
 # known error strings:
@@ -103,6 +108,7 @@ fi
 if [ "$search_warn" ]; then
    # warn on non-zero exit code
    set -- "$@" "-e" 'Finished backup (rsync return code: [^0]'
+   set -- "$@" "-e" 'rsync: file has vanished'
    set -- "$@" "-e" 'WARNING: .* failed verification -- update discarded (will try again).'
 fi
 # known warnings:
@@ -113,14 +119,19 @@ fi
 # Interesting strings in the logs: informational
 # ----------------------------------------------
 if [ "$search_info" ]; then
+   set -- "$@" "-e" 'Number of files: [[:digit:]]*'
+   set -- "$@" "-e" 'Number of files transferred: [[:digit:]]*'
+   set -- "$@" "-e" 'Total transferred file size: [[:digit:]]* bytes'
    set -- "$@" "-e" 'total size is [[:digit:]]*  speedup is'
    set -- "$@" "-e" 'Backup lasted: [[:digit:]]*:[[:digit:]]\{1,2\}:[[:digit:]]* (h:m:s)$'
-   set -- "$@" "-e" 'send [[:digit:]]* bytes  received [0-9]* bytes  [0-9]* bytes/sec$'
+   set -- "$@" "-e" 'sent [[:digit:]]* bytes  received [0-9]* bytes'
 fi
 
 # info includes:
 #[ddba012.netstream.ch] total size is 22384627486  speedup is 13.75
 # [u0160.nshq.ch.netstream.com] 2007-08-20-18:26:06: Backup lasted: 0:43:34 (h:m:s)
 #[ddba012.netstream.ch] sent 3303866 bytes  received 1624630525 bytes  122700.92 bytes/sec
+
+#echo Parameters: "$@"
 
 grep "$@"
