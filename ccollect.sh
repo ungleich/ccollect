@@ -103,12 +103,12 @@ pcmd()
 #
 # ssh-"feature": we cannot do '... read ...; ssh  ...; < file',
 # because ssh reads stdin! -n does not work -> does not ask for password
-# Allow deletion for files with suffix and without suffix
+# Alsa allow deletion for files without the given suffix
 #
 delete_from_file()
 {
    file="$1"; shift
-   suffix="$1" # only set, if deleting incomplete backups
+   [ $# -eq 1 ] && suffix="$1" && shift # set if deleting incomplete backups
    while read to_remove; do
       set -- "$@" "${to_remove}"
       [ "$suffix" ] && set -- "$@" "$(echo ${to_remove} | sed "s/$suffix\$//")"
