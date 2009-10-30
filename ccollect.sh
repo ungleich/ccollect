@@ -442,25 +442,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
       fi
    fi
 
-   incomplete="$(echo \
-      $(pcmd ls -1 "${ddir}/" | \
-      awk '
-         BEGIN { regexp=ENVIRON["CMARKER"] "$" }
-         $0 ~ regexp {
-            print $0;
-            gsub(ENVIRON["CMARKER"]$,"",$0);
-            print $0
-         }' | tee "${TMP}"))"
-
-FIXME: stopped here! -> gsub broken
-
-   if [ "${incomplete}" ]; then
-      _techo "Incomplete backups: ${incomplete}"
-      if [ -f "${c_delete_incomplete}" ]; then
-         delete_from_file "${TMP}"
-      fi
-   fi
-
    #
    # Interval definition: First try source specific, fallback to default
    #
