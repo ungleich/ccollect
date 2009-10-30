@@ -100,16 +100,22 @@ pcmd()
    fi
 }
 
+#
+# ssh-"feature": we cannot do '... read ...; ssh  ...; < file',
+# because ssh reads stdin! -n does not work -> does not ask for password
+# Allow deletion for files with suffix and without suffix
+#
 delete_from_file()
 {
-   #
-   # ssh-"feature": we cannot do '... read ...; ssh  ...; < file',
-   # because ssh reads stdin! -n does not work -> does not ask for password
-   #
    file="$1"; shift
-   while read to_remove; do set -- "$@" "${ddir}/${to_remove}"; done < "${file}"
+   suffix="$1" # only set for delete_incomplete
+#   [ "$#" = 1 ] && suffix="$1" && shift
+   while read to_remove; do
+      set -- "$@" "${ddir}/${to_remove}"
+      [ "$suffix" ] && set -- "$@" "$(echo ${to_remove} | sed "s/$suffix\$//")"
+   done < "${file}"
    _techo "Removing $@ ..."
-   pcmd rm ${VVERBOSE} -rf "$@" || _exit_err "Removing $@ failed."
+   pcmd echo rm ${VVERBOSE} -rf "$@" || _exit_err "Removing $@ failed."
 }
 
 display_version()
@@ -425,14 +431,29 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    # Check: incomplete backups? (needs echo to remove newlines)
    #
+   # *.marker: not possible, creates an error, if no *.marker exists
+   # -> catch return value
+
+   pcmd ls -1 "${ddir}/"*"${CMARKER}" > "${TMP}" 2>/dev/null; ret=$?
+
+   if [ "$ret" -eq 0 ]; then
+      _techo "Incomplete backups: ${incomplete}"
+      if [ -f "${c_delete_incomplete}" ]; then
+         delete_from_file "${TMP}"
+      fi
+   fi
+
    incomplete="$(echo \
       $(pcmd ls -1 "${ddir}/" | \
-      awk '/ENVIRON["CMARKER"]$/ {
-         print $0;
-         gsub(ENVIRON["CMARKER"]$,"",$0);
-         print $0
-      }' | \
-      tee "${TMP}"))"
+      awk '
+         BEGIN { regexp=ENVIRON["CMARKER"] "$" }
+         $0 ~ regexp {
+            print $0;
+            gsub(ENVIRON["CMARKER"]$,"",$0);
+            print $0
+         }' | tee "${TMP}"))"
+
+FIXME: stopped here! -> gsub broken
 
    if [ "${incomplete}" ]; then
       _techo "Incomplete backups: ${incomplete}"
