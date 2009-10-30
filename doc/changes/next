@@ -2,3 +2,4 @@
  * Fix some minor command line parsing issues (Nico Schottelius)
  * Correct output, if configuration is not in cconfig format (Nico Schottelius)
  * Minor code cleanups and optimisations (Nico Schottelius)
+ * ccollect_analyse_logs.sh traps more errors and warnings (Patrick Drolet)
