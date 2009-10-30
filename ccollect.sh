@@ -457,9 +457,8 @@ while [ "${i}" -lt "${no_sources}" ]; do
 
    #
    # Check: maximum number of backups is reached?
-   # If so remove. Use grep and ls -p so we only look at directories
    #
-   count="$(pcmd ls -p1 "${ddir}" | grep "^${INTERVAL}\..*/\$" | wc -l \
+   count="$(pcmd ls -p1 "${ddir}/${INTERVAL}.*/" | wc -l \
       | sed 's/^ *//g')"  || _exit_err "Counting backups failed"
 
    _techo "Existing backups: ${count} Total keeping backups: ${c_interval}"
