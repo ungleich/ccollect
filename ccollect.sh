@@ -108,10 +108,9 @@ pcmd()
 delete_from_file()
 {
    file="$1"; shift
-   suffix="$1" # only set for delete_incomplete
-#   [ "$#" = 1 ] && suffix="$1" && shift
+   suffix="$1" # only set, if deleting incomplete backups
    while read to_remove; do
-      set -- "$@" "${ddir}/${to_remove}"
+      set -- "$@" "${to_remove}"
       [ "$suffix" ] && set -- "$@" "$(echo ${to_remove} | sed "s/$suffix\$//")"
    done < "${file}"
    _techo "Removing $@ ..."
