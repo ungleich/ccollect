@@ -438,7 +438,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    if [ "$ret" -eq 0 ]; then
       _techo "Incomplete backups: ${incomplete}"
       if [ -f "${c_delete_incomplete}" ]; then
-         delete_from_file "${TMP}"
+         delete_from_file "${TMP}" "${CMARKER}"
       fi
    fi
 
