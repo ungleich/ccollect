@@ -108,13 +108,17 @@ pcmd()
 delete_from_file()
 {
    file="$1"; shift
-   [ $# -eq 1 ] && suffix="$1" && shift # set if deleting incomplete backups
+   suffix="" # It will be set, if deleting incomplete backups.
+   [ $# -eq 1 ] && suffix="$1" && shift
    while read to_remove; do
       set -- "$@" "${to_remove}"
-      [ "$suffix" ] && set -- "$@" "$(echo ${to_remove} | sed "s/$suffix\$//")"
+      if [ "$suffix" ]; then
+         to_remove_no_suffix="$(echo ${to_remove} | sed "s/$suffix\$//")"
+         set -- "$@" "${to_remove_no_suffix}"
+      fi
    done < "${file}"
    _techo "Removing $@ ..."
-   pcmd echo rm ${VVERBOSE} -rf "$@" || _exit_err "Removing $@ failed."
+   pcmd rm ${VVERBOSE} -rf "$@" || _exit_err "Removing $@ failed."
 }
 
 display_version()
