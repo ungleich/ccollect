@@ -118,7 +118,11 @@ delete_from_file()
       fi
    done < "${file}"
    _techo "Removing $@ ..."
-   pcmd rm ${VVERBOSE} -rf "$@" || _exit_err "Removing $@ failed."
+#  pcmd rm ${VVERBOSE} -rf "$@" || _exit_err "Removing $@ failed."
+   if [ ${VVERBOSE} ]; then
+       echo rm "$@"
+   fi
+   pcmd rm -rf "$@" || _exit_err "Removing $@ failed."
 }
 
 display_version()
@@ -503,7 +507,12 @@ while [ "${i}" -lt "${no_sources}" ]; do
    _techo "Beginning to backup, this may take some time..."
 
    _techo "Creating ${destination_dir} ..."
-   pcmd mkdir ${VVERBOSE} "${destination_dir}" || \
+#   pcmd mkdir ${VVERBOSE} "${destination_dir}" || \
+#      _exit_err "Creating ${destination_dir} failed. Skipping."
+   if [ ${VVERBOSE} ]; then
+      echo mkdir "${destination_dir}" 
+   fi
+   pcmd mkdir "${destination_dir}" || \
       _exit_err "Creating ${destination_dir} failed. Skipping."
 
    #
@@ -515,7 +524,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # the rsync part
    #
    _techo "Transferring files..."
-   rsync "$@" "${source}" "${destination_full}"; ret=$?
+   rsync $@ "${source}" "${destination_full}"; ret=$?
    _techo "Finished backup (rsync return code: $ret)."
 
    #
@@ -553,7 +562,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    #
    if [ -x "${c_post_exec}" ]; then
       _techo "Executing ${c_post_exec} ..."
-      "${c_post_exec}"; ret=$?
+      "${c_post_exec}" "${destination_full}"; ret=$?
       _techo "Finished ${c_post_exec}."
 
       if [ "${ret}" -ne 0 ]; then
@@ -571,7 +580,6 @@ while [ "${i}" -lt "${no_sources}" ]; do
    seconds="$((${seconds} - (${minutes} * 60)))"
 
    _techo "Backup lasted: ${hours}:${minutes}:${seconds} (h:m:s)"
-
 ) | add_name
 done
 
