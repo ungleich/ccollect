@@ -264,8 +264,10 @@ After having installed and used ccollect, report success using
 Configuring
 -----------
 For configuration aid have a look at the above mentioned tools, which can assist
-you quite well. When you are successfully using `ccollect`, report success using
-`tools/report_success.sh`.
+you quite well. When you are successfully using `ccollect`, I would be happy if
+you add a link to your website, stating "I backup with ccollect", which points
+to the ccollect homepage. So more people now about ccollect, use it and
+improve it. You can also report success using `tools/report_success.sh`.
 
 
 Runtime options
