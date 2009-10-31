@@ -459,7 +459,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # Check: maximum number of backups is reached?
    #
 
-   count="$(pcmd ls -1 "${ddir}/${INTERVAL}.*/" | wc -l \
+   count="$(pcmd ls -1 "${ddir}/${INTERVAL}."*"/" | wc -l \
       | sed 's/^ *//g')"  || _exit_err "Counting backups failed"
 
    _techo "Existing backups: ${count} Total keeping backups: ${c_interval}"
@@ -469,9 +469,9 @@ while [ "${i}" -lt "${no_sources}" ]; do
       remove="$((${count} - ${substract}))"
       _techo "Removing ${remove} backup(s)..."
 
-      pcmd ls -${TSORT}p1r "${ddir}" | grep "^${INTERVAL}\..*/\$" | \
-        head -n "${remove}" > "${TMP}"      || \
-        _exit_err "Listing old backups failed"
+      pcmd ls -${TSORT}1r "${ddir}/${INTERVAL}."*"/" |
+         head -n "${remove}" > "${TMP}"      || \
+            _exit_err "Listing old backups failed"
 
       delete_from_file "${TMP}"
    fi
