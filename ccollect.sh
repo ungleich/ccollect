@@ -496,9 +496,9 @@ while [ "${i}" -lt "${no_sources}" ]; do
    fi
 
    # set time when we really begin to backup, not when we began to remove above
-   destination_name="${INTERVAL}.$(${CDATE}).$$"
-   destination_dir="${ddir}/${destination_name}"
-   destination_full="${destination}/${destination_name}"
+   export destination_name="${INTERVAL}.$(${CDATE}).$$"
+   export destination_dir="${ddir}/${destination_name}"
+   export destination_full="${destination}/${destination_name}"
 
    # give some info
    _techo "Beginning to backup, this may take some time..."

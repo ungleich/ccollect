@@ -599,6 +599,12 @@ respectively after doing the backup for *this specific* source.
 If you want to have pre-/post-exec before and after *all*
 backups, see above for general configuration.
 
+The `post_exec` script can access the following exported variables from
+ccollect:
+
+- destination_name: contains the base directory name (`daily.20091031-1013.24496`)
+- destination_dir: full path (`/tmp/ccollect/daily.20091031-1013.24496`)
+- destination_full: like 'destination_dir', but prepended with the remote_host, if set (`host:/tmp/ccollect/daily.20091031-1013.24496` or `/tmp/ccollect/daily.20091031-1013.24496`)
 
 Example:
 --------------------------------------------------------------------------------
