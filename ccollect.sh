@@ -437,7 +437,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # *.marker: not possible, creates an error, if no *.marker exists
    # -> catch return value
 
-   pcmd ls -1 "${ddir}/"*"${CMARKER}" > "${TMP}" 2>/dev/null; ret=$?
+   pcmd ls -d1 "${ddir}/"*"${CMARKER}" > "${TMP}" 2>/dev/null; ret=$?
 
    if [ "${ret}" -eq 0 ]; then
       _techo "Incomplete backups: $(echo $(cat "${TMP}"))"
@@ -463,7 +463,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
    # Check: maximum number of backups is reached?
    #
 
-   count="$(pcmd ls -1 "${ddir}/${INTERVAL}."*"/" | wc -l \
+   count="$(pcmd ls -d1 "${ddir}/${INTERVAL}."*"/" | wc -l \
       | sed 's/^ *//g')"  || _exit_err "Counting backups failed"
 
    _techo "Existing backups: ${count} Total keeping backups: ${c_interval}"
@@ -473,7 +473,7 @@ while [ "${i}" -lt "${no_sources}" ]; do
       remove="$((${count} - ${substract}))"
       _techo "Removing ${remove} backup(s)..."
 
-      pcmd ls -${TSORT}1r "${ddir}/${INTERVAL}."*"/" |
+      pcmd ls -${TSORT}d1r "${ddir}/${INTERVAL}."*"/" |
          head -n "${remove}" > "${TMP}"      || \
             _exit_err "Listing old backups failed"
 
