@@ -128,7 +128,6 @@ TOOLSMAN = $(subst .sh,.text,$(TOOLSMAN1))
 
 TOOLSFP = $(subst ccollect,tools/ccollect,$(TOOLS)) 
 
-#t2: $(TOOLSMAN)
 t2:
 	echo $(TOOLS) - $(TOOLSMAN) - $(TOOLSFP)
 	
@@ -189,7 +188,6 @@ distclean: clean
 #
 dist: distclean documentation
 
-#test: ccollect.sh documentation
 /tmp/ccollect:
 	mkdir -p /tmp/ccollect
 
