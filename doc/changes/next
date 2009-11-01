@@ -6,3 +6,4 @@
  * Remove -v for mkdir and rm, as they are not POSIX (Patrick Drolet)
  * Export destination_* to source specific post_exec (Nico Schottelius)
  * Update documentation regarding exported variables (Nico Schottelius)
+ * Simplify time calculation (Nico Schottelius)
