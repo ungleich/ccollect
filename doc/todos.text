@@ -24,3 +24,7 @@ to have. This means I won't code them, so somebody can code them.
 
 - add option ("run_only_once") to prevent ccollect to run twice
   (per source/general)
+  -> or create wrapper, that takes care of it
+
+- add support for wipe
+

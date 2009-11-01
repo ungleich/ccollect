@@ -1,6 +1,0 @@
-- restructure code to easily allow global versus source options:
-   f_name=....
-   check_option $f_name
-      => source
-      => defaults
-- support all senseful options as default and source specific
