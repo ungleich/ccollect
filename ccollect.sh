@@ -270,6 +270,11 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
 #
 (
    backup="${CSOURCES}/${name}"
+   c_source="${backup}/source"
+   c_dest="${backup}/destination"
+   c_pre_exec="${backup}/pre_exec"
+   c_post_exec="${backup}/post_exec"
+
    #
    # Stderr to stdout, so we can produce nice logs
    #
@@ -296,12 +301,19 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
    fi
 
    #
-   # Read / create configuration
+   # First execute pre_exec, which may generate destination or other parameters
    #
-   c_source="${backup}/source"
-   c_dest="${backup}/destination"
-   c_pre_exec="${backup}/pre_exec"
-   c_post_exec="${backup}/post_exec"
+   if [ -x "${c_pre_exec}" ]; then
+      _techo "Executing ${c_pre_exec} ..."
+      "${c_pre_exec}"; ret="$?"
+      _techo "Finished ${c_pre_exec} (return code ${ret})."
+
+      [ "${ret}" -eq 0 ] || _exit_err "${c_pre_exec} failed. Skipping."
+   fi
+
+   #
+   # Read source configuration
+   #
    for opt in verbose very_verbose summary exclude rsync_options \
               delete_incomplete remote_host rsync_failure_codes  \
               mtime quiet_if_down ; do
@@ -319,17 +331,6 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
       TSORT="t"
    else
       TSORT="tc"
-   fi
-
-   #
-   # First execute pre_exec, which may generate destination or other parameters
-   #
-   if [ -x "${c_pre_exec}" ]; then
-      _techo "Executing ${c_pre_exec} ..."
-      "${c_pre_exec}"; ret="$?"
-      _techo "Finished ${c_pre_exec} (return code ${ret})."
-
-      [ "${ret}" -eq 0 ] || _exit_err "${c_pre_exec} failed. Skipping."
    fi
 
    #
