@@ -7,7 +7,7 @@ ccollect backups (local or remote) data to local or remote destinations.
 You can retrieve the latest version of ccollect at [0].
 
 ccollect was inspired by rsnapshot [1], which has some problems:
-   - configuration parameters has to be TAB seperated
+   - configuration parameters have to be TAB seperated
    - you can not specify per source exclude lists
    - no per source pre/post execution support
    - no parallel execution
