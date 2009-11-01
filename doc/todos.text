@@ -1,6 +1,12 @@
+ccollect todos
+==============
+Nico Schottelius <nico-ccollect__@__schottelius.org>
+0.1, for the current ccollect version
+:Author Initials: NS
+
+
 These todos are things that would be senseful todo, but are just nice
 to have. This means I won't code them, so somebody can code them.
---------------------------------------------------------------------------------
 
 - Add ccollect-restore.sh
   (new project, perhaps coordinated with jchome's ccollect-config)
@@ -28,3 +34,5 @@ to have. This means I won't code them, so somebody can code them.
 
 - add support for wipe
 
+- cleanup doc/: remove old stuff, make clear what can be installeld,
+  cleanup ccollect-restoring.text
