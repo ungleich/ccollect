@@ -560,14 +560,14 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
       fi
    fi
 
-   # Calculation
+   #
+   # Time calculation
+   #
    end_s="$(${SDATE})"
-
    full_seconds="$((${end_s} - ${begin_s}))"
    hours="$((${full_seconds} / 3600))"
-   seconds="$((${full_seconds} - (${hours} * 3600)))"
-   minutes="$((${seconds} / 60))"
-   seconds="$((${seconds} - (${minutes} * 60)))"
+   minutes="$(((${full_seconds} % 3600) / 60))"
+   seconds="$((${full_seconds} % 60))"
 
    _techo "Backup lasted: ${hours}:${minutes}:${seconds} (h:m:s)"
 ) | add_name
