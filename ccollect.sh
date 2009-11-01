@@ -247,13 +247,13 @@ fi
 #
 # Let's do the backup - here begins the real stuff
 #
-current_source=0
-while [ "${current_source}" -lt "${no_sources}" ]; do
+source_no=0
+while [ "${source_no}" -lt "${no_sources}" ]; do
    #
    # Get current source
    #
-   eval name=\"\$source_${current_source}\"
-   current_source=$((${current_source}+1))
+   eval name=\"\$source_${source_no}\"
+   source_no=$((${source_no}+1))
 
    export name
 
@@ -494,7 +494,7 @@ while [ "${current_source}" -lt "${no_sources}" ]; do
    fi
 
    # set time when we really begin to backup, not when we began to remove above
-   export destination_name="${INTERVAL}.$(${CDATE}).$$"
+   export destination_name="${INTERVAL}.$(${CDATE}).$$-${source_no}"
    export destination_dir="${ddir}/${destination_name}"
    export destination_full="${destination}/${destination_name}"
 
