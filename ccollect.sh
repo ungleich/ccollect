@@ -325,6 +325,19 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
    done
 
    #
+   # Interval definition: First try source specific, fallback to default
+   #
+   c_interval="$(cat "${backup}/intervals/${INTERVAL}" 2>/dev/null)"
+
+   if [ -z "${c_interval}" ]; then
+      c_interval="$(cat "${CDEFAULTS}/intervals/${INTERVAL}" 2>/dev/null)"
+
+      if [ -z "${c_interval}" ]; then
+         _exit_err "No definition for interval \"${INTERVAL}\" found. Skipping."
+      fi
+   fi
+
+   #
    # Sort by ctime (default) or mtime (configuration option)
    #
    if [ -f "${c_mtime}" ] ; then
@@ -443,19 +456,6 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
       _techo "Incomplete backups: $(echo $(cat "${TMP}"))"
       if [ -f "${c_delete_incomplete}" ]; then
          delete_from_file "${TMP}" "${CMARKER}"
-      fi
-   fi
-
-   #
-   # Interval definition: First try source specific, fallback to default
-   #
-   c_interval="$(cat "${backup}/intervals/${INTERVAL}" 2>/dev/null)"
-
-   if [ -z "${c_interval}" ]; then
-      c_interval="$(cat "${CDEFAULTS}/intervals/${INTERVAL}" 2>/dev/null)"
-
-      if [ -z "${c_interval}" ]; then
-         _exit_err "No definition for interval \"${INTERVAL}\" found. Skipping."
       fi
    fi
 
