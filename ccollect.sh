@@ -247,13 +247,13 @@ fi
 #
 # Let's do the backup - here begins the real stuff
 #
-i=0
-while [ "${i}" -lt "${no_sources}" ]; do
+current_source=0
+while [ "${current_source}" -lt "${no_sources}" ]; do
    #
    # Get current source
    #
-   eval name=\"\$source_${i}\"
-   i=$((${i}+1))
+   eval name=\"\$source_${current_source}\"
+   current_source=$((${current_source}+1))
 
    export name
 
