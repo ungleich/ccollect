@@ -462,8 +462,8 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
    # Check: maximum number of backups is reached?
    #
 
-   count="$(pcmd ls -d1 "${ddir}/${INTERVAL}."*"/" | wc -l \
-      | sed 's/^ *//g')"  || _exit_err "Counting backups failed"
+   count="$(pcmd ls -d1 "${ddir}/${INTERVAL}."*"/" | wc -l | sed 's/^ *//g')" \
+      || _exit_err "Counting backups failed"
 
    _techo "Existing backups: ${count} Total keeping backups: ${c_interval}"
 
