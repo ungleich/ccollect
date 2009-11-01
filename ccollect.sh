@@ -462,7 +462,6 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
    #
    # Check: maximum number of backups is reached?
    #
-
    count="$(pcmd ls -d1 "${ddir}/${INTERVAL}."*"/" | wc -l | sed 's/^ *//g')" \
       || _exit_err "Counting backups failed"
 
@@ -487,25 +486,24 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
       _exit_err "Failed to list contents of ${ddir}."
 
    #
-   # clone from old backup, if existing
+   # Clone from old backup, if existing
    #
    if [ "${last_dir}" ]; then
       set -- "$@" "--link-dest=${ddir}/${last_dir}"
       _techo "Hard linking from ${last_dir}"
    fi
 
-   # set time when we really begin to backup, not when we began to remove above
+   #
+   # Include current time in name, not the time when we began to remove above
+   #
    export destination_name="${INTERVAL}.$(${CDATE}).$$-${source_no}"
    export destination_dir="${ddir}/${destination_name}"
    export destination_full="${destination}/${destination_name}"
 
-   # give some info
-   _techo "Beginning to backup, this may take some time..."
-
-   _techo "Creating ${destination_dir} ..."
+   _techo "Creating directory ${destination_dir} ..."
    [ "${VVERBOSE}" ] && echo "mkdir ${destination_dir}" 
    pcmd mkdir "${destination_dir}" || \
-      _exit_err "Creating ${destination_dir} failed. Skipping."
+      _exit_err "Creating directory ${destination_dir} failed. Skipping."
 
    #
    # added marking in 0.6 (and remove it, if successful later)
