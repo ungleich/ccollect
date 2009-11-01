@@ -36,3 +36,6 @@ to have. This means I won't code them, so somebody can code them.
 
 - cleanup doc/: remove old stuff, make clear what can be installeld,
   cleanup ccollect-restoring.text
+
+- clean logwrapper.text and probably create logwrapper, that does
+  what is being stated in logwrapper.text
