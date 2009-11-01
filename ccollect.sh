@@ -89,15 +89,13 @@ add_name()
 }
 
 #
-# Execute on remote host, if backing up to a remote host
+# Prepend "ssh ${remote_host}", if backing up to a remote host
 #
 pcmd()
 {
-   if [ "${remote_host}" ]; then
-      ssh "${remote_host}" "$@"
-   else
-      "$@"
-   fi
+   [ "${remote_host}" ] && set -- "ssh" "${remote_host}" "$@"
+
+   "$@"
 }
 
 #
