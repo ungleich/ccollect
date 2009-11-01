@@ -194,20 +194,8 @@ dist: distclean documentation
 	mkdir -p /tmp/ccollect
 
 test: ccollect.sh /tmp/ccollect
-	CCOLLECT_CONF=./conf ./ccollect.sh daily from-remote
-	CCOLLECT_CONF=./conf ./ccollect.sh daily local
-	CCOLLECT_CONF=./conf ./ccollect.sh daily "local-with&ampersand"
-	CCOLLECT_CONF=./conf ./ccollect.sh daily source-without-destination
-	CCOLLECT_CONF=./conf ./ccollect.sh daily "source with spaces and interval"
-	CCOLLECT_CONF=./conf ./ccollect.sh daily to-remote
-	CCOLLECT_CONF=./conf ./ccollect.sh daily with_exec
-	CCOLLECT_CONF=./conf ./ccollect.sh daily very_verbose
-	touch /tmp/ccollect/$$(ls /tmp/ccollect | head -n1).ccollect-marker
-	CCOLLECT_CONF=./conf ./ccollect.sh daily delete_incomplete
-	CCOLLECT_CONF=./conf ./ccollect.sh daily no-source-must-fail
-
-test2: ccollect.sh /tmp/ccollect
 	cd ./conf/sources/; for s in *; do CCOLLECT_CONF=../ ../../ccollect.sh daily "$$s"; done
 	touch /tmp/ccollect/$$(ls /tmp/ccollect | head -n1).ccollect-marker
 	CCOLLECT_CONF=./conf ./ccollect.sh -a daily
+	touch /tmp/ccollect/$$(ls /tmp/ccollect | head -n1).ccollect-marker
 	CCOLLECT_CONF=./conf ./ccollect.sh -a -p daily
