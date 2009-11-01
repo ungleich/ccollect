@@ -40,7 +40,7 @@ CPREEXEC="${CDEFAULTS}/pre_exec"
 CPOSTEXEC="${CDEFAULTS}/post_exec"
 CMARKER=".ccollect-marker"
 
-export TMP=$(mktemp "/tmp/${__myname}.XXXXXX")
+export TMP="$(mktemp "/tmp/${__myname}.XXXXXX")"
 VERSION="0.8"
 RELEASE="2009-08-20"
 HALF_VERSION="ccollect ${VERSION}"
