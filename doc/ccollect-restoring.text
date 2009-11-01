@@ -30,7 +30,7 @@ Boot the system to be rescued from a media that contains low level tools
 for your OS (like partitioning, formatting) and the necessary tools
 (ssh, tar or rsync).
 Use 
-- create the necessary partition table (or however it is called
+- create the necessary volumes (like partitions, slices, ...)
 
 Get a live-cd, that ships with
 - rsync / tar
