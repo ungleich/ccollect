@@ -39,3 +39,5 @@ to have. This means I won't code them, so somebody can code them.
 
 - clean logwrapper.text and probably create logwrapper, that does
   what is being stated in logwrapper.text
+
+- include pdf support again (Makefile:72)
