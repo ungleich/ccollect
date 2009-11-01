@@ -335,6 +335,12 @@ If you add '$CCOLLECT_CONF/defaults/`pre_exec`' or
 will start `pre_exec` before the whole backup process and
 `post_exec` after backup of all sources is done.
 
+The `pre_exec` and `post_exec` script can access the following exported variables:
+
+- 'INTERVAL': the interval selected (`daily`)
+- 'no_sources': number of sources to backup (`2`)
+- 'source_$no': name of the source, '$no' starts at 0
+
 The following example describes how to report free disk space in
 human readable format before and after the whole backup process:
 -------------------------------------------------------------------------
@@ -602,9 +608,10 @@ backups, see above for general configuration.
 The `post_exec` script can access the following exported variables from
 ccollect:
 
-- destination_name: contains the base directory name (`daily.20091031-1013.24496`)
-- destination_dir: full path (`/tmp/ccollect/daily.20091031-1013.24496`)
-- destination_full: like 'destination_dir', but prepended with the remote_host, if set (`host:/tmp/ccollect/daily.20091031-1013.24496` or `/tmp/ccollect/daily.20091031-1013.24496`)
+- 'name': name of the source that is being backed up
+- 'destination_name': contains the base directory name (`daily.20091031-1013.24496`)
+- 'destination_dir': full path (`/tmp/ccollect/daily.20091031-1013.24496`)
+- 'destination_full': like 'destination_dir', but prepended with the remote_host, if set (`host:/tmp/ccollect/daily.20091031-1013.24496` or `/tmp/ccollect/daily.20091031-1013.24496`)
 
 Example:
 --------------------------------------------------------------------------------
@@ -710,11 +717,15 @@ Using source names or interval in pre_/post_exec scripts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The pre-/post_exec scripts can access some internal variables from `ccollect`:
 
-- INTERVAL: The interval specified on the command line
-- no_sources: number of sources
-- source_$NUM: the name of the source
-- name: the name of the currently being backuped source (not available for
+- 'INTERVAL': The interval specified on the command line
+- 'no_sources': number of sources
+- 'source_$NUM': the name of the source
+- 'name': the name of the currently being backuped source (not available for
   generic pre_exec script)
+
+Only available for `post_exec`:
+
+- 'remote_host': name of host we backup to (empty if unused)
 
 
 Using rsync protocol without ssh
