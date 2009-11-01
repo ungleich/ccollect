@@ -110,7 +110,7 @@ delete_from_file()
    [ $# -eq 1 ] && suffix="$1" && shift
    while read to_remove; do
       set -- "$@" "${to_remove}"
-      if [ "$suffix" ]; then
+      if [ "${suffix}" ]; then
          to_remove_no_suffix="$(echo ${to_remove} | sed "s/$suffix\$//")"
          set -- "$@" "${to_remove_no_suffix}"
       fi

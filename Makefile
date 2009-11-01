@@ -208,4 +208,5 @@ test: ccollect.sh /tmp/ccollect
 
 test2: ccollect.sh /tmp/ccollect
 	cd ./conf/sources/; for s in *; do CCOLLECT_CONF=../ ../../ccollect.sh daily "$$s"; done
+	touch /tmp/ccollect/$$(ls /tmp/ccollect | head -n1).ccollect-marker
 	CCOLLECT_CONF=./conf ./ccollect.sh -a daily
