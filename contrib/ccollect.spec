@@ -1,11 +1,11 @@
 Summary:        (pseudo) incremental backup with different exclude lists using hardlinks and rsync
 Name:           ccollect
-Version:        0.8
+Version:        0.8.1
 Release:        0
 URL:            http://www.nico.schottelius.org/software/ccollect
 Source0:        http://www.nico.schottelius.org/software/ccollect/%{name}-%{version}.tar.bz2
 
-License:        LGPL-3
+License:        GPL-3
 Group:          Applications/System
 Vendor:         Nico Schottelius <nico-ccollect@schottelius.org>
 BuildRoot:      %{_tmppath}/%{name}-%(id -un)
