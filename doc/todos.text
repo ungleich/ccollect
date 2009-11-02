@@ -41,3 +41,5 @@ to have. This means I won't code them, so somebody can code them.
   what is being stated in logwrapper.text
 
 - include pdf support again (Makefile:72)
+
+- integrate website into ccollect -> updates are done here
