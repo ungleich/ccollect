@@ -7,3 +7,4 @@
  * Export destination_* to source specific post_exec (Nico Schottelius)
  * Update documentation regarding exported variables (Nico Schottelius)
  * Simplify time calculation (Nico Schottelius)
+ * Documentate pre_exec error handling (Nico Schottelius)
