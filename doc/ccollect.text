@@ -335,11 +335,14 @@ If you add '$CCOLLECT_CONF/defaults/`pre_exec`' or
 will start `pre_exec` before the whole backup process and
 `post_exec` after backup of all sources is done.
 
+If `pre_exec` exits with a non-zero return code, the whole backup
+process will be aborted.
+
 The `pre_exec` and `post_exec` script can access the following exported variables:
 
 - 'INTERVAL': the interval selected (`daily`)
 - 'no_sources': number of sources to backup (`2`)
-- 'source_$no': name of the source, '$no' starts at 0
+- 'source_$no': name of the source, '$no' starts at 0 (`$source_0`)
 
 The following example describes how to report free disk space in
 human readable format before and after the whole backup process:
@@ -604,6 +607,9 @@ configuration, `ccollect` will execute this command before and
 respectively after doing the backup for *this specific* source.
 If you want to have pre-/post-exec before and after *all*
 backups, see above for general configuration.
+
+If `pre_exec` exits with a non-zero return code, the backup
+process of `this source` will be aborted (i.e. backup skipped).
 
 The `post_exec` script can access the following exported variables from
 ccollect:
