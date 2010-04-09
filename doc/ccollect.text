@@ -646,7 +646,7 @@ Detailed description of "rsync_failure_codes"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 If you have the file `rsync_failure_codes` in your source configuration
 directory, it should contain a newline-separated list of numbers representing
-rsync exit codes.  If rsync exits with any code in this list, a marker will
+rsync exit codes. If rsync exits with any code in this list, a marker will
 be left in the destination directory indicating failure of this backup.  If
 you have enabled delete_incomplete, then this backup will be deleted during
 the next ccollect run on the same interval.
@@ -656,7 +656,7 @@ Detailed description of "mtime"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 By default, ccollect.sh chooses the most recent backup directory for cloning or
 the oldest for deletion based on the directory's last change time (ctime).
-With this option, the sorting is done based on modification time (mtime).  With
+With this option, the sorting is done based on modification time (mtime). With
 this version of ccollect, the ctime and mtime of your backups will normally
 be the same and this option has no effect.  However, if you, for example, move
 your backups to another hard disk using cp -a or rsync -a, you should use this
