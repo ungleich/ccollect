@@ -42,7 +42,7 @@ CMARKER=".ccollect-marker"
 
 export TMP="$(mktemp "/tmp/${__myname}.XXXXXX")"
 VERSION="0.8.1"
-RELEASE="2009-11-XX"
+RELEASE="2010-03-26"
 HALF_VERSION="ccollect ${VERSION}"
 FULL_VERSION="ccollect ${VERSION} (${RELEASE})"
 
@@ -101,7 +101,7 @@ pcmd()
 #
 # ssh-"feature": we cannot do '... read ...; ssh  ...; < file',
 # because ssh reads stdin! -n does not work -> does not ask for password
-# Alsa allow deletion for files without the given suffix
+# Also allow deletion for files without the given suffix
 #
 delete_from_file()
 {
@@ -252,10 +252,8 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
    #
    # Get current source
    #
-   eval name=\"\$source_${source_no}\"
+   eval export name=\"\$source_${source_no}\"
    source_no=$((${source_no}+1))
-
-   export name
 
    #
    # Start ourself, if we want parallel execution
