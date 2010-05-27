@@ -29,7 +29,7 @@ if [ $# -ne 1 ]; then
 fi
 
 dir="$1"
-script=$(echo $0 | sed 's/\.sh$/.sub.sh/')
+script="${0}.sub"
 
 find "${dir}/sources/" -name destination -exec "${script}" {} \;
 

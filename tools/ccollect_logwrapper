@@ -58,7 +58,7 @@ _echo "Starting with arguments: $@"
 touch "${ccollect_logfile}" || _exit_err "Failed to create ${ccollect_logfile}"
 
 # First line in the logfile is always the commandline
-echo ccollect.sh "$@" > "${ccollect_logfile}" 2>&1
-ccollect.sh "$@" >> "${ccollect_logfile}" 2>&1
+echo ccollect "$@" > "${ccollect_logfile}" 2>&1
+ccollect "$@" >> "${ccollect_logfile}" 2>&1
 
 _echo "Finished."
