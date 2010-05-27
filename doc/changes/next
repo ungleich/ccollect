@@ -8,3 +8,4 @@
  * Update documentation regarding exported variables (Nico Schottelius)
  * Simplify time calculation (Nico Schottelius)
  * Documentate pre_exec error handling (Nico Schottelius)
+ * Added start script (Thorsten Elle)

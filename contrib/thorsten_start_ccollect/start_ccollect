@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# Backup-Ordner
+BACKUP_DIR="/mnt"
+
+# ccollect_logwrapper-Skript
+CCOLLECT_LOGWRAPPER="./ccollect_logwrapper.sh"
+
+# letzte Sicherung für Gruppe daily, weekly und monthly in Backup-Ordner ermitteln
+DATE_DAILY=`  ls $BACKUP_DIR | grep daily   | sort -r | sed -e'2,$d' | cut -f 2 -d.`
+DATE_WEEKLY=` ls $BACKUP_DIR | grep weekly  | sort -r | sed -e'2,$d' | cut -f 2 -d.`
+DATE_MONTHLY=`ls $BACKUP_DIR | grep monthly | sort -r | sed -e'2,$d' | cut -f 2 -d.`
+DATE_YEARLY=` ls $BACKUP_DIR | grep yearly  | sort -r | sed -e'2,$d' | cut -f 2 -d.`
+
+# Falls Leerstring diesen mit "altem Datum" füllen
+if [ -z "$DATE_DAILY"   ] ; then  DATE_DAILY="20000101-0101"   ; fi
+if [ -z "$DATE_WEEKLY"  ] ; then  DATE_WEEKLY="20000101-0101"  ; fi
+if [ -z "$DATE_MONTHLY" ] ; then  DATE_MONTHLY="20000101-0101" ; fi
+if [ -z "$DATE_YEARLY"  ] ; then  DATE_YEARLY="20000101-0101"  ; fi
+
+echo current:  $DATE_CUR
+echo last daily: $DATE_DAILY
+echo last weekly: $DATE_WEEKLY
+echo last monthly: $DATE_MONTHLY
+echo last yearly: $DATE_YEARLY
+
+# Datum date-konform wandeln
+# Achtung: mit bash - nicht mit sh möglich!
+# Alternativ mit expr... konvertieren
+
+DATE_DAILY=${DATE_DAILY:0:4}-${DATE_DAILY:4:2}-${DATE_DAILY:6:2}" "${DATE_DAILY:9:2}:${DATE_DAILY:11:2}:00
+DATE_WEEKLY=${DATE_WEEKLY:0:4}-${DATE_WEEKLY:4:2}-${DATE_WEEKLY:6:2}" "${DATE_WEEKLY:9:2}:${DATE_WEEKLY:11:2}:00
+DATE_MONTHLY=${DATE_MONTHLY:0:4}-${DATE_MONTHLY:4:2}-${DATE_MONTHLY:6:2}" "${DATE_MONTHLY:9:2}:${DATE_MONTHLY:11:2}:00
+DATE_YEARLY=${DATE_YEARLY:0:4}-${DATE_YEARLY:4:2}-${DATE_YEARLY:6:2}" "${DATE_YEARLY:9:2}:${DATE_YEARLY:11:2}:00
+DATE_CUR=`date "+%Y-%m-%d %T"`
+
+# Bei Bedarf Backups durchführen
+
+if [ `date --date "$DATE_YEARLY" +%Y` -ne `date --date "$DATE_CUR" +%Y` ]
+then
+
+  # Jahresbackup erzeugen
+  echo monthly backup started
+  source $CCOLLECT_LOGWRAPPER -a yearly
+
+elif [ `date --date "$DATE_MONTHLY" +%Y%m` -ne `date --date "$DATE_CUR" +%Y%m` ]
+then
+
+  # Monatsbackup erzeugen
+  echo monthly backup started
+  source $CCOLLECT_LOGWRAPPER -a monthly
+
+elif [ `date --date "$DATE_WEEKLY" +%Y%W` -ne `date --date "$DATE_CUR" +%Y%W` ]
+then
+
+  # Wochenbackup erzeugen
+  echo weekly backup started
+  source $CCOLLECT_LOGWRAPPER -a weekly
+
+elif [ `date --date "$DATE_DAILY" +%Y%j` -ne `date --date "$DATE_CUR" +%Y%j` ]
+then
+
+  # Tagesbackup erzeugen
+  echo daily backup started
+  source $CCOLLECT_LOGWRAPPER -a daily
+
+else
+
+  # nichts zu tun
+  echo nothing to do
+
+fi
