@@ -971,6 +971,31 @@ you can enter your password (have a look at screen(1), especially "C-a M"
 and "C-a _", for more information).
 
 
+Backup fails, if autofs is running, but sources not reachable
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+If you are trying to backup a system containing paths that are managed
+by autofs, you may run into this error:
+
+-------------------------------------------------------------------------------
+2009-12-01-23:14:15: ccollect 0.8.1: Beginning backup using interval monatlich
+[ikn] 2009-12-01-23:14:15: Beginning to backup
+[ikn] 2009-12-01-23:14:15: Executing /home/users/nico/ethz/ccollect/sources/ikn/pre_exec ... 
+Enter LUKS passphrase: 
+[ikn] Command successful.
+[ikn] key slot 0 unlocked.
+[ikn] 2009-12-01-23:14:23: Finished /home/users/nico/ethz/ccollect/sources/ikn/pre_exec (return code 0). [ikn] directory has vanished: "/home/users/nico/privat/firmen/ethz/autofs/projects"
+[ikn] directory has vanished: "/home/users/nico/privat/firmen/ethz/autofs/scratch"
+[ikn] directory has vanished: "/home/users/nico/privat/firmen/ethz/autofs/sgscratch"
+[ikn] directory has vanished: "/home/users/nico/privat/firmen/ethz/autofs/supp"
+[ikn] directory has vanished: "/home/users/nico/privat/firmen/ethz/autofs/sysadmin"
+[ikn] rsync warning: some files vanished before they could be transferred (code 24) at main.c(1057) [sender=3.0.6] 
+[ikn] 2009-12-01-23:44:23: Source / is not readable. Skipping.
+-------------------------------------------------------------------------------
+
+Thus, if you are unsure whether autofs paths can be mounted during backup,
+stop autofs in pre_exec and reenable it in post_exec.
+
+
 Examples
 --------
 
