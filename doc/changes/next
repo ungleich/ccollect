@@ -9,3 +9,4 @@
  * Simplify time calculation (Nico Schottelius)
  * Documentate pre_exec error handling (Nico Schottelius)
  * Added start script (Thorsten Elle)
+ * Documentate autofs hint (Nico Schottelius)
