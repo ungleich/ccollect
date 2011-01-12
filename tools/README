@@ -15,5 +15,4 @@ config-pre-0.6-to-0.6: only to be used for converting
 config-pre-0.6-to-0.6.sub: only to be used for converting
 config-pre-0.7-to-0.7: only to be used for converting
 config-pre-0.7-to-0.7.sub: only to be used for converting
-gnu-du-backup-size-compare
 README
