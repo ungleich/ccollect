@@ -461,8 +461,7 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
       remove="$((${count} - ${substract}))"
       _techo "Removing ${remove} backup(s)..."
 
-      pcmd ls -${TSORT}d1r "${ddir}/${INTERVAL}."*"/" |
-         head -n "${remove}" > "${TMP}"      || \
+      ls -${TSORT}d1r | grep "${INTERVAL}\\." | head -n "${remove}" > "${TMP}" || \
             _exit_err "Listing old backups failed"
 
       delete_from_file "${TMP}"
