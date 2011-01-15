@@ -448,18 +448,14 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
    ( pcmd cd "${ddir}" ) || _exit_err "Cannot change to ${ddir}. Skipping."
 
    #
-   # Check: incomplete backups? (needs echo to remove newlines)
+   # Check incomplete backups (needs echo to remove newlines)
    #
-   # *.marker: not possible, creates an error, if no *.marker exists
-   # -> catch return value
+   pcmd ls -d1 "${ddir}" | grep "${CMARKER}\$" > "${TMP}" ||\
+      _exit_err "Cannot list incomplete files"
 
-   pcmd ls -d1 "${ddir}/"*"${CMARKER}" > "${TMP}" 2>/dev/null; ret=$?
-
-   if [ "${ret}" -eq 0 ]; then
-      _techo "Incomplete backups: $(echo $(cat "${TMP}"))"
-      if [ -f "${c_delete_incomplete}" ]; then
-         delete_from_file "${TMP}" "${CMARKER}"
-      fi
+   _techo "Incomplete backups: $(echo $(cat "${TMP}"))"
+   if [ -f "${c_delete_incomplete}" ]; then
+      delete_from_file "${TMP}" "${CMARKER}"
    fi
 
    #
