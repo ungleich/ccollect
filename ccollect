@@ -358,8 +358,6 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
       fi
    fi
 
-   destination="${ddir}"
-
    #
    # Parameters: ccollect defaults, configuration options, user options
    #
@@ -473,7 +471,6 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
    #
    export destination_name="${INTERVAL}.$(${CDATE}).$$-${source_no}"
    export destination_dir="${ddir}/${destination_name}"
-   export destination_full="${destination}/${destination_name}"
 
    _techo "Creating directory ${destination_dir} ..."
    [ "${VVERBOSE}" ] && echo "mkdir ${destination_dir}" 
@@ -489,7 +486,7 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
    # the rsync part
    #
    _techo "Transferring files..."
-   rsync "$@" "${source}" "${destination_full}"; ret=$?
+   rsync "$@" "${source}" "${destination_dir}"; ret=$?
    _techo "Finished backup (rsync return code: $ret)."
 
    #
