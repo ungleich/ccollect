@@ -445,7 +445,7 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
       remove="$((${count} - ${c_interval} + 1))"
       _techo "Removing ${remove} backup(s)..."
 
-      ls -${TSORT}d1r | grep "${INTERVAL}\\." | head -n "${remove}" > "${TMP}" || \
+      ls -${TSORT}1r | grep "^${INTERVAL}\\." | head -n "${remove}" > "${TMP}" || \
             _exit_err "Listing old backups failed"
 
       delete_from_file "${TMP}"
