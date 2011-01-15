@@ -388,9 +388,9 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
    #
 
    #
-   # Rsync standard options
+   # Rsync standard options (archive will be added after is-up-check)
    #
-   set -- "$@" "--archive" "--delete" "--numeric-ids" "--relative"   \
+   set -- "$@" "--delete" "--numeric-ids" "--relative"   \
                "--delete-excluded" "--sparse"
 
    #
@@ -436,6 +436,11 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
       fi
       _exit_err "Source ${source} is not readable. Skipping."
    fi
+
+   #
+   # Add --archive for real backup (looks nice in front)
+   #
+   set -- "--archive" "$@"
 
    #
    # Check: destination exists?
