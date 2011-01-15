@@ -1,0 +1,20 @@
+Hinweis:
+   Zwei Quellen auf ein Ziel funktioniert nicht, da die beiden
+   Quellen von den unterschiedlichen Verzeichnissen linken.
+
+Listing:
+   .../* funktioniert nicht teilweise (abhängig von der Shell?)
+
+Isup-check: optional!
+
+line 318/check no_xxx => correct test?
+
+REMOVE ALL PCMD code
+
+Backup to remote can be done via ssh tunnel!
+
+
+% remote host: Allow backup host to access our sshd
+   ssh -R4242:localhost:22 backupserver "ccollect interval backupremotehost"
+
+   remove $destination (==ddir)
