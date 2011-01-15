@@ -450,7 +450,7 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
    #
    # Check incomplete backups (needs echo to remove newlines)
    #
-   pcmd ls -d1 "${ddir}" | grep "${CMARKER}\$" > "${TMP}" ||\
+   pcmd ls -d1 "${ddir}" | grep "${CMARKER}\$" > "${TMP}" || \
       _exit_err "Cannot list incomplete files"
 
    _techo "Incomplete backups: $(echo $(cat "${TMP}"))"
@@ -461,6 +461,7 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
    #
    # Check: maximum number of backups is reached?
    #
+   # FIXME: simplify, grep, cd? => no star, does not get expanded on failure
    count="$(pcmd ls -d1 "${ddir}/${INTERVAL}."*"/" | wc -l | sed 's/^ *//g')" \
       || _exit_err "Counting backups failed"
 
