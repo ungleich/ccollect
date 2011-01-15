@@ -436,7 +436,7 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
    #
    # Check: maximum number of backups is reached?
    #
-   count="$(ls -1 | grep "^${INTERVAL}\\." | wc -l | sed 's/^ *//g')" \
+   count="$(ls -1 | grep -c "^${INTERVAL}\\.")" \
       || _exit_err "Counting backups failed"
 
    _techo "Existing backups: ${count} Total keeping backups: ${c_interval}"
