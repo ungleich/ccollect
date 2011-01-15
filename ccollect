@@ -442,8 +442,7 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
    _techo "Existing backups: ${count} Total keeping backups: ${c_interval}"
 
    if [ "${count}" -ge "${c_interval}" ]; then
-      substract="$((${c_interval} - 1))"
-      remove="$((${count} - ${substract}))"
+      remove="$((${count} - ${c_interval} + 1))"
       _techo "Removing ${remove} backup(s)..."
 
       ls -${TSORT}d1r | grep "${INTERVAL}\\." | head -n "${remove}" > "${TMP}" || \
