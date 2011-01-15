@@ -425,12 +425,13 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
    #
    # Check incomplete backups (needs echo to remove newlines)
    #
-   ls -1 | grep "${CMARKER}\$" > "${TMP}" || \
-      _exit_err "Cannot list incomplete files"
+   ls -1 | grep "${CMARKER}\$" > "${TMP}"; ret=$?
 
-   _techo "Incomplete backups: $(echo $(cat "${TMP}"))"
-   if [ -f "${c_delete_incomplete}" ]; then
-      delete_from_file "${TMP}" "${CMARKER}"
+   if [ "$ret" -eq 0 ]; then
+      _techo "Incomplete backups: $(echo $(cat "${TMP}"))"
+      if [ -f "${c_delete_incomplete}" ]; then
+         delete_from_file "${TMP}" "${CMARKER}"
+      fi
    fi
 
    #
