@@ -107,7 +107,7 @@ delete_from_file()
    done < "${file}"
    _techo "Removing $@ ..."
    [ "${VVERBOSE}" ] && echo rm "$@"
-   pcmd rm -rf "$@" || _exit_err "Removing $@ failed."
+   rm -rf "$@" || _exit_err "Removing $@ failed."
 }
 
 display_version()
@@ -470,7 +470,7 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
    #
    # Check for backup directory to clone from: Always clone from the latest one!
    #
-   last_dir="$(pcmd ls -${TSORT}p1 "${ddir}" | grep '/$' | head -n 1)" || \
+   last_dir="$(ls -${TSORT}p1 | grep '/$' | head -n 1)" || \
       _exit_err "Failed to list contents of ${ddir}."
 
    #
@@ -490,13 +490,13 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
 
    _techo "Creating directory ${destination_dir} ..."
    [ "${VVERBOSE}" ] && echo "mkdir ${destination_dir}" 
-   pcmd mkdir "${destination_dir}" || \
+   mkdir "${destination_dir}" || \
       _exit_err "Creating directory ${destination_dir} failed. Skipping."
 
    #
    # added marking in 0.6 (and remove it, if successful later)
    #
-   pcmd touch "${destination_dir}${CMARKER}"
+   touch "${destination_dir}${CMARKER}"
 
    #
    # the rsync part
@@ -508,7 +508,7 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
    #
    # Set modification time (mtime) to current time, if sorting by mtime is enabled
    #
-   [ -f "$c_mtime" ] && pcmd touch "${destination_dir}"
+   [ -f "$c_mtime" ] && touch "${destination_dir}"
 
    #
    # Check if rsync exit code indicates failure.
@@ -526,7 +526,7 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
    # Remove marking here unless rsync failed.
    #
    if [ -z "$fail" ]; then
-      pcmd rm "${destination_dir}${CMARKER}" || \
+      rm "${destination_dir}${CMARKER}" || \
          _exit_err "Removing ${destination_dir}${CMARKER} failed."
       if [ "${ret}" -ne 0 ]; then
          _techo "Warning: rsync exited non-zero, the backup may be broken (see rsync errors)."

@@ -11,3 +11,4 @@
  * Added start script (Thorsten Elle)
  * Documentate autofs hint (Nico Schottelius)
  * Speedup source-is-up check and remove --archive (Nico Schottelius)
+ * Removed support for remote backup (see doc) (Nico Schottelius)
