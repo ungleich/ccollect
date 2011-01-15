@@ -303,7 +303,7 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
    # Read source configuration
    #
    for opt in verbose very_verbose summary exclude rsync_options \
-              delete_incomplete remote_host rsync_failure_codes  \
+              delete_incomplete rsync_failure_codes  \
               mtime quiet_if_down ; do
       if [ -f "${backup}/${opt}" -o -f "${backup}/no_${opt}"  ]; then
          eval c_$opt=\"${backup}/$opt\"
@@ -358,20 +358,7 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
       fi
    fi
 
-   #
-   # Set pre-cmd, if we backup to a remote host.
-   #
-   if [ -f "${c_remote_host}" ]; then
-      remote_host="$(cat "${c_remote_host}")"; ret="$?"
-      if [ "${ret}" -ne 0 ]; then
-         _exit_err "Remote host file ${c_remote_host} is unreadable. Skipping."
-      fi
-      destination="${remote_host}:${ddir}"
-   else
-      remote_host=""
-      destination="${ddir}"
-   fi
-   export remote_host
+   destination="${ddir}"
 
    #
    # Parameters: ccollect defaults, configuration options, user options
