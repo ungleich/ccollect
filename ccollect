@@ -435,7 +435,7 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
    #
    # Check: destination exists?
    #
-   ( pcmd cd "${ddir}" ) || _exit_err "Cannot change to ${ddir}. Skipping."
+   cd "${ddir}" || _exit_err "Cannot change to ${ddir}. Skipping."
 
    #
    # Check incomplete backups (needs echo to remove newlines)
