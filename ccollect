@@ -471,11 +471,6 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
    export destination_name="${INTERVAL}.$(${CDATE}).$$-${source_no}"
    export destination_dir="${ddir}/${destination_name}"
 
-   _techo "Creating directory ${destination_dir} ..."
-   [ "${VVERBOSE}" ] && echo "mkdir ${destination_dir}" 
-   mkdir "${destination_dir}" || \
-      _exit_err "Creating directory ${destination_dir} failed. Skipping."
-
    #
    # added marking in 0.6 (and remove it, if successful later)
    #
