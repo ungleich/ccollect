@@ -22,8 +22,8 @@
 #
 
 INSTALL=install
-CCOLLECT_SOURCE=ccollect.sh
-CCOLLECT_DEST=ccollect.sh
+CCOLLECT_SOURCE=ccollect
+CCOLLECT_DEST=ccollect
 LN=ln -sf
 ASCIIDOC=asciidoc
 DOCBOOKTOTEXI=docbook2x-texi
@@ -116,20 +116,28 @@ install-manlink: install-man
 #
 # Tools
 #
-TOOLS=ccollect_add_source.sh 		\
-		ccollect_analyse_logs.sh	\
-		ccollect_delete_source.sh	\
-		ccollect_list_intervals.sh \
-		ccollect_logwrapper.sh		\
-		ccollect_list_intervals.sh
+TOOLS2=ccollect_add_source
+TOOLS2 += ccollect_analyse_logs
 
-TOOLSMAN1 = $(subst ccollect,doc/man/ccollect,$(TOOLS))
-TOOLSMAN = $(subst .sh,.text,$(TOOLSMAN1))
+TOOLS=ccollect_add_source 		\
+		ccollect_analyse_logs	\
+		ccollect_delete_source	\
+		ccollect_list_intervals \
+		ccollect_logwrapper		\
+		ccollect_list_intervals
+
+# Stick to posix
+TOOLSMAN1 = $(TOOLS:ccollect=doc/man/ccollect)
+TOOLSMAN = $(TOOLSMAN1:=.text)
 
 TOOLSFP = $(subst ccollect,tools/ccollect,$(TOOLS)) 
 
+## FIXME: posix make: shell? =>
+
 t2:
-	echo $(TOOLS) - $(TOOLSMAN) - $(TOOLSFP)
+	echo $(TOOLS) - $(TOOLSFP)
+	echo $(TOOLSMAN)
+	echo $(TOOLSFP)
 	
 
 # docbook gets .htm, asciidoc directly .html
@@ -191,9 +199,9 @@ dist: distclean documentation
 /tmp/ccollect:
 	mkdir -p /tmp/ccollect
 
-test: ccollect.sh /tmp/ccollect
-	cd ./conf/sources/; for s in *; do CCOLLECT_CONF=../ ../../ccollect.sh daily "$$s"; done
+test: $(CCOLLECT_SOURCE) /tmp/ccollect
+	cd ./conf/sources/; for s in *; do CCOLLECT_CONF=../ ../../ccollect daily "$$s"; done
 	touch /tmp/ccollect/$$(ls /tmp/ccollect | head -n1).ccollect-marker
-	CCOLLECT_CONF=./conf ./ccollect.sh -a daily
+	CCOLLECT_CONF=./conf ./ccollect -a daily
 	touch /tmp/ccollect/$$(ls /tmp/ccollect | head -n1).ccollect-marker
-	CCOLLECT_CONF=./conf ./ccollect.sh -a -p daily
+	CCOLLECT_CONF=./conf ./ccollect -a -p daily
