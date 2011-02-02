@@ -1,0 +1,30 @@
+#!/bin/sh
+# 
+# 2011 Nico Schottelius (nico-ccollect at schottelius.org)
+# 
+# This file is part of ccollect.
+#
+# ccollect is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# ccollect is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with ccollect. If not, see <http://www.gnu.org/licenses/>.
+#
+# Support backup triggering and actual backup through
+# ssh tunnel
+#
+# Use the supplied called_from_remote script as pre…exec
+# 
+#
+
+export ssh_remote_port="$1"; shift
+export backup_host="$1"; shift
+
+ssh -R$ssh_remote_port:127.0.0.1:22 "$backup_host" "ccollect" "$@"
