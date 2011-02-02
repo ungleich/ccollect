@@ -472,9 +472,10 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
    export destination_dir="${ddir}/${destination_name}"
 
    #
-   # added marking in 0.6 (and remove it, if successful later)
+   # Mark backup running and go back to original directory
    #
    touch "${destination_dir}${CMARKER}"
+   cd "${__abs_mydir}" || _exit_err "Cannot go back to ${__abs_mydir}."
 
    #
    # the rsync part
