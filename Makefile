@@ -173,7 +173,7 @@ t2:
 #
 # Developer targets
 #
-update:
+pub:
 	@git push
 
 publish-doc: documentation
