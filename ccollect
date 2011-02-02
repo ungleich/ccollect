@@ -41,8 +41,8 @@ CPOSTEXEC="${CDEFAULTS}/post_exec"
 CMARKER=".ccollect-marker"
 
 export TMP="$(mktemp "/tmp/${__myname}.XXXXXX")"
-VERSION="0.9rc1"
-RELEASE="2011-01-15"
+VERSION="0.9rc2"
+RELEASE="2011-02-02"
 HALF_VERSION="ccollect ${VERSION}"
 FULL_VERSION="ccollect ${VERSION} (${RELEASE})"
 
