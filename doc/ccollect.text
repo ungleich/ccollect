@@ -74,6 +74,10 @@ Incompatibilities and changes
 
 Versions 0.8 and 0.9
 ^^^^^^^^^^^^^^^^^^^^
+- Renamed script to ccollect (.sh is not needed) 
+- Removed feature to backup to a host via ccollect, added new tool
+  (FIXME: insert name here) that takes care of this via tunnel
+- Perhaps creating subdirectory of source name (idea from Stefan Schlörholz)
 
 Versions 0.7 and 0.8
 ^^^^^^^^^^^^^^^^^^^^
