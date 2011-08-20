@@ -174,7 +174,8 @@ t2:
 # Developer targets
 #
 pub:
-	@git push
+	git push
+	git push github
 
 publish-doc: documentation
 	@echo "Transferring files to ${host}"
