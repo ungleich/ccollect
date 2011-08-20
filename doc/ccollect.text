@@ -1,7 +1,7 @@
 ccollect - Installing, Configuring and Using
 ============================================
 Nico Schottelius <nico-ccollect__@__schottelius.org>
-0.8.1, for ccollect 0.8.1, Initial Version from 2006-01-13
+0.9, for ccollect 0.9, Initial Version from 2006-01-13
 :Author Initials: NS
 
 
@@ -72,8 +72,11 @@ Incompatibilities and changes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
+Versions 0.8 and 0.9
+^^^^^^^^^^^^^^^^^^^^
+
 Versions 0.7 and 0.8
-^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 
 .The argument order changed:
 - Old: "<interval name> [args] <sources to backup>"
@@ -91,7 +94,7 @@ change for you.
 - New: Options in $CCOLLECT_CONF/defaults are used as defaults (see below)
 
 Versions 0.6 and 0.7
-^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 .The format of `destination` changed:
 - Before 0.7 it was a (link to a) directory
 - As of 0.7 it is a textfile containing the destination
@@ -103,7 +106,7 @@ You can update your configuration using `tools/config-pre-0.7-to-0.7.sh`.
 
 
 Versions 0.5 and 0.6
-^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 .The format of `rsync_options` changed:
 - Before 0.6 it was whitespace delimeted
 - As of 0.6 it is newline seperated (so you can pass whitespaces to `rsync`)
@@ -120,7 +123,7 @@ XXXXX (- comes before digit).
 
 
 Versions 0.4 and 0.5
-^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 Not a real incompatibilty, but seems to fit in this section:
 
 .0.5 does *NOT* require
