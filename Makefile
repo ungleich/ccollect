@@ -79,13 +79,6 @@ DOCBDOCS = ${DOCS:.text=.docbook}
 
 DOC_ALL  = ${HTMLDOCS} ${DBHTMLDOCS} ${TEXIDOCS} ${MANPDOCS} ${PDFDOCS}
 
-html: ${HTMLDOCS}
-htm: ${DBHTMLDOCS}
-info: ${TEXIDOCS}
-man: ${MANPDOCS} 
-pdf: ${PDFDOCS} 
-documentation: ${DOC_ALL}
-
 #
 # End user targets
 #
@@ -96,6 +89,13 @@ all:
 	@echo "info:             only generate Texinfo"
 	@echo "man:              only generate manpage{s}"
 	@echo "install:          install ccollect to ${prefix}"
+
+html: ${HTMLDOCS}
+htm: ${DBHTMLDOCS}
+info: ${TEXIDOCS}
+man: ${MANPDOCS} 
+pdf: ${PDFDOCS} 
+documentation: ${DOC_ALL}
 
 install: install-link install-manlink
 
