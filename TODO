@@ -18,3 +18,9 @@ Backup to remote can be done via ssh tunnel!
    ssh -R4242:localhost:22 backupserver "ccollect interval backupremotehost"
 
    remove $destination (==ddir)
+
+--------------------------------------------------------------------------------
+
+Remote backups:
+
+ccollect_backup_to $host $remote_port $source $interval
