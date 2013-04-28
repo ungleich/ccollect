@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2005-2011 Nico Schottelius (nico-ccollect at schottelius.org)
+# 2005-2013 Nico Schottelius (nico-ccollect at schottelius.org)
 #
 # This file is part of ccollect.
 #
@@ -42,7 +42,7 @@ CMARKER=".ccollect-marker"
 
 export TMP="$(mktemp "/tmp/${__myname}.XXXXXX")"
 VERSION="0.9"
-RELEASE="2011-09-XX"
+RELEASE="2013-09-XX"
 HALF_VERSION="ccollect ${VERSION}"
 FULL_VERSION="ccollect ${VERSION} (${RELEASE})"
 
@@ -129,8 +129,7 @@ ${__myname}: [args] <interval name> <sources to backup>
    -v, --verbose:       Be very verbose (uses set -x)
    -V, --version:       Print version information
 
-   This is version ${VERSION}, released on ${RELEASE}
-   (the first version was written on 2005-12-05 by Nico Schottelius).
+   This is version ${VERSION} released on ${RELEASE}.
 
    Retrieve latest ccollect at http://www.nico.schottelius.org/software/ccollect/
 eof
