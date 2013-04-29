@@ -72,20 +72,20 @@ trap "rm -f \"${TMP}\"" 1 2 15
 # time displaying echo
 _techo()
 {
-   echo "$(${DDATE}): $@"
+    echo "$(${DDATE}): $@"
 }
 
 # exit on error
 _exit_err()
 {
-   _techo "$@"
-   rm -f "${TMP}"
-   exit 1
+    _techo "$@"
+    rm -f "${TMP}"
+    exit 1
 }
 
 add_name()
 {
-   awk "{ print \"[${name}] \" \$0 }"
+    awk "{ print \"[${name}] \" \$0 }"
 }
 
 #
@@ -95,94 +95,94 @@ add_name()
 #
 delete_from_file()
 {
-   file="$1"; shift
-   suffix="" # It will be set, if deleting incomplete backups.
-   [ $# -eq 1 ] && suffix="$1" && shift
-   while read to_remove; do
-      set -- "$@" "${to_remove}"
-      if [ "${suffix}" ]; then
-         to_remove_no_suffix="$(echo ${to_remove} | sed "s/$suffix\$//")"
-         set -- "$@" "${to_remove_no_suffix}"
-      fi
-   done < "${file}"
-   _techo "Removing $@ ..."
-   [ "${VVERBOSE}" ] && echo rm "$@"
-   rm -rf "$@" || _exit_err "Removing $@ failed."
+    file="$1"; shift
+    suffix="" # It will be set, if deleting incomplete backups.
+    [ $# -eq 1 ] && suffix="$1" && shift
+    while read to_remove; do
+        set -- "$@" "${to_remove}"
+        if [ "${suffix}" ]; then
+            to_remove_no_suffix="$(echo ${to_remove} | sed "s/$suffix\$//")"
+            set -- "$@" "${to_remove_no_suffix}"
+        fi
+    done < "${file}"
+    _techo "Removing $@ ..."
+    [ "${VVERBOSE}" ] && echo rm "$@"
+    rm -rf "$@" || _exit_err "Removing $@ failed."
 }
 
 display_version()
 {
-   echo "${FULL_VERSION}"
-   exit 0
+    echo "${FULL_VERSION}"
+    exit 0
 }
 
 usage()
 {
-   cat << eof
+    cat << eof
 ${__myname}: [args] <interval name> <sources to backup>
 
-   ccollect creates (pseudo) incremental backups
+    ccollect creates (pseudo) incremental backups
 
-   -h, --help:          Show this help screen
-   -a, --all:           Backup all sources specified in ${CSOURCES}
-   -p, --parallel:      Parallelise backup processes
-   -v, --verbose:       Be very verbose (uses set -x)
-   -V, --version:       Print version information
+    -h, --help:             Show this help screen
+    -a, --all:              Backup all sources specified in ${CSOURCES}
+    -p, --parallel:        Parallelise backup processes
+    -v, --verbose:         Be very verbose (uses set -x)
+    -V, --version:         Print version information
 
-   This is version ${VERSION} released on ${RELEASE}.
+    This is version ${VERSION} released on ${RELEASE}.
 
-   Retrieve latest ccollect at http://www.nico.schottelius.org/software/ccollect/
+    Retrieve latest ccollect at http://www.nico.schottelius.org/software/ccollect/
 eof
-   exit 0
+    exit 0
 }
 
 #
 # Parse options
 #
 while [ "$#" -ge 1 ]; do
-   case "$1" in
-      -a|--all)
-         USE_ALL=1
-         ;;
-      -p|--parallel)
-         PARALLEL=1
-         ;;
-      -v|--verbose)
-         set -x
-         ;;
-      -V|--version)
-         display_version
-         ;;
-      --)
-         # ignore the -- itself
-         shift
-         break
-         ;;
-      -h|--help|-*)
-         usage
-         ;;
-      *)
-         break
-         ;;
-   esac
-   shift
+    case "$1" in
+        -a|--all)
+            USE_ALL=1
+            ;;
+        -p|--parallel)
+            PARALLEL=1
+            ;;
+        -v|--verbose)
+            set -x
+            ;;
+        -V|--version)
+            display_version
+            ;;
+        --)
+            # ignore the -- itself
+            shift
+            break
+            ;;
+        -h|--help|-*)
+            usage
+            ;;
+        *)
+            break
+            ;;
+    esac
+    shift
 done
 
 #
 # Setup interval
 #
 if [ $# -ge 1 ]; then
-   export INTERVAL="$1"
-   shift
+    export INTERVAL="$1"
+    shift
 else
-   usage
+    usage
 fi
 
 #
 # Check for configuraton directory
 #
 [ -d "${CCOLLECT_CONF}" ] || _exit_err "No configuration found in " \
-   "\"${CCOLLECT_CONF}\" (is \$CCOLLECT_CONF properly set?)"
+    "\"${CCOLLECT_CONF}\" (is \$CCOLLECT_CONF properly set?)"
 
 #
 # Create (portable!) source "array"
@@ -190,46 +190,46 @@ fi
 export no_sources=0
 
 if [ "${USE_ALL}" = 1 ]; then
-   #
-   # Get sources from source configuration
-   #
-   ( cd "${CSOURCES}" && ls -1 > "${TMP}" ) || \
-      _exit_err "Listing of sources failed. Aborting."
+    #
+    # Get sources from source configuration
+    #
+    ( cd "${CSOURCES}" && ls -1 > "${TMP}" ) || \
+        _exit_err "Listing of sources failed. Aborting."
 
-   while read tmp; do
-      eval export source_${no_sources}=\"${tmp}\"
-      no_sources=$((${no_sources}+1))
-   done < "${TMP}"
+    while read tmp; do
+        eval export source_${no_sources}=\"${tmp}\"
+        no_sources=$((${no_sources}+1))
+    done < "${TMP}"
 else
-   #
-   # Get sources from command line
-   #
-   while [ "$#" -ge 1 ]; do
-      eval arg=\"\$1\"; shift
+    #
+    # Get sources from command line
+    #
+    while [ "$#" -ge 1 ]; do
+        eval arg=\"\$1\"; shift
 
-      eval export source_${no_sources}=\"${arg}\"
-      no_sources="$((${no_sources}+1))"
-   done
+        eval export source_${no_sources}=\"${arg}\"
+        no_sources="$((${no_sources}+1))"
+    done
 fi
 
 #
 # Need at least ONE source to backup
 #
 if [ "${no_sources}" -lt 1 ]; then
-   usage
+    usage
 else
-   _techo "${HALF_VERSION}: Beginning backup using interval ${INTERVAL}"
+    _techo "${HALF_VERSION}: Beginning backup using interval ${INTERVAL}"
 fi
 
 #
 # Look for pre-exec command (general)
 #
 if [ -x "${CPREEXEC}" ]; then
-   _techo "Executing ${CPREEXEC} ..."
-   "${CPREEXEC}"; ret=$?
-   _techo "Finished ${CPREEXEC} (return code: ${ret})."
+    _techo "Executing ${CPREEXEC} ..."
+    "${CPREEXEC}"; ret=$?
+    _techo "Finished ${CPREEXEC} (return code: ${ret})."
 
-   [ "${ret}" -eq 0 ] || _exit_err "${CPREEXEC} failed. Aborting"
+    [ "${ret}" -eq 0 ] || _exit_err "${CPREEXEC} failed. Aborting"
 fi
 
 ################################################################################
@@ -238,304 +238,304 @@ fi
 #
 source_no=0
 while [ "${source_no}" -lt "${no_sources}" ]; do
-   #
-   # Get current source
-   #
-   eval export name=\"\$source_${source_no}\"
-   source_no=$((${source_no}+1))
+    #
+    # Get current source
+    #
+    eval export name=\"\$source_${source_no}\"
+    source_no=$((${source_no}+1))
 
-   #
-   # Start ourself, if we want parallel execution
-   #
-   if [ "${PARALLEL}" ]; then
-      "$0" "${INTERVAL}" "${name}" &
-      continue
-   fi
+    #
+    # Start ourself, if we want parallel execution
+    #
+    if [ "${PARALLEL}" ]; then
+        "$0" "${INTERVAL}" "${name}" &
+        continue
+    fi
 
 #
 # Start subshell for easy log editing
 #
 (
-   backup="${CSOURCES}/${name}"
-   c_source="${backup}/source"
-   c_dest="${backup}/destination"
-   c_pre_exec="${backup}/pre_exec"
-   c_post_exec="${backup}/post_exec"
+    backup="${CSOURCES}/${name}"
+    c_source="${backup}/source"
+    c_dest="${backup}/destination"
+    c_pre_exec="${backup}/pre_exec"
+    c_post_exec="${backup}/post_exec"
 
-   #
-   # Stderr to stdout, so we can produce nice logs
-   #
-   exec 2>&1
+    #
+    # Stderr to stdout, so we can produce nice logs
+    #
+    exec 2>&1
 
-   #
-   # Record start of backup: internal and for the user
-   #
-   begin_s="$(${SDATE})"
-   _techo "Beginning to backup"
+    #
+    # Record start of backup: internal and for the user
+    #
+    begin_s="$(${SDATE})"
+    _techo "Beginning to backup"
 
-   #
-   # Standard configuration checks
-   #
-   if [ ! -e "${backup}" ]; then
-      _exit_err "Source does not exist."
-   fi
+    #
+    # Standard configuration checks
+    #
+    if [ ! -e "${backup}" ]; then
+        _exit_err "Source does not exist."
+    fi
 
-   #
-   # Configuration _must_ be a directory (cconfig style)
-   #
-   if [ ! -d "${backup}" ]; then
-      _exit_err "\"${backup}\" is not a cconfig-directory. Skipping."
-   fi
+    #
+    # Configuration _must_ be a directory (cconfig style)
+    #
+    if [ ! -d "${backup}" ]; then
+        _exit_err "\"${backup}\" is not a cconfig-directory. Skipping."
+    fi
 
-   #
-   # First execute pre_exec, which may generate destination or other parameters
-   #
-   if [ -x "${c_pre_exec}" ]; then
-      _techo "Executing ${c_pre_exec} ..."
-      "${c_pre_exec}"; ret="$?"
-      _techo "Finished ${c_pre_exec} (return code ${ret})."
+    #
+    # First execute pre_exec, which may generate destination or other parameters
+    #
+    if [ -x "${c_pre_exec}" ]; then
+        _techo "Executing ${c_pre_exec} ..."
+        "${c_pre_exec}"; ret="$?"
+        _techo "Finished ${c_pre_exec} (return code ${ret})."
 
-      [ "${ret}" -eq 0 ] || _exit_err "${c_pre_exec} failed. Skipping."
-   fi
+        [ "${ret}" -eq 0 ] || _exit_err "${c_pre_exec} failed. Skipping."
+    fi
 
-   #
-   # Read source configuration
-   #
-   for opt in verbose very_verbose summary exclude rsync_options \
-              delete_incomplete rsync_failure_codes  \
-              mtime quiet_if_down ; do
-      if [ -f "${backup}/${opt}" -o -f "${backup}/no_${opt}"  ]; then
-         eval c_$opt=\"${backup}/$opt\"
-      else
-         eval c_$opt=\"${CDEFAULTS}/$opt\"
-      fi
-   done
+    #
+    # Read source configuration
+    #
+    for opt in verbose very_verbose summary exclude rsync_options \
+                  delete_incomplete rsync_failure_codes  \
+                  mtime quiet_if_down ; do
+        if [ -f "${backup}/${opt}" -o -f "${backup}/no_${opt}"  ]; then
+            eval c_$opt=\"${backup}/$opt\"
+        else
+            eval c_$opt=\"${CDEFAULTS}/$opt\"
+        fi
+    done
 
-   #
-   # Interval definition: First try source specific, fallback to default
-   #
-   c_interval="$(cat "${backup}/intervals/${INTERVAL}" 2>/dev/null)"
+    #
+    # Interval definition: First try source specific, fallback to default
+    #
+    c_interval="$(cat "${backup}/intervals/${INTERVAL}" 2>/dev/null)"
 
-   if [ -z "${c_interval}" ]; then
-      c_interval="$(cat "${CDEFAULTS}/intervals/${INTERVAL}" 2>/dev/null)"
+    if [ -z "${c_interval}" ]; then
+        c_interval="$(cat "${CDEFAULTS}/intervals/${INTERVAL}" 2>/dev/null)"
 
-      if [ -z "${c_interval}" ]; then
-         _exit_err "No definition for interval \"${INTERVAL}\" found. Skipping."
-      fi
-   fi
+        if [ -z "${c_interval}" ]; then
+            _exit_err "No definition for interval \"${INTERVAL}\" found. Skipping."
+        fi
+    fi
 
-   #
-   # Sort by ctime (default) or mtime (configuration option)
-   #
-   if [ -f "${c_mtime}" ] ; then
-      TSORT="t"
-   else
-      TSORT="tc"
-   fi
+    #
+    # Sort by ctime (default) or mtime (configuration option)
+    #
+    if [ -f "${c_mtime}" ] ; then
+        TSORT="t"
+    else
+        TSORT="tc"
+    fi
 
-   #
-   # Source configuration checks
-   #
-   if [ ! -f "${c_source}" ]; then
-      _exit_err "Source description \"${c_source}\" is not a file. Skipping."
-   else
-      source=$(cat "${c_source}"); ret="$?"
-      if [ "${ret}" -ne 0 ]; then
-         _exit_err "Source ${c_source} is not readable. Skipping."
-      fi
-   fi
+    #
+    # Source configuration checks
+    #
+    if [ ! -f "${c_source}" ]; then
+        _exit_err "Source description \"${c_source}\" is not a file. Skipping."
+    else
+        source=$(cat "${c_source}"); ret="$?"
+        if [ "${ret}" -ne 0 ]; then
+            _exit_err "Source ${c_source} is not readable. Skipping."
+        fi
+    fi
 
-   #
-   # Destination is a path
-   #
-   if [ ! -f "${c_dest}" ]; then
-      _exit_err "Destination ${c_dest} is not a file. Skipping."
-   else
-      ddir="$(cat "${c_dest}")"; ret="$?"
-      if [ "${ret}" -ne 0 ]; then
-         _exit_err "Destination ${c_dest} is not readable. Skipping."
-      fi
-   fi
+    #
+    # Destination is a path
+    #
+    if [ ! -f "${c_dest}" ]; then
+        _exit_err "Destination ${c_dest} is not a file. Skipping."
+    else
+        ddir="$(cat "${c_dest}")"; ret="$?"
+        if [ "${ret}" -ne 0 ]; then
+            _exit_err "Destination ${c_dest} is not readable. Skipping."
+        fi
+    fi
 
-   #
-   # Parameters: ccollect defaults, configuration options, user options
-   #
+    #
+    # Parameters: ccollect defaults, configuration options, user options
+    #
 
-   #
-   # Rsync standard options (archive will be added after is-up-check)
-   #
-   set -- "$@" "--delete" "--numeric-ids" "--relative"   \
-               "--delete-excluded" "--sparse"
+    #
+    # Rsync standard options (archive will be added after is-up-check)
+    #
+    set -- "$@" "--delete" "--numeric-ids" "--relative"    \
+                    "--delete-excluded" "--sparse"
 
-   #
-   # Exclude list
-   #
-   if [ -f "${c_exclude}" ]; then
-      set -- "$@" "--exclude-from=${c_exclude}"
-   fi
+    #
+    # Exclude list
+    #
+    if [ -f "${c_exclude}" ]; then
+        set -- "$@" "--exclude-from=${c_exclude}"
+    fi
 
-   #
-   # Output a summary
-   #
-   if [ -f "${c_summary}" ]; then
-      set -- "$@" "--stats"
-   fi
+    #
+    # Output a summary
+    #
+    if [ -f "${c_summary}" ]; then
+        set -- "$@" "--stats"
+    fi
 
-   #
-   # Verbosity for rsync, rm, and mkdir
-   #
-   VVERBOSE=""
-   if [ -f "${c_very_verbose}" ]; then
-      set -- "$@" "-vv"
-      VVERBOSE="-v"
-   elif [ -f "${c_verbose}" ]; then
-      set -- "$@" "-v"
-   fi
+    #
+    # Verbosity for rsync, rm, and mkdir
+    #
+    VVERBOSE=""
+    if [ -f "${c_very_verbose}" ]; then
+        set -- "$@" "-vv"
+        VVERBOSE="-v"
+    elif [ -f "${c_verbose}" ]; then
+        set -- "$@" "-v"
+    fi
 
-   #
-   # Extra options for rsync provided by the user
-   #
-   if [ -f "${c_rsync_options}" ]; then
-      while read line; do
-         set -- "$@" "${line}"
-      done < "${c_rsync_options}"
-   fi
+    #
+    # Extra options for rsync provided by the user
+    #
+    if [ -f "${c_rsync_options}" ]; then
+        while read line; do
+            set -- "$@" "${line}"
+        done < "${c_rsync_options}"
+    fi
 
-   #
-   # Check: source is up and accepting connections (before deleting old backups!)
-   #
-   if ! rsync "$@" "${source}" >/dev/null 2>"${TMP}" ; then
-      if [ ! -f "${c_quiet_if_down}" ]; then
-         cat "${TMP}"
-      fi
-      _exit_err "Source ${source} is not readable. Skipping."
-   fi
+    #
+    # Check: source is up and accepting connections (before deleting old backups!)
+    #
+    if ! rsync "$@" "${source}" >/dev/null 2>"${TMP}" ; then
+        if [ ! -f "${c_quiet_if_down}" ]; then
+            cat "${TMP}"
+        fi
+        _exit_err "Source ${source} is not readable. Skipping."
+    fi
 
-   #
-   # Add --archive for real backup (looks nice in front)
-   #
-   set -- "--archive" "$@"
+    #
+    # Add --archive for real backup (looks nice in front)
+    #
+    set -- "--archive" "$@"
 
-   #
-   # Check: destination exists?
-   #
-   cd "${ddir}" || _exit_err "Cannot change to ${ddir}. Skipping."
+    #
+    # Check: destination exists?
+    #
+    cd "${ddir}" || _exit_err "Cannot change to ${ddir}. Skipping."
 
-   #
-   # Check incomplete backups (needs echo to remove newlines)
-   #
-   ls -1 | grep "${CMARKER}\$" > "${TMP}"; ret=$?
+    #
+    # Check incomplete backups (needs echo to remove newlines)
+    #
+    ls -1 | grep "${CMARKER}\$" > "${TMP}"; ret=$?
 
-   if [ "$ret" -eq 0 ]; then
-      _techo "Incomplete backups: $(echo $(cat "${TMP}"))"
-      if [ -f "${c_delete_incomplete}" ]; then
-         delete_from_file "${TMP}" "${CMARKER}"
-      fi
-   fi
+    if [ "$ret" -eq 0 ]; then
+        _techo "Incomplete backups: $(echo $(cat "${TMP}"))"
+        if [ -f "${c_delete_incomplete}" ]; then
+            delete_from_file "${TMP}" "${CMARKER}"
+        fi
+    fi
 
-   #
-   # Check: maximum number of backups is reached?
-   #
-   count="$(ls -1 | grep -c "^${INTERVAL}\\.")"
+    #
+    # Check: maximum number of backups is reached?
+    #
+    count="$(ls -1 | grep -c "^${INTERVAL}\\.")"
 
-   _techo "Existing backups: ${count} Total keeping backups: ${c_interval}"
+    _techo "Existing backups: ${count} Total keeping backups: ${c_interval}"
 
-   if [ "${count}" -ge "${c_interval}" ]; then
-      remove="$((${count} - ${c_interval} + 1))"
-      _techo "Removing ${remove} backup(s)..."
+    if [ "${count}" -ge "${c_interval}" ]; then
+        remove="$((${count} - ${c_interval} + 1))"
+        _techo "Removing ${remove} backup(s)..."
 
-      ls -${TSORT}1r | grep "^${INTERVAL}\\." | head -n "${remove}" > "${TMP}" || \
-            _exit_err "Listing old backups failed"
+        ls -${TSORT}1r | grep "^${INTERVAL}\\." | head -n "${remove}" > "${TMP}" || \
+                _exit_err "Listing old backups failed"
 
-      delete_from_file "${TMP}"
-   fi
+        delete_from_file "${TMP}"
+    fi
 
-   #
-   # Check for backup directory to clone from: Always clone from the latest one!
-   #
-   last_dir="$(ls -${TSORT}p1 | grep '/$' | head -n 1)" || \
-      _exit_err "Failed to list contents of ${ddir}."
+    #
+    # Check for backup directory to clone from: Always clone from the latest one!
+    #
+    last_dir="$(ls -${TSORT}p1 | grep '/$' | head -n 1)" || \
+        _exit_err "Failed to list contents of ${ddir}."
 
-   #
-   # Clone from old backup, if existing
-   #
-   if [ "${last_dir}" ]; then
-      set -- "$@" "--link-dest=${ddir}/${last_dir}"
-      _techo "Hard linking from ${last_dir}"
-   fi
+    #
+    # Clone from old backup, if existing
+    #
+    if [ "${last_dir}" ]; then
+        set -- "$@" "--link-dest=${ddir}/${last_dir}"
+        _techo "Hard linking from ${last_dir}"
+    fi
 
-   #
-   # Include current time in name, not the time when we began to remove above
-   #
-   export destination_name="${INTERVAL}.$(${CDATE}).$$-${source_no}"
-   export destination_dir="${ddir}/${destination_name}"
+    #
+    # Include current time in name, not the time when we began to remove above
+    #
+    export destination_name="${INTERVAL}.$(${CDATE}).$$-${source_no}"
+    export destination_dir="${ddir}/${destination_name}"
 
-   #
-   # Mark backup running and go back to original directory
-   #
-   touch "${destination_dir}${CMARKER}"
-   cd "${__abs_mydir}" || _exit_err "Cannot go back to ${__abs_mydir}."
+    #
+    # Mark backup running and go back to original directory
+    #
+    touch "${destination_dir}${CMARKER}"
+    cd "${__abs_mydir}" || _exit_err "Cannot go back to ${__abs_mydir}."
 
-   #
-   # the rsync part
-   #
-   _techo "Transferring files..."
-   rsync "$@" "${source}" "${destination_dir}"; ret=$?
-   _techo "Finished backup (rsync return code: $ret)."
+    #
+    # the rsync part
+    #
+    _techo "Transferring files..."
+    rsync "$@" "${source}" "${destination_dir}"; ret=$?
+    _techo "Finished backup (rsync return code: $ret)."
 
-   #
-   # Set modification time (mtime) to current time, if sorting by mtime is enabled
-   #
-   [ -f "$c_mtime" ] && touch "${destination_dir}"
+    #
+    # Set modification time (mtime) to current time, if sorting by mtime is enabled
+    #
+    [ -f "$c_mtime" ] && touch "${destination_dir}"
 
-   #
-   # Check if rsync exit code indicates failure.
-   #
-   fail=""
-   if [ -f "$c_rsync_failure_codes" ]; then
-      while read code ; do
-         if [ "$ret" = "$code" ]; then
-            fail=1
-         fi
-      done <"${c_rsync_failure_codes}"
-   fi
+    #
+    # Check if rsync exit code indicates failure.
+    #
+    fail=""
+    if [ -f "$c_rsync_failure_codes" ]; then
+        while read code ; do
+            if [ "$ret" = "$code" ]; then
+                fail=1
+            fi
+        done <"${c_rsync_failure_codes}"
+    fi
 
-   #
-   # Remove marking here unless rsync failed.
-   #
-   if [ -z "$fail" ]; then
-      rm "${destination_dir}${CMARKER}" || \
-         _exit_err "Removing ${destination_dir}${CMARKER} failed."
-      if [ "${ret}" -ne 0 ]; then
-         _techo "Warning: rsync exited non-zero, the backup may be broken (see rsync errors)."
-      fi
-   else
-      _techo "Warning: rsync failed with return code $ret."
-   fi
+    #
+    # Remove marking here unless rsync failed.
+    #
+    if [ -z "$fail" ]; then
+        rm "${destination_dir}${CMARKER}" || \
+            _exit_err "Removing ${destination_dir}${CMARKER} failed."
+        if [ "${ret}" -ne 0 ]; then
+            _techo "Warning: rsync exited non-zero, the backup may be broken (see rsync errors)."
+        fi
+    else
+        _techo "Warning: rsync failed with return code $ret."
+    fi
 
-   #
-   # post_exec
-   #
-   if [ -x "${c_post_exec}" ]; then
-      _techo "Executing ${c_post_exec} ..."
-      "${c_post_exec}"; ret=$?
-      _techo "Finished ${c_post_exec}."
+    #
+    # post_exec
+    #
+    if [ -x "${c_post_exec}" ]; then
+        _techo "Executing ${c_post_exec} ..."
+        "${c_post_exec}"; ret=$?
+        _techo "Finished ${c_post_exec}."
 
-      if [ "${ret}" -ne 0 ]; then
-         _exit_err "${c_post_exec} failed."
-      fi
-   fi
+        if [ "${ret}" -ne 0 ]; then
+            _exit_err "${c_post_exec} failed."
+        fi
+    fi
 
-   #
-   # Time calculation
-   #
-   end_s="$(${SDATE})"
-   full_seconds="$((${end_s} - ${begin_s}))"
-   hours="$((${full_seconds} / 3600))"
-   minutes="$(((${full_seconds} % 3600) / 60))"
-   seconds="$((${full_seconds} % 60))"
+    #
+    # Time calculation
+    #
+    end_s="$(${SDATE})"
+    full_seconds="$((${end_s} - ${begin_s}))"
+    hours="$((${full_seconds} / 3600))"
+    minutes="$(((${full_seconds} % 3600) / 60))"
+    seconds="$((${full_seconds} % 60))"
 
-   _techo "Backup lasted: ${hours}:${minutes}:${seconds} (h:m:s)"
+    _techo "Backup lasted: ${hours}:${minutes}:${seconds} (h:m:s)"
 ) | add_name
 done
 
@@ -543,21 +543,21 @@ done
 # Be a good parent and wait for our children, if they are running wild parallel
 #
 if [ "${PARALLEL}" ]; then
-   _techo "Waiting for children to complete..."
-   wait
+    _techo "Waiting for children to complete..."
+    wait
 fi
 
 #
 # Look for post-exec command (general)
 #
 if [ -x "${CPOSTEXEC}" ]; then
-   _techo "Executing ${CPOSTEXEC} ..."
-   "${CPOSTEXEC}"; ret=$?
-   _techo "Finished ${CPOSTEXEC} (return code: ${ret})."
+    _techo "Executing ${CPOSTEXEC} ..."
+    "${CPOSTEXEC}"; ret=$?
+    _techo "Finished ${CPOSTEXEC} (return code: ${ret})."
 
-   if [ "${ret}" -ne 0 ]; then
-      _techo "${CPOSTEXEC} failed."
-   fi
+    if [ "${ret}" -ne 0 ]; then
+        _techo "${CPOSTEXEC} failed."
+    fi
 fi
 
 rm -f "${TMP}"
