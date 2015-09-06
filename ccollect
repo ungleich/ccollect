@@ -78,7 +78,7 @@ _techo()
 # exit on error
 _exit_err()
 {
-    _techo "$@"
+    _techo "Error: $@"
     rm -f "${TMP}"
     exit 1
 }
