@@ -72,6 +72,10 @@ Incompatibilities and changes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
+Versions 0.9 and 1.0
+^^^^^^^^^^^^^^^^^^^^
+- Added "Error: " prefix in _exit_err()
+
 Versions 0.8 and 0.9
 ^^^^^^^^^^^^^^^^^^^^
 - Renamed script to ccollect (.sh is not needed) 
