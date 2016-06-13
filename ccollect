@@ -55,6 +55,67 @@ DDATE="date +%Y-%m-%d-%H:%M:%S"
 SDATE="date +%s"
 
 #
+# LOCKING: use flock if available, otherwise mkdir
+# Locking is done for each source so that only one instance per source
+# can run.
+#
+LOCKDIR="${CSOURCES}"
+# printf pattern: ccollect_<source>.lock
+LOCKFILE_PATTERN="ccollect_%s.lock"
+LOCKFD=4
+
+#
+# locking functions using flock
+#
+lock_flock()
+{
+    # $1 = source to backup
+    lockfile="${LOCKDIR}/$(printf "${LOCKFILE_PATTERN}" "$1")"
+    eval "exec ${LOCKFD}> ${lockfile}"
+
+    flock -n ${LOCKFD} && return 0 || return 1
+}
+
+unlock_flock()
+{
+    # $1 = source to backup
+    lockfile="${LOCKDIR}/$(printf "${LOCKFILE_PATTERN}" "$1")"
+    eval "exec ${LOCKFD}>&-"
+    rm -f "${lockfile}"
+}
+
+#
+# locking functions using mkdir (mkdir is atomic)
+#
+lock_mkdir()
+{
+    # $1 = source to backup
+    lockfile="${LOCKDIR}/$(printf "${LOCKFILE_PATTERN}" "$1")"
+
+    mkdir "${lockfile}" && return 0 || return 1
+}
+
+unlock_mkdir()
+{
+    # $1 = source to backup
+    lockfile="${LOCKDIR}/$(printf "${LOCKFILE_PATTERN}" "$1")"
+
+    rmdir "${lockfile}"
+}
+
+#
+# determine locking tool: flock or mkdir
+#
+if $(which flock > /dev/null 2>&1)
+then
+    lockf="lock_flock"
+    unlockf="unlock_flock"
+else
+    lockf="lock_mkdir"
+    unlockf="unlock_mkdir"
+fi
+
+#
 # unset values
 #
 PARALLEL=""
@@ -63,7 +124,8 @@ USE_ALL=""
 #
 # catch signals
 #
-trap "rm -f \"${TMP}\"" 1 2 15
+TRAPFUNC="rm -f \"${TMP}\""
+trap "${TRAPFUNC}" 1 2 15
 
 #
 # Functions
@@ -134,6 +196,18 @@ ${__myname}: [args] <interval name> <sources to backup>
     Retrieve latest ccollect at http://www.nico.schottelius.org/software/ccollect/
 eof
     exit 0
+}
+
+# locking functions
+lock()
+{
+    "${lockf}" "$@" || _exit_err \
+        "Only one instance of ${__myname} for source \"$1\" can run at one time."
+}
+
+unlock()
+{
+    "${unlockf}" "$@"
 }
 
 #
@@ -286,6 +360,16 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
     if [ ! -d "${backup}" ]; then
         _exit_err "\"${backup}\" is not a cconfig-directory. Skipping."
     fi
+
+    #
+    # Acquire lock for source. If lock cannot be acquired, lock will exit
+    # with error message.
+    #
+    lock "${name}"
+
+    # redefine trap to also unlock (rm lockfile)
+    TRAPFUNC="${TRAPFUNC} && unlock \"${name}\""
+    trap "${TRAPFUNC}" 1 2 15
 
     #
     # First execute pre_exec, which may generate destination or other parameters
@@ -561,4 +645,5 @@ if [ -x "${CPOSTEXEC}" ]; then
 fi
 
 rm -f "${TMP}"
+unlock "${name}"
 _techo "Finished"
