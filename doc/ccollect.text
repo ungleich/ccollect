@@ -1189,12 +1189,12 @@ rsync -av -H --delete /mnt/archiv/ "$DDIR/archiv/"
 -------------------------------------------------------------------------
 
 
-Processes running when doing ccollect -p
+Processes running when doing ccollect -j
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Truncated output from `ps axuwwwf`:
 
 -------------------------------------------------------------------------
-   S+   11:40   0:00  |   |   |   \_ /bin/sh /usr/local/bin/ccollect.sh daily -p ddba034 ddba045 ddba046 ddba047 ddba049 ddna010 ddna011
+   S+   11:40   0:00  |   |   |   \_ /bin/sh /usr/local/bin/ccollect.sh daily -j ddba034 ddba045 ddba046 ddba047 ddba049 ddna010 ddna011
    S+   11:40   0:00  |   |   |       \_ /bin/sh /usr/local/bin/ccollect.sh daily ddba034
    S+   11:40   0:00  |   |   |       |   \_ /bin/sh /usr/local/bin/ccollect.sh daily ddba034
    R+   11:40  23:40  |   |   |       |   |   \_ rsync -a --delete --numeric-ids --relative --delete-excluded --link-dest=/home/server/backup/ddba034
