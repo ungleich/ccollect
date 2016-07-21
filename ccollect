@@ -23,7 +23,7 @@
 # Simulate ccollect without actually performing any backup;
 # conf directory need to be specifed.
 # Usually used for debugging/testing locking and parallel execution.
-SIMULATE="1"
+SIMULATE=""
 
 # Error upon expanding unset variables:
 set -u
