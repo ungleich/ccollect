@@ -274,11 +274,13 @@ done
 
 # check that MAX_JOBS is natural number > 0
 # empty string means run all in parallel
-echo "${MAX_JOBS}" | awk '/^$/ { exit 0 } /^[1-9][0-9]*$/ { exit 0 } { exit 1 }'
+echo "${MAX_JOBS}" | grep -q -E '^[1-9][0-9]*$|^$'
 if [ "$?" -ne 0 ]
 then
     _exit_err "Invalid max jobs value \"${MAX_JOBS}\""
 fi
+printf "REMOVE ME\n"
+exit 0
 
 #
 # Setup interval
