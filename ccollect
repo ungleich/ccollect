@@ -274,8 +274,6 @@ if [ "$?" -ne 0 ]
 then
     _exit_err "Invalid max jobs value \"${MAX_JOBS}\""
 fi
-printf "REMOVE ME\n"
-exit 0
 
 #
 # Setup interval
