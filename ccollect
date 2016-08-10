@@ -20,11 +20,6 @@
 # Initially written for SyGroup (www.sygroup.ch)
 # Date: Mon Nov 14 11:45:11 CET 2005
 
-# Simulate ccollect without actually performing any backup;
-# conf directory need to be specifed.
-# Usually used for debugging/testing locking and parallel execution.
-SIMULATE=""
-
 # Error upon expanding unset variables:
 set -u
 
@@ -382,12 +377,6 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
     # Start ourself, if we want parallel execution
     #
     if [ "${PARALLEL}" ]; then
-        if [ "${SIMULATE}" ]
-        then
-            # give some time to awk's srand initialized by curr time
-            sleep 1
-        fi
-
         if [ ! "${MAX_JOBS}" ]
         then
             # run all in parallel
@@ -453,17 +442,6 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
     # with error message.
     #
     lock "${name}"
-    if [ "${SIMULATE}" ]
-    then
-        rand_low=3
-        rand_high=10
-        sleep_time=$(echo '' | awk "{srand(); print int(rand()*($rand_high - $rand_low)) + $rand_low;}")
-        _techo "simulating backup for ${name}: ${sleep_time} secs ..."
-        sleep $sleep_time
-        unlock "${name}"
-        _techo "Finished backup."
-        break
-    fi
 
     # redefine trap to also unlock (rm lockfile)
     TRAPFUNC="${TRAPFUNC}; unlock \"${name}\""
