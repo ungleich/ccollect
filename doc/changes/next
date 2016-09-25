@@ -1,3 +1,4 @@
+ * Introduce -j option for max parallel jobs, deprecate -p (Darko Poljak)
  * Add locking (Darko Poljak)
  * Fix source-is-up check (Nikita Koshikov)
  * Fix some minor command line parsing issues (Nico Schottelius)

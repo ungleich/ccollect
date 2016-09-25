@@ -26,14 +26,18 @@ texinfo or html).
 
 OPTIONS
 -------
+-a, --all::
+   Backup all sources specified in /etc/ccollect/sources
+
 -h, --help::
    Show the help screen
 
--p, --parallel::
-   Parallelise backup processes
+-j [max], --jobs [max]::
+   Specifies the number of jobs to run simultaneously.
+   If max is not specified then parallelise all jobs.
 
--a, --all::
-   Backup all sources specified in /etc/ccollect/sources
+-p, --parallel::
+   Parallelise backup processes (deprecated from 2.0)
 
 -v, --verbose::
    Be very verbose (uses set -x)

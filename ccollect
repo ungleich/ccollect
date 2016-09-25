@@ -41,6 +41,8 @@ CPOSTEXEC="${CDEFAULTS}/post_exec"
 CMARKER=".ccollect-marker"
 
 export TMP="$(mktemp "/tmp/${__myname}.XXXXXX")"
+CONTROL_PIPE="/tmp/${__myname}-control-pipe"
+
 VERSION="1.0"
 RELEASE="2015-10-10"
 HALF_VERSION="ccollect ${VERSION}"
@@ -59,7 +61,10 @@ SDATE="date +%s"
 # Locking is done for each source so that only one instance per source
 # can run.
 #
-LOCKDIR="${CSOURCES}"
+# Use CCOLLECT_CONF directory for lock files.
+# This directory can be set arbitrary so it is writable for user
+# executing ccollect.
+LOCKDIR="${CCOLLECT_CONF}"
 # printf pattern: ccollect_<source>.lock
 LOCKFILE_PATTERN="ccollect_%s.lock"
 LOCKFD=4
@@ -119,6 +124,7 @@ fi
 # unset values
 #
 PARALLEL=""
+MAX_JOBS=""
 USE_ALL=""
 
 #
@@ -185,9 +191,11 @@ ${__myname}: [args] <interval name> <sources to backup>
 
     ccollect creates (pseudo) incremental backups
 
-    -h, --help:             Show this help screen
-    -a, --all:              Backup all sources specified in ${CSOURCES}
-    -p, --parallel:        Parallelise backup processes
+    -h, --help:            Show this help screen
+    -a, --all:             Backup all sources specified in ${CSOURCES}
+    -j [max], --jobs [max] Specifies the number of jobs to run simultaneously.
+                           If max is not specified then parallelise all jobs.
+    -p, --parallel:        Parallelise backup processes (deprecated from 2.0)
     -v, --verbose:         Be very verbose (uses set -x)
     -V, --version:         Print version information
 
@@ -219,7 +227,24 @@ while [ "$#" -ge 1 ]; do
             USE_ALL=1
             ;;
         -p|--parallel)
+            _techo "Warning: -p, --parallel option is deprecated," \
+                   "use -j, --jobs instead."
             PARALLEL=1
+            MAX_JOBS=""
+            ;;
+        -j|--jobs)
+            PARALLEL=1
+            if [ "$#" -ge 2 ]
+            then 
+                case "$2" in
+                    -*)
+                        ;;
+                    *)
+                        MAX_JOBS=$2
+                        shift
+                        ;;
+                esac
+            fi
             ;;
         -v|--verbose)
             set -x
@@ -241,6 +266,14 @@ while [ "$#" -ge 1 ]; do
     esac
     shift
 done
+
+# check that MAX_JOBS is natural number > 0
+# empty string means run all in parallel
+echo "${MAX_JOBS}" | grep -q -E '^[1-9][0-9]*$|^$'
+if [ "$?" -ne 0 ]
+then
+    _exit_err "Invalid max jobs value \"${MAX_JOBS}\""
+fi
 
 #
 # Setup interval
@@ -310,6 +343,26 @@ fi
 #
 # Let's do the backup - here begins the real stuff
 #
+
+# in PARALLEL mode:
+# * create control pipe
+# * determine number of jobs to start at once
+if [ "${PARALLEL}" ]; then
+    mkfifo "${CONTROL_PIPE}"
+    # fd 5 is tied to control pipe
+    eval "exec 5<>${CONTROL_PIPE}"
+    TRAPFUNC="${TRAPFUNC}; rm -f \"${CONTROL_PIPE}\""
+    trap "${TRAPFUNC}" 0 1 2 15
+
+    # determine how much parallel jobs to prestart
+    if [ "${MAX_JOBS}" ] && [ "${MAX_JOBS}" -le "${no_sources}" ]
+    then
+        prestart="${MAX_JOBS}"
+    else
+        prestart=0
+    fi
+fi
+
 source_no=0
 while [ "${source_no}" -lt "${no_sources}" ]; do
     #
@@ -322,8 +375,29 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
     # Start ourself, if we want parallel execution
     #
     if [ "${PARALLEL}" ]; then
-        "$0" "${INTERVAL}" "${name}" &
-        continue
+        if [ ! "${MAX_JOBS}" ]
+        then
+            # run all in parallel
+            "$0" "${INTERVAL}" "${name}" &
+            continue
+        elif [ "${prestart}" -gt 0 ]
+        then
+            # run prestart child if pending
+            { "$0" "${INTERVAL}" "${name}"; printf '\n' >&5; } &
+            prestart=$((${prestart} - 1))
+            continue
+        else
+            # each time a child finishes we get a line from the pipe
+            # and then launch another child
+            while read line
+            do
+                { "$0" "${INTERVAL}" "${name}"; printf '\n' >&5; } &
+                # get out of loop so we can contnue with main loop
+                # for next source
+                break
+            done <&5
+            continue
+        fi
     fi
 
 #
@@ -368,7 +442,7 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
     lock "${name}"
 
     # redefine trap to also unlock (rm lockfile)
-    TRAPFUNC="${TRAPFUNC} && unlock \"${name}\""
+    TRAPFUNC="${TRAPFUNC}; unlock \"${name}\""
     trap "${TRAPFUNC}" 1 2 15
 
     #
@@ -620,15 +694,19 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
     seconds="$((${full_seconds} % 60))"
 
     _techo "Backup lasted: ${hours}:${minutes}:${seconds} (h:m:s)"
+
+    unlock "${name}"
 ) | add_name
 done
 
 #
 # Be a good parent and wait for our children, if they are running wild parallel
+# After all children are finished then remove control pipe.
 #
 if [ "${PARALLEL}" ]; then
     _techo "Waiting for children to complete..."
     wait
+    rm -f "${CONTROL_PIPE}"
 fi
 
 #
@@ -645,5 +723,4 @@ if [ -x "${CPOSTEXEC}" ]; then
 fi
 
 rm -f "${TMP}"
-unlock "${name}"
 _techo "Finished"
