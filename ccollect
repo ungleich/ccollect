@@ -127,6 +127,11 @@ fi
 PARALLEL=""
 MAX_JOBS=""
 USE_ALL=""
+LOGFILE=""
+SYSLOG=""
+# e - only errors, a - all output
+LOGLEVEL="a"
+LOGONLYERRORS=""
 
 #
 # catch signals
@@ -138,18 +143,11 @@ trap "${TRAPFUNC}" 1 2 15
 # Functions
 #
 
-# time displaying echo
-_techo()
+# check if we are running interactive or non-interactive
+# see: http://www.tldp.org/LDP/abs/html/intandnonint.html
+_is_interactive()
 {
-    echo "$(${DDATE}): $@"
-}
-
-# exit on error
-_exit_err()
-{
-    _techo "Error: $@"
-    rm -f "${TMP}"
-    exit 1
+    [ -t 0 -o -p /dev/stdin ]
 }
 
 add_name()
@@ -192,13 +190,16 @@ ${__myname}: [args] <interval name> <sources to backup>
 
     ccollect creates (pseudo) incremental backups
 
-    -h, --help:            Show this help screen
-    -a, --all:             Backup all sources specified in ${CSOURCES}
-    -j [max], --jobs [max] Specifies the number of jobs to run simultaneously.
-                           If max is not specified then parallelise all jobs.
-    -p, --parallel:        Parallelise backup processes (deprecated from 2.0)
-    -v, --verbose:         Be very verbose (uses set -x)
-    -V, --version:         Print version information
+    -h, --help:              Show this help screen
+    -a, --all:               Backup all sources specified in ${CSOURCES}
+    -e, --errors:            Log only errors
+    -j [max], --jobs [max]   Specifies the number of jobs to run simultaneously.
+                             If max is not specified then parallelise all jobs.
+    -l FILE, --logfile FILE  Log to specified file
+    -p, --parallel:          Parallelise backup processes (deprecated from 2.0)
+    -s, --syslog:            Log to syslog with tag ccollect
+    -v, --verbose:           Be very verbose (uses set -x)
+    -V, --version:           Print version information
 
     This is version ${VERSION} released on ${RELEASE}.
 
@@ -217,6 +218,54 @@ lock()
 unlock()
 {
     "${unlockf}" "$@"
+}
+
+# time displaying echo
+# stdout version
+_techo_stdout()
+{
+    echo "$(${DDATE}): $@"
+}
+
+# syslog version
+_techo_syslog()
+{
+    logger -t ccollect "$@"
+}
+
+# specified file version
+_techo_file()
+{
+    _techo_stdout "$@" >> "${LOGFILE}"
+}
+
+# determine _techo version before parsing options
+if _is_interactive
+then
+    _techof="_techo_stdout"
+else
+    _techof="_techo_syslog"
+fi
+
+# _techo with determined _techo version
+_techo()
+{
+    if [ "${LOGLEVEL}" = "a" ]
+    then
+        "${_techof}" "$@"
+    fi
+}
+
+_techo_err()
+{
+    _techo "Error: $@"
+}
+
+_exit_err()
+{
+    _techo_err "$@"
+    rm -f "${TMP}"
+    exit 1
 }
 
 #
@@ -247,6 +296,28 @@ while [ "$#" -ge 1 ]; do
                 esac
             fi
             ;;
+        -e|--errors)
+            LOGONLYERRORS="1"
+            ;;
+        -l|--logfile)
+            if [ "$#" -ge 2 ]
+            then
+                case "$2" in
+                    -*)
+                        _exit_err "Missing log file"
+                        ;;
+                    *)
+                        LOGFILE="$2"
+                        shift
+                        ;;
+                esac
+            else
+                _exit_err "Missing log file"
+            fi
+            ;;
+        -s|--syslog)
+            SYSLOG="1"
+            ;;
         -v|--verbose)
             set -x
             ;;
@@ -267,6 +338,34 @@ while [ "$#" -ge 1 ]; do
     esac
     shift
 done
+
+# determine _techo version and logging level after parsing options
+if [ "${LOGFILE}" ]
+then
+    _techof="_techo_file"
+    LOGLEVEL="a"
+elif _is_interactive
+then
+    if [ "${SYSLOG}" ]
+    then
+        _techof="_techo_syslog"
+        LOGLEVEL="a"
+    else
+        _techof="_techo_stdout"
+        LOGLEVEL="e"
+    fi
+else
+    _techof="_techo_syslog"
+    LOGLEVEL="a"
+fi
+
+if [ "${LOGFILE}" -o "${SYSLOG}" ]
+then
+    if [ "${LOGONLYERRORS}" ]
+    then
+        LOGLEVEL="e"
+    fi
+fi
 
 # check that MAX_JOBS is natural number > 0
 # empty string means run all in parallel
