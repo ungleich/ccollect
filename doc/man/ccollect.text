@@ -29,6 +29,9 @@ OPTIONS
 -a, --all::
    Backup all sources specified in /etc/ccollect/sources
 
+-e, --errors::
+   Log only errors
+
 -h, --help::
    Show the help screen
 
@@ -36,14 +39,41 @@ OPTIONS
    Specifies the number of jobs to run simultaneously.
    If max is not specified then parallelise all jobs.
 
+-l FILE, --logfile FILE::
+   Log to specified file
+
 -p, --parallel::
    Parallelise backup processes (deprecated from 2.0)
+
+-s, --syslog::
+   Log to syslog with tag ccollect
+
+-V, --version::
+   Show version and exit
 
 -v, --verbose::
    Be very verbose (uses set -x)
 
--V, --version::
-   Show version and exit
+
+LOGGING MECHANISM
+-----------------
+ccollect logging depends on running in non-interactive/interactive mode
+and on specified optins. The mechanism behaves as the following:
+
+non-interactive mode::
+
+    * standard output goes to syslog
+    * optional: specify logging into file
+    * log all output by default
+    * optional: log only errors
+
+interactive mode::
+
+    * standard output goes to stdout
+    * log only errors
+    * optional: log into syslog or file
+        - log all output by default
+        - optional: log only errors
 
 
 SEE ALSO
