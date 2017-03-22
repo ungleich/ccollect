@@ -44,8 +44,8 @@ CMARKER=".ccollect-marker"
 export TMP="$(mktemp "/tmp/${__myname}.XXXXXX")"
 CONTROL_PIPE="/tmp/${__myname}-control-pipe"
 
-VERSION="2.0"
-RELEASE="2016-09-26"
+VERSION="2.1"
+RELEASE="2017-03-22"
 HALF_VERSION="ccollect ${VERSION}"
 FULL_VERSION="ccollect ${VERSION} (${RELEASE})"
 
