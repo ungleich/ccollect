@@ -655,7 +655,17 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
     #
     if [ -f "${c_rsync_options}" ]; then
         while read line; do
-            set -- "$@" "${line}"
+            # Trim line.
+            ln=$(echo "${line}" | awk '{$1=$1;print;}')
+            # Only if ln is non zero length string.
+            #
+            # If ln is empty then rsync '' DEST evaluates
+            # to transfer current directory to DEST which would
+            # with specific options destroy DEST content.
+            if [ -n "${ln}" ]
+            then
+                set -- "$@" "${ln}"
+            fi
         done < "${c_rsync_options}"
     fi
 
