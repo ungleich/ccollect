@@ -1,6 +1,6 @@
 Summary:        (pseudo) incremental backup with different exclude lists using hardlinks and rsync
 Name:           ccollect
-Version:        0.8.1
+Version:        2.2
 Release:        0
 URL:            http://www.nico.schottelius.org/software/ccollect
 Source0:        http://www.nico.schottelius.org/software/ccollect/%{name}-%{version}.tar.bz2
@@ -23,10 +23,10 @@ Only the inodes used by the hardlinks and the changed files need additional spac
 %install
 rm -rf $RPM_BUILD_ROOT
 
-#Installing main ccollect.sh and /etc directory
+#Installing main ccollect and /etc directory
 %__install -d 755 %buildroot%_bindir
 %__install -d 755 %buildroot%_sysconfdir/%name
-%__install -m 755 ccollect.sh %buildroot%_bindir/
+%__install -m 755 ccollect %buildroot%_bindir/
 
 #bin files from tools directory
 for t in $(ls tools/ccollect_*) ; do
@@ -45,18 +45,12 @@ done
 
 #Addition documentation and some config tools
 %__install -d 755 %buildroot%_datadir/%name/tools
+%__install -m 755 tools/called_from_remote_pre_exec %buildroot%_datadir/%name/tools
 %__cp -pr tools/config-pre-* %buildroot%_datadir/%name/tools
-%__install -m 755 tools/gnu-du-backup-size-compare.sh %buildroot%_datadir/%name/tools
-%__install -m 755 tools/report_success.sh %buildroot%_datadir/%name/tools
+%__install -m 755 tools/report_success %buildroot%_datadir/%name/tools
 
 %clean
 rm -rf $RPM_BUILD_ROOT 
-
-%post
-%__ln_s %_bindir/ccollect.sh %_bindir/ccollect
-
-%preun
-unlink %_bindir/ccollect
 
 %files
 %defattr(-,root,root)
