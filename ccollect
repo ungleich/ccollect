@@ -455,9 +455,14 @@ if [ "${PARALLEL}" ]; then
     trap "${TRAPFUNC}" 0 1 2 15
 
     # determine how much parallel jobs to prestart
-    if [ "${MAX_JOBS}" ] && [ "${MAX_JOBS}" -le "${no_sources}" ]
+    if [ "${MAX_JOBS}" ]
     then
-        prestart="${MAX_JOBS}"
+        if [ "${MAX_JOBS}" -le "${no_sources}" ]
+        then
+            prestart="${MAX_JOBS}"
+        else
+            prestart="${no_sources}"
+        fi
     else
         prestart=0
     fi
