@@ -1,6 +1,6 @@
 Summary:        (pseudo) incremental backup with different exclude lists using hardlinks and rsync
 Name:           ccollect
-Version:        2.2
+Version:        2.3
 Release:        0
 URL:            http://www.nico.schottelius.org/software/ccollect
 Source0:        http://www.nico.schottelius.org/software/ccollect/%{name}-%{version}.tar.bz2
