@@ -26,6 +26,7 @@ Supported and tested operating systems and architectures
 - Mac OS X  10.5
 - NetBSD    on alpha/amd64/i386/sparc/sparc64
 - OpenBSD   on amd64
+- Windows   by installing Cygwin, OpenSSH and rsync
 
 It *should* run on any Unix that supports `rsync` and has a POSIX-compatible
 bourne shell. If your platform is not listed above and you have it successfully
