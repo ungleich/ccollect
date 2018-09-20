@@ -150,11 +150,6 @@ _is_interactive()
     [ -t 0 -o -p /dev/stdin ]
 }
 
-add_name()
-{
-    awk "{ print \"[${name}] \" \$0 }"
-}
-
 #
 # ssh-"feature": we cannot do '... read ...; ssh  ...; < file',
 # because ssh reads stdin! -n does not work -> does not ask for password
@@ -252,7 +247,13 @@ _techo()
 {
     if [ "${LOGLEVEL}" = "a" ]
     then
-        "${_techof}" "$@"
+        tag="${name:-}"
+        if [ "${tag}" ]; then
+            tag="[${tag}]"
+        else
+            tag=""
+        fi
+        "${_techof}" ${tag} "$@"
     fi
 }
 
@@ -514,7 +515,6 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
     c_dest="${backup}/destination"
     c_pre_exec="${backup}/pre_exec"
     c_post_exec="${backup}/post_exec"
-    tag="[${name}]"
 
     #
     # Stderr to stdout, so we can produce nice logs
@@ -525,7 +525,7 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
     # Record start of backup: internal and for the user
     #
     begin_s="$(${SDATE})"
-    _techo "${tag}" "Beginning to backup"
+    _techo "Beginning to backup"
 
     #
     # Standard configuration checks
@@ -555,11 +555,11 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
     # First execute pre_exec, which may generate destination or other parameters
     #
     if [ -x "${c_pre_exec}" ]; then
-        _techo "${tag}" "Executing ${c_pre_exec} ..."
+        _techo "Executing ${c_pre_exec} ..."
         "${c_pre_exec}"; ret="$?"
-        _techo "${tag}" "Finished ${c_pre_exec} (return code ${ret})."
+        _techo "Finished ${c_pre_exec} (return code ${ret})."
 
-        [ "${ret}" -eq 0 ] || _exit_err "${tag}" "${c_pre_exec} failed. Skipping."
+        [ "${ret}" -eq 0 ] || _exit_err "${c_pre_exec} failed. Skipping."
     fi
 
     #
@@ -584,7 +584,7 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
         c_interval="$(cat "${CDEFAULTS}/intervals/${INTERVAL}" 2>/dev/null)"
 
         if [ -z "${c_interval}" ]; then
-            _exit_err "${tag}" "No definition for interval \"${INTERVAL}\" found. Skipping."
+            _exit_err "No definition for interval \"${INTERVAL}\" found. Skipping."
         fi
     fi
 
@@ -613,11 +613,11 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
     # Destination is a path
     #
     if [ ! -f "${c_dest}" ]; then
-        _exit_err "${tag}" "Destination ${c_dest} is not a file. Skipping."
+        _exit_err "Destination ${c_dest} is not a file. Skipping."
     else
         ddir="$(cat "${c_dest}")"; ret="$?"
         if [ "${ret}" -ne 0 ]; then
-            _exit_err "${tag}" "Destination ${c_dest} is not readable. Skipping."
+            _exit_err "Destination ${c_dest} is not readable. Skipping."
         fi
     fi
 
@@ -682,7 +682,7 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
         if [ ! -f "${c_quiet_if_down}" ]; then
             cat "${TMP}"
         fi
-        _exit_err "${tag}" "Source ${source} is not readable. Skipping."
+        _exit_err "Source ${source} is not readable. Skipping."
     fi
 
     #
@@ -693,7 +693,7 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
     #
     # Check: destination exists?
     #
-    cd "${ddir}" || _exit_err "${tag}" "Cannot change to ${ddir}. Skipping."
+    cd "${ddir}" || _exit_err "Cannot change to ${ddir}. Skipping."
 
     #
     # Check incomplete backups (needs echo to remove newlines)
@@ -701,7 +701,7 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
     ls -1 | grep "${CMARKER}\$" > "${TMP}"; ret=$?
 
     if [ "$ret" -eq 0 ]; then
-        _techo "${tag}" "Incomplete backups: $(echo $(cat "${TMP}"))"
+        _techo "Incomplete backups: $(echo $(cat "${TMP}"))"
         if [ -f "${c_delete_incomplete}" ]; then
             delete_from_file "${TMP}" "${CMARKER}"
         fi
@@ -712,14 +712,14 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
     #
     count="$(ls -1 | grep -c "^${INTERVAL}\\.")"
 
-    _techo "${tag}" "Existing backups: ${count} Total keeping backups: ${c_interval}"
+    _techo "Existing backups: ${count} Total keeping backups: ${c_interval}"
 
     if [ "${count}" -ge "${c_interval}" ]; then
         remove="$((${count} - ${c_interval} + 1))"
-        _techo "${tag}" "Removing ${remove} backup(s)..."
+        _techo "Removing ${remove} backup(s)..."
 
         ls -${TSORT}1r | grep "^${INTERVAL}\\." | head -n "${remove}" > "${TMP}" || \
-                _exit_err "${tag}" "Listing old backups failed"
+                _exit_err "Listing old backups failed"
 
         delete_from_file "${TMP}"
     fi
@@ -728,14 +728,14 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
     # Check for backup directory to clone from: Always clone from the latest one!
     #
     last_dir="$(ls -${TSORT}p1 | grep '/$' | head -n 1)" || \
-        _exit_err "${tag}" "Failed to list contents of ${ddir}."
+        _exit_err "Failed to list contents of ${ddir}."
 
     #
     # Clone from old backup, if existing
     #
     if [ "${last_dir}" ]; then
         set -- "$@" "--link-dest=${ddir}/${last_dir}"
-        _techo "${tag}" "Hard linking from ${last_dir}"
+        _techo "Hard linking from ${last_dir}"
     fi
 
     #
@@ -748,14 +748,14 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
     # Mark backup running and go back to original directory
     #
     touch "${destination_dir}${CMARKER}"
-    cd "${__abs_mydir}" || _exit_err "${tag}" "Cannot go back to ${__abs_mydir}."
+    cd "${__abs_mydir}" || _exit_err "Cannot go back to ${__abs_mydir}."
 
     #
     # the rsync part
     #
-    _techo "${tag}" "Transferring files..."
+    _techo "Transferring files..."
     rsync "$@" "${source}" "${destination_dir}"; ret=$?
-    _techo "${tag}" "Finished backup (rsync return code: $ret)."
+    _techo "Finished backup (rsync return code: $ret)."
 
     #
     # Set modification time (mtime) to current time, if sorting by mtime is enabled
@@ -779,24 +779,24 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
     #
     if [ -z "$fail" ]; then
         rm "${destination_dir}${CMARKER}" || \
-            _exit_err "${tag}" "Removing ${destination_dir}${CMARKER} failed."
+            _exit_err "Removing ${destination_dir}${CMARKER} failed."
         if [ "${ret}" -ne 0 ]; then
-            _techo "${tag}" "Warning: rsync exited non-zero, the backup may be broken (see rsync errors)."
+            _techo "Warning: rsync exited non-zero, the backup may be broken (see rsync errors)."
         fi
     else
-        _techo "${tag}" "Warning: rsync failed with return code $ret."
+        _techo "Warning: rsync failed with return code $ret."
     fi
 
     #
     # post_exec
     #
     if [ -x "${c_post_exec}" ]; then
-        _techo "${tag}" "Executing ${c_post_exec} ..."
+        _techo "Executing ${c_post_exec} ..."
         "${c_post_exec}"; ret=$?
-        _techo "${tag}" "Finished ${c_post_exec}."
+        _techo "Finished ${c_post_exec}."
 
         if [ "${ret}" -ne 0 ]; then
-            _exit_err "${tag}" "${c_post_exec} failed."
+            _exit_err "${c_post_exec} failed."
         fi
     fi
 
@@ -809,10 +809,10 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
     minutes="$(((${full_seconds} % 3600) / 60))"
     seconds="$((${full_seconds} % 60))"
 
-    _techo "${tag}" "Backup lasted: ${hours}:${minutes}:${seconds} (h:m:s)"
+    _techo "Backup lasted: ${hours}:${minutes}:${seconds} (h:m:s)"
 
     unlock "${name}"
-) | add_name
+)
 done
 
 #
