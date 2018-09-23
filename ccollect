@@ -247,13 +247,8 @@ _techo()
 {
     if [ "${LOGLEVEL}" = "a" ]
     then
-        tag="${name:-}"
-        if [ "${tag}" ]; then
-            tag="[${tag}]"
-        else
-            tag=""
-        fi
-        "${_techof}" ${tag} "$@"
+        set -- ${name:+"[${name}]"} $@
+        "${_techof}" "$@"
     fi
 }
 
