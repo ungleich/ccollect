@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # 2005-2013 Nico Schottelius (nico-ccollect at schottelius.org)
-# 2016 Darko Poljak (darko.poljak at gmail.com)
+# 2016-2018 Darko Poljak (darko.poljak at gmail.com)
 #
 # This file is part of ccollect.
 #
@@ -44,8 +44,8 @@ CMARKER=".ccollect-marker"
 export TMP="$(mktemp "/tmp/${__myname}.XXXXXX")"
 CONTROL_PIPE="/tmp/${__myname}-control-pipe"
 
-VERSION="2.3"
-RELEASE="2018-02-02"
+VERSION="2.4"
+RELEASE="2018-09-25"
 HALF_VERSION="ccollect ${VERSION}"
 FULL_VERSION="ccollect ${VERSION} (${RELEASE})"
 
