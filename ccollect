@@ -150,11 +150,6 @@ _is_interactive()
     [ -t 0 -o -p /dev/stdin ]
 }
 
-add_name()
-{
-    awk "{ print \"[${name}] \" \$0 }"
-}
-
 #
 # ssh-"feature": we cannot do '... read ...; ssh  ...; < file',
 # because ssh reads stdin! -n does not work -> does not ask for password
@@ -252,6 +247,7 @@ _techo()
 {
     if [ "${LOGLEVEL}" = "a" ]
     then
+        set -- ${name:+"[${name}]"} $@
         "${_techof}" "$@"
     fi
 }
@@ -530,7 +526,7 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
     # Standard configuration checks
     #
     if [ ! -e "${backup}" ]; then
-        _exit_err "Source does not exist."
+        _exit_err "Source \"${backup}\" does not exist."
     fi
 
     #
@@ -811,7 +807,7 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
     _techo "Backup lasted: ${hours}:${minutes}:${seconds} (h:m:s)"
 
     unlock "${name}"
-) | add_name
+)
 done
 
 #
