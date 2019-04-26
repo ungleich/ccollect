@@ -807,7 +807,7 @@ while [ "${source_no}" -lt "${no_sources}" ]; do
     _techo "Backup lasted: ${hours}:${minutes}:${seconds} (h:m:s)"
 
     unlock "${name}"
-)
+) || exit
 done
 
 #
